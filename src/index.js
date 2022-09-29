@@ -66,7 +66,8 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
   );
 
   const [memberCount, setMemberCount] = useState(
-    turnOnCameraWhenJoining || turnOnMicrophoneWhenJoining ? 1 : 0
+    // turnOnCameraWhenJoining || turnOnMicrophoneWhenJoining ? 1 : 0
+    1
   );
 
   const grantPermissions = async (callback) => {
