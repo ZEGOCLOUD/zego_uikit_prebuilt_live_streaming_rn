@@ -145,7 +145,7 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
       ZegoUIKit.onUserJoin(callbackID);
       ZegoUIKit.onUserLeave(callbackID);
     };
-  });
+  }, []);
   useEffect(() => {
     ZegoUIKit.init(appID, appSign, { userID: userID, userName: userName }).then(
       () => {
@@ -162,7 +162,7 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
     return () => {
       ZegoUIKit.leaveRoom();
     };
-  });
+  }, []);
 
   return (
     <View style={styles.container}>
