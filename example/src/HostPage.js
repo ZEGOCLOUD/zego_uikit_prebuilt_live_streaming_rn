@@ -1,11 +1,7 @@
-import React, { useEffect } from 'react';
-import { Alert } from 'react-native';
-
-import { StyleSheet, View, Text, Button } from 'react-native';
+import React from 'react';
+import { StyleSheet, View } from 'react-native';
 import ZegoUIKitPrebuiltLiveStreaming, { HOST_DEFAULT_CONFIG } from '@zegocloud/zego-uikit-prebuilt-live-streaming-rn'
 import KeyCenter from './KeyCenter';
-// import ZegoUIKit, {ZegoToggleCameraButton} from @zego-uikit/components-rn
-// import {ZegoUIKitPrebuiltCall} from @zego-uikit/prebuilt-call-rn
 
 export default function HostPage(props) {
     const { route } = props;
@@ -23,7 +19,7 @@ export default function HostPage(props) {
 
                 config={{
                     ...HOST_DEFAULT_CONFIG,
-                    onLeaveLiveStreaming: () => { props.navigation.navigate('HomePage') }
+                    onLeaveLiveStreaming: () => { props.navigation.navigate('HomePage') },
                 }}
             />
         </View>

@@ -16,22 +16,29 @@ import ZegoUIKit, {
 } from '@zegocloud/zego-uikit-rn';
 import ZegoBottomBar from './ZegoBottomBar';
 import { useKeyboard } from './utils/keyboard';
+import ZegoMenuBarButtonName from './ZegoMenuBarButtonName';
 
-export const HOST_DEFAULT_CONFIG = {
+const HOST_DEFAULT_CONFIG = {
   showSoundWavesInAudioMode: true,
   turnOnCameraWhenJoining: true,
   turnOnMicrophoneWhenJoining: true,
   useSpeakerWhenJoining: true,
   showInRoomMessageButton: true,
-  menuBarButtons: [1, 2, 3],
+  menuBarButtons: [ZegoMenuBarButtonName.toggleCameraButton, ZegoMenuBarButtonName.toggleMicrophoneButton, ZegoMenuBarButtonName.switchCameraButton],
 };
-export const AUDIENCE_DEFAULT_CONFIG = {
+const AUDIENCE_DEFAULT_CONFIG = {
   showSoundWavesInAudioMode: true,
   turnOnCameraWhenJoining: false,
   turnOnMicrophoneWhenJoining: false,
   useSpeakerWhenJoining: true,
   showInRoomMessageButton: true,
   menuBarButtons: [],
+};
+
+export {
+  ZegoMenuBarButtonName,
+  HOST_DEFAULT_CONFIG,
+  AUDIENCE_DEFAULT_CONFIG
 };
 
 // https://github.com/react-native-community/hooks#usekeyboard
@@ -46,7 +53,7 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
 
     showInRoomMessageButton = true,
 
-    menuBarButtons = [1, 2, 3],
+    menuBarButtons = [ZegoMenuBarButtonName.toggleCameraButton, ZegoMenuBarButtonName.toggleMicrophoneButton, ZegoMenuBarButtonName.switchCameraButton],
     menuBarButtonsMaxCount = 5,
     menuBarExtendedButtons = [],
 

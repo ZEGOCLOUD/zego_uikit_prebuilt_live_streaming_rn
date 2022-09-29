@@ -10,6 +10,7 @@ import {
 
 import ZegoMoreButton from './ZegoMoreButton';
 import ZegoMessageButton from './ZegoMessageButton';
+import ZegoMenuBarButtonName from "./ZegoMenuBarButtonName";
 
 export default function ZegoBottomBar(props) {
     const {
@@ -27,17 +28,10 @@ export default function ZegoBottomBar(props) {
     } = props;
     const [isNormalStyle, setIsNormalStyle] = useState(true);
 
-    // enum ZegoMenuBarButtonName {
-    //     hangUpButton,
-    //     toggleCameraButton,
-    //     toggleMicrophoneBUtton,
-    //     swtichCameraFacingButton,
-    //     swtichAudioOtputButton
-    //     }
     const getButtonByButtonIndex = (buttonIndex, isFirstLevel) => {
         const buttonSize = isFirstLevel ? 36 : 48;
         switch (buttonIndex) {
-            case 0:
+            case ZegoMenuBarButtonName.leaveButton:
                 return <ZegoLeaveButton
                     key={buttonIndex}
                     onLeaveConfirmation={onLeaveLiveStreamingConfirming}
@@ -46,27 +40,27 @@ export default function ZegoBottomBar(props) {
                     width={buttonSize}
                     height={buttonSize}
                 />
-            case 1:
+            case ZegoMenuBarButtonName.toggleCameraButton:
                 return <ZegoToggleCameraButton
                     key={buttonIndex}
                     isOn={turnOnCameraWhenJoining}
                     width={buttonSize}
                     height={buttonSize}
                 />;
-            case 2:
+            case ZegoMenuBarButtonName.toggleMicrophoneButton:
                 return <ZegoToggleMicrophoneButton
                     key={buttonIndex}
                     isOn={turnOnMicrophoneWhenJoining}
                     width={buttonSize}
                     height={buttonSize}
                 />;
-            case 3:
+            case ZegoMenuBarButtonName.switchCameraButton:
                 return <ZegoSwitchCameraButton
                     key={buttonIndex}
                     width={buttonSize}
                     height={buttonSize}
                 />
-            case 4:
+            case ZegoMenuBarButtonName.switchAudioOutputButton:
                 return <ZegoSwitchAudioOutputButton
                     key={buttonIndex}
                     useSpeaker={useSpeakerWhenJoining}
