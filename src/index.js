@@ -123,31 +123,24 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
     setTextInputVisable(false);
   };
 
-  useEffect(() => {
-    const callbackID =
-      'ZegoUIKitPrebuiltLiveStreaming' +
-      String(Math.floor(Math.random() * 10000));
-    ZegoUIKit.onAudioVideoAvailable(callbackID, (users) => {
-      if (users.length > 0) {
-        setHostID(users[0].userID);
-      }
-    });
-    ZegoUIKit.onUserJoin(callbackID, (users) => {
-      setMemberCount(ZegoUIKit.getAllUsers().length);
-    });
-    ZegoUIKit.onUserLeave(callbackID, (users) => {
-      // TODO HOST ID is empty?
-      //   console.log('@@@@@@@@@@@@@', hostID, hostID, users);
-      if (hostID == '') {
+  const callbackID = 'ZegoUIKitPrebuiltLiveStreaming' + String(Math.floor(Math.random() * 10000));
+  ZegoUIKit.onAudioVideoAvailable(callbackID, (users) => {
+    if (users.length > 0) {
+      setHostID(users[0].userID);
+    }
+  });
+  ZegoUIKit.onUserJoin(callbackID, (users) => {
+    setMemberCount(ZegoUIKit.getAllUsers().length);
+  });
+  ZegoUIKit.onUserLeave(callbackID, (users) => {
+    users.forEach((user) => {
+      if (user.userID == hostID) {
         setHostID('');
       }
-      users.forEach((user) => {
-        if (user.userID == hostID) {
-          setHostID('');
-        }
-      });
-      setMemberCount(ZegoUIKit.getAllUsers().length);
     });
+    setMemberCount(ZegoUIKit.getAllUsers().length);
+  });
+  useEffect(() => {
     return () => {
       ZegoUIKit.onAudioVideoAvailable(callbackID);
       ZegoUIKit.onUserJoin(callbackID);
