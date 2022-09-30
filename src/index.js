@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { PermissionsAndroid, Image, Text, ImageBackground } from 'react-native';
+import { PermissionsAndroid, Image, Text, ImageBackground, Alert } from 'react-native';
 
 import {
   StyleSheet,
@@ -59,6 +59,7 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
 
     foregroundBuilder,
 
+    confirmDialogInfo,
     onLeaveLiveStreaming,
     onLeaveLiveStreamingConfirming,
   } = config;
@@ -171,6 +172,36 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
     };
   }, []);
 
+  const showDefaultLeaveDialog = () => {
+    return new Promise((resolve, reject) => {
+      if (!confirmDialogInfo) {
+        resolve();
+      } else {
+        const {
+          title = "Leave the live streaming",
+          message = "Are you sure to leave the live streaming?",
+          cancelButtonName = "Cancel",
+          confirmButtonName = "Confirm"
+        } = confirmDialogInfo;
+        Alert.alert(
+          title,
+          message,
+          [
+            {
+              text: cancelButtonName,
+              onPress: () => reject(),
+              style: "cancel"
+            },
+            {
+              text: confirmButtonName,
+              onPress: () => resolve()
+            }
+          ]
+        );
+      }
+    })
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.fillParent}>
@@ -202,7 +233,7 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
       <View style={styles.leaveButton}>
         <ZegoLeaveButton
           style={styles.fillParent}
-          onLeaveConfirmation={onLeaveLiveStreamingConfirming}
+          onLeaveConfirmation={onLeaveLiveStreamingConfirming ? onLeaveLiveStreamingConfirming : showDefaultLeaveDialog}
           onPressed={onLeaveLiveStreaming}
           iconLeave={require('./resources/white_top_button_close.png')}
         />
@@ -239,7 +270,7 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
             useSpeakerWhenJoining={useSpeakerWhenJoining}
             showInRoomMessageButton={showInRoomMessageButton}
             onLeaveLiveStreaming={onLeaveLiveStreaming}
-            onLeaveLiveStreamingConfirming={onLeaveLiveStreamingConfirming}
+            onLeaveLiveStreamingConfirming={onLeaveLiveStreamingConfirming ? onLeaveLiveStreamingConfirming : showDefaultLeaveDialog}
             onMessageButtonPress={() => {
               setTextInputVisable(true);
             }}
