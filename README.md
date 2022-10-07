@@ -1,28 +1,106 @@
-# zego-uikit-prebuilt-live-streaming-rn
-Hello
-## Installation
+# Quick start
 
-```sh
-npm install zego-uikit-prebuilt-live-streaming-rn```
+- - -
 
-## Usage
+## Integrate the SDK
 
-```js
-import { multiply } from "zego-uikit-prebuilt-live-streaming-rn";
+### Import the SDK
 
-// ...
+### Add @zegocloud/zego-uikit-prebuilt-live-streaming-rn as dependencies
 
-const result = await multiply(3, 7);
+```bash
+yarn add @zegocloud/zego-uikit-prebuilt-live-streaming-rn 
 ```
 
-## Contributing
+### Add other dependencies
 
-See the [contributing guide](CONTRIBUTING.md) to learn how to contribute to the repository and the development workflow.
+Run the following command to install other dependencies for making sure the `@zegocloud/zego-uikit-prebuilt-live-streaming-rn` can work properly:
 
-## License
+```bash
+yarn add @zegocloud/zego-uikit-rn react-delegate-component zego-express-engine-reactnative
+```
 
-MIT
+### Using the `ZegoUIKitPrebuiltLiveStreaming` Component in your project
 
----
+- Go to [ZEGOCLOUD Admin Console\|_blank](https://console.zegocloud.com/), get the `appID` and `appSign` of your project.
+- Specify the `userID` and `userName` for connecting the LiveStreaming Kit service. 
+- Create a `liveID` that represents the live streaming you want to make. 
 
-Made with [create-react-native-library](https://github.com/callstack/react-native-builder-bob)
+<div class="mk-hint">
+
+- `userID` and `callID` can only contain numbers, letters, and underlines (_). 
+- Using the same `liveID` will enter the same live streaming.
+</div>
+
+
+
+```js
+// HostPage.js
+import React from 'react';
+import { StyleSheet, View } from 'react-native';
+import ZegoUIKitPrebuiltLiveStreaming, { HOST_DEFAULT_CONFIG } from '@zegocloud/zego-uikit-prebuilt-live-streaming-rn'
+
+export default function HostPage(props) {
+    return (
+        <View style={styles.container}>
+            <ZegoUIKitPrebuiltLiveStreaming
+                appID={yourAppID}
+                appSign={yourAppSign}
+                userID={userID}
+                userName={userName}
+                liveID={liveID}
+
+                config={{
+                    ...HOST_DEFAULT_CONFIG,
+                    onLeaveLiveStreaming: () => { props.navigation.navigate('HomePage') }
+                }}
+            />
+        </View>
+    );
+}
+```
+
+
+## Configure your project
+
+- Android: 
+
+Open `my_project/android/app/src/main/AndroidManifest.xml` file and add the code as follow:
+
+<img src="/Pics/ZegoUIKit/RN/PrebuiltCall/android_config.gif" width=500/>
+
+```xml
+<uses-permission android:name="android.permission.RECORD_AUDIO" />
+<uses-permission android:name="android.permission.CAMERA" />
+```
+
+- iOS:
+
+Open `my_project/ios/my_project/Info.plist` file and add the code as follow:
+
+<img src="/Pics/ZegoUIKit/RN/PrebuiltCall/ios_config.gif" width=500/>
+
+```xml
+<key>NSCameraUsageDescription</key>
+<string></string>
+<key>NSMicrophoneUsageDescription</key>
+<string></string>
+```
+
+## Run & Test
+
+- Run on an iOS device:
+```bash
+yarn android
+```
+- Run on an Android device:
+```bash
+yarn ios
+```
+
+## Related guide
+
+[Custom prebuilt UI](https://docs.zegocloud.com/article/14879)
+
+[Sample code](https://github.com/ZEGOCLOUD/zego_uikit_prebuilt_live_streaming_example_rn)
+

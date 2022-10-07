@@ -16,7 +16,7 @@ import ZegoUIKit, {
 } from '@zegocloud/zego-uikit-rn';
 import ZegoBottomBar from './ZegoBottomBar';
 import { useKeyboard } from './utils/keyboard';
-import ZegoMenuBarButtonName from './ZegoMenuBarButtonName';
+import ZegoMenuBarButtonName from "./ZegoMenuBarButtonName";
 
 const HOST_DEFAULT_CONFIG = {
   showSoundWavesInAudioMode: true,
