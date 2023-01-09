@@ -1,4 +1,4 @@
-import ZegoMenuBarButtonName from '../ZegoMenuBarButtonName';
+import ZegoMenuBarButtonName from '../components/ZegoMenuBarButtonName';
 class ZegoDialogInfo {
     title = '';
     message = '';

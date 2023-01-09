@@ -11,7 +11,7 @@ import ZegoUIKit, {
 import ZegoMoreButton from './ZegoMoreButton';
 import ZegoMessageButton from './ZegoMessageButton';
 import ZegoMenuBarButtonName from "./ZegoMenuBarButtonName";
-import ZegoCoHostControlButton from "./components/ZegoCoHostControlButton";
+import ZegoCoHostControlButton from "./ZegoCoHostControlButton";
 
 export default function ZegoBottomBar(props) {
     const {
@@ -46,7 +46,7 @@ export default function ZegoBottomBar(props) {
                     key={buttonIndex}
                     onLeaveConfirmation={onLeaveLiveStreamingConfirming}
                     onPressed={onLeaveLiveStreaming}
-                    iconLeave={require("./resources/white_bottom_button_close.png")}
+                    iconLeave={require("../resources/white_bottom_button_close.png")}
                     width={buttonSize}
                     height={buttonSize}
                 />

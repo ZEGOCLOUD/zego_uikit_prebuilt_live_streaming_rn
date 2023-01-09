@@ -17,11 +17,11 @@ import ZegoUIKit, {
   ZegoSwitchCameraButton,
   ZegoUIKitPluginType,
 } from '@zegocloud/zego-uikit-rn';
-import ZegoBottomBar from './ZegoBottomBar';
+import ZegoBottomBar from './components/ZegoBottomBar';
 import { useKeyboard } from './utils/keyboard';
-import ZegoMenuBarButtonName from './ZegoMenuBarButtonName';
-import ZegoStartLiveButton from './ZegoStartLiveButton';
-import ZegoLiveStreamingMemberList from './ZegoLiveStreamingMemberList';
+import ZegoMenuBarButtonName from './components/ZegoMenuBarButtonName';
+import ZegoStartLiveButton from './components/ZegoStartLiveButton';
+import ZegoLiveStreamingMemberList from './components/ZegoLiveStreamingMemberList';
 import ZegoCoHostMenuDialog from "./components/ZegoCoHostMenuDialog";
 import ZegoToast from "./components/ZegoToast";
 import ZegoDialog from "./components/ZegoDialog";
@@ -170,6 +170,11 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
           realTimeData.current.memberConnectStateMap[inviter.id] = ZegoCoHostConnectState.connecting;
           memberConnectStateMap = realTimeData.current.memberConnectStateMap;
           setMemberConnectStateMap(memberConnectStateMap);
+
+          // The sorting will not be triggered if the member list pop-up is not reopened, the sorting must be forced
+          if (isMemberListVisable) {
+            ZegoUIKit.forceSortMemberList();
+          }
         } else if (type === ZegoInvitationType.inviteToCoHost) {
           // The audience is invited to connect the cohost by host
           realTimeData.current.memberConnectStateMap[userID] = ZegoCoHostConnectState.connecting;

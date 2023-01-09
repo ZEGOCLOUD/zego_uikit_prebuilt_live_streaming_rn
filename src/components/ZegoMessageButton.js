@@ -9,7 +9,7 @@ export default function ZegoMessageButton(props) {
             onPress={onPress}>
             <Image
                 resizeMode='contain'
-                source={require('./resources/white_bottom_button_message.png')}
+                source={require('../resources/white_bottom_button_message.png')}
                 onLoad={({nativeEvent: {source: {width, height}}}) => console.log('>>>>>', width, height)}
                 style={{ width: "100%", height: "100%" }} />
         </TouchableOpacity>)

@@ -1,10 +1,10 @@
 import React, { useEffect, useState, Fragment }from "react";
 import ZegoUIKit, { ZegoMemberList } from '@zegocloud/zego-uikit-rn';
 import { StyleSheet, View, Image, Text, TouchableWithoutFeedback, TouchableOpacity } from "react-native"
-import { getShotName } from './utils';
-import { ZegoCoHostConnectState, ZegoInvitationType, ZegoToastType, ZegoTranslationText } from './services/defines';
-import ZegoAgreeCoHostButton from "./components/ZegoAgreeCoHostButton";
-import ZegoDisagreeCoHostButton from "./components/ZegoDisagreeCoHostButton";
+import { getShotName } from '../utils';
+import { ZegoCoHostConnectState, ZegoInvitationType, ZegoToastType, ZegoTranslationText } from '../services/defines';
+import ZegoAgreeCoHostButton from "./ZegoAgreeCoHostButton";
+import ZegoDisagreeCoHostButton from "./ZegoDisagreeCoHostButton";
 
 export default function ZegoLiveStreamingMemberList(props) {
     const {
@@ -30,7 +30,6 @@ export default function ZegoLiveStreamingMemberList(props) {
     
     // Determine whether you are the host and whether the current member has sent a cohost request
     const showOperationButton = (userID) => {
-        console.log('########showOperationButton', localUserID, userID, memberConnectStateMap);
         return localUserID === hostID && memberConnectStateMap[userID] === ZegoCoHostConnectState.connecting;
     };
     const showOperationIcon = (userID) => {
@@ -143,7 +142,7 @@ export default function ZegoLiveStreamingMemberList(props) {
                 }
                 {
                     showOperationIcon(userInfo.userID) ? <TouchableOpacity onPress={operateHandle.bind(this, userInfo.userID)}>
-                        <Image source={require('./resources/icon_more_vertical.png')} />
+                        <Image source={require('../resources/icon_more_vertical.png')} />
                     </TouchableOpacity> : null
                 }
             </View>
@@ -156,7 +155,7 @@ export default function ZegoLiveStreamingMemberList(props) {
                 onPress={onCloseMemberList}>
                 <Image
                     style={styles.downArrowIcon}
-                    source={require('./resources/white_button_back.png')}
+                    source={require('../resources/white_button_back.png')}
                 />
             </TouchableWithoutFeedback>
             <Text style={styles.title}>{ZegoTranslationText.memberListTitle} · {memberCount}人</Text>
