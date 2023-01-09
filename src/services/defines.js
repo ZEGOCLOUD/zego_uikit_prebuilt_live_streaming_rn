@@ -1,3 +1,4 @@
+import ZegoMenuBarButtonName from '../ZegoMenuBarButtonName';
 class ZegoDialogInfo {
     title = '';
     message = '';
@@ -54,7 +55,7 @@ const ZegoTranslationText = {
         message: "Do you want to end the cohosting?",
     }),
 };
-const ZegoRole = {
+const ZegoLiveStreamingRole = {
     host: 0,
     coHost: 1,
     audience: 2,
@@ -82,33 +83,57 @@ const ZegoToastType = {
 };
 
 const HOST_DEFAULT_CONFIG = {
-    role: ZegoRole.host,
+    role: ZegoLiveStreamingRole.host,
+    turnOnCameraWhenJoining: true,
+    turnOnMicrophoneWhenJoining: true,
+    useSpeakerWhenJoining: true,
+    audioVideoViewConfig: {
+        showSoundWavesInAudioMode: true,
+    },
+    bottomMenuBarConfig: {
+        showInRoomMessageButton: true,
+        hostButtons: [ZegoMenuBarButtonName.toggleCameraButton, ZegoMenuBarButtonName.toggleMicrophoneButton, ZegoMenuBarButtonName.switchCameraButton],
+        coHostButtons: [ZegoMenuBarButtonName.toggleCameraButton, ZegoMenuBarButtonName.toggleMicrophoneButton, ZegoMenuBarButtonName.switchCameraButton, ZegoMenuBarButtonName.coHostControlButton],
+        audienceButtons: [ZegoMenuBarButtonName.coHostControlButton],
+        hostExtendButtons: [],
+        coHostExtendButtons: [],
+        audienceExtendButtons: [],
+        maxCount: 5,
+    },
     confirmDialogInfo: new ZegoDialogInfo({
         title: "Stop the live",
         message: "Are you sure to stop the live?",
         cancelButtonName: "Cancel",
         confirmButtonName: "Stop it",
     }),
-    showSoundWavesInAudioMode: true,
-    turnOnCameraWhenJoining: true,
-    turnOnMicrophoneWhenJoining: true,
-    useSpeakerWhenJoining: true,
-    showInRoomMessageButton: true,
+    translationText: ZegoTranslationText,
 };
 const AUDIENCE_DEFAULT_CONFIG = {
-    role: ZegoRole.audience,
-    showSoundWavesInAudioMode: true,
+    role: ZegoLiveStreamingRole.audience,
     turnOnCameraWhenJoining: false,
     turnOnMicrophoneWhenJoining: false,
     useSpeakerWhenJoining: true,
-    showInRoomMessageButton: true,
+    audioVideoViewConfig: {
+        showSoundWavesInAudioMode: true,
+    },
+    bottomMenuBarConfig: {
+        showInRoomMessageButton: true,
+        hostButtons: [ZegoMenuBarButtonName.toggleCameraButton, ZegoMenuBarButtonName.toggleMicrophoneButton, ZegoMenuBarButtonName.switchCameraButton],
+        coHostButtons: [ZegoMenuBarButtonName.toggleCameraButton, ZegoMenuBarButtonName.toggleMicrophoneButton, ZegoMenuBarButtonName.switchCameraButton, ZegoMenuBarButtonName.coHostControlButton],
+        audienceButtons: [ZegoMenuBarButtonName.coHostControlButton],
+        hostExtendButtons: [],
+        coHostExtendButtons: [],
+        audienceExtendButtons: [],
+        maxCount: 5,
+    },
+    translationText: ZegoTranslationText,
 };
 
 export {
     HOST_DEFAULT_CONFIG,
     AUDIENCE_DEFAULT_CONFIG,
     ZegoTranslationText,
-    ZegoRole,
+    ZegoLiveStreamingRole,
     ZegoLiveStatus,
     ZegoInvitationType,
     ZegoCoHostConnectState,

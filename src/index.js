@@ -30,7 +30,7 @@ import { getShotName } from './utils';
 import {
   HOST_DEFAULT_CONFIG,
   AUDIENCE_DEFAULT_CONFIG,
-  ZegoRole,
+  ZegoLiveStreamingRole,
   ZegoLiveStatus,
   ZegoTranslationText,
   ZegoInvitationType,
@@ -49,17 +49,14 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
   const { appID, appSign, userID, userName, liveID, config, plugins = [] } = props;
   const realTimeData = useRef(); // Resolve the problem where closures cannot obtain new values, add as needed
 
-  config.role === undefined && (config.role = ZegoRole.host);
-  config.translationText = config.translationText || {};
-  Object.assign(config.translationText, ZegoTranslationText);
+  config.role === undefined && (config.role = ZegoLiveStreamingRole.audience);
+  Object.assign(ZegoTranslationText, config.translationText || {});
 
   const {
-    showSoundWavesInAudioMode = true,
     turnOnCameraWhenJoining = true,
     turnOnMicrophoneWhenJoining = true,
     useSpeakerWhenJoining = true,
-    showInRoomMessageButton = true,
-    foregroundBuilder,
+    audioVideoViewConfig = {},
     bottomMenuBarConfig = {},
     memberListConfig = {},
     inRoomMessageViewConfig = {},
@@ -71,15 +68,21 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
     startLiveButtonBuilder,
   } = config;
   const {
-    showMicrophoneState = false,
-    showCameraState = false,
+    showSoundWavesInAudioMode = true,
+    useVideoViewAspectFill = true,
+    foregroundBuilder,
+  } = audioVideoViewConfig;
+  const {
+    showMicrophoneState = true,
+    showCameraState = true,
     itemBuilder,
   } = memberListConfig;
   const { itemBuilder: messageItemBuilder } = inRoomMessageViewConfig;
-  const { 
+  const {
+    showInRoomMessageButton = true,
     hostButtons = [ZegoMenuBarButtonName.toggleCameraButton, ZegoMenuBarButtonName.toggleMicrophoneButton, ZegoMenuBarButtonName.switchCameraButton],
     coHostButtons = [ZegoMenuBarButtonName.toggleCameraButton, ZegoMenuBarButtonName.toggleMicrophoneButton, ZegoMenuBarButtonName.switchCameraButton, ZegoMenuBarButtonName.coHostControlButton],
-    audienceButtons = [ZegoMenuBarButtonName.coHostControlButton],
+    audienceButtons = plugins && plugins.length ? [ZegoMenuBarButtonName.coHostControlButton] : [],
     hostExtendButtons = [],
     coHostExtendButtons = [],
     audienceExtendButtons = [],
@@ -199,8 +202,8 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
                 ZegoUIKit.turnMicrophoneOn('', true);
                 setIsDialogVisable(false);
 
-                setRole(ZegoRole.coHost);
-                realTimeData.current.role = ZegoRole.coHost;
+                setRole(ZegoLiveStreamingRole.coHost);
+                realTimeData.current.role = ZegoLiveStreamingRole.coHost;
               });
             }
           });
@@ -212,8 +215,8 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
           realTimeData.current.memberConnectStateMap[userID] = ZegoCoHostConnectState.idle;
           setMemberConnectStateMap({ ...realTimeData.current.memberConnectStateMap });
 
-          setRole(ZegoRole.audience);
-          realTimeData.current.role = ZegoRole.audience;
+          setRole(ZegoLiveStreamingRole.audience);
+          realTimeData.current.role = ZegoLiveStreamingRole.audience;
         }
       });
       ZegoUIKit.getSignalingPlugin().onInvitationCanceled(callbackID, ({ callID, inviter, data }) => {
@@ -269,7 +272,7 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
     ZegoUIKit.onRoomStateChanged(callbackID, (reason) => {
       if (ZegoUIKit.isRoomConnected()) {
         // Anchor set host
-        if (realTimeData.current.role === ZegoRole.host && !realTimeData.current.hostID) {
+        if (realTimeData.current.role === ZegoLiveStreamingRole.host && !realTimeData.current.hostID) {
           ZegoUIKit.updateRoomProperties({ host: userID, live_status: `${ZegoLiveStatus.default}` });
           // Unequal results update the local value first
           setHostID(userID);
@@ -300,7 +303,7 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
           // The live_status is set to 0 before the host enters the room
           console.log('########onRoomPropertyUpdated Update the reorder identity', true);
           shouldSortHostAtFirst = true;
-          if (realTimeData.current.role !== ZegoRole.host) {
+          if (realTimeData.current.role !== ZegoLiveStreamingRole.host) {
             // When the audience character receives the broadcast notification, stop pull all streams
             // Uikit is also pulled by default, so you have to stop here as well
             ZegoUIKit.stopPlayingAllAudioVideo();
@@ -315,8 +318,8 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
               ZegoUIKit.turnMicrophoneOn('', false);
 
               // Update role and memberConnectStateMap
-              setRole(ZegoRole.audience);
-              realTimeData.current.role = ZegoRole.audience;
+              setRole(ZegoLiveStreamingRole.audience);
+              realTimeData.current.role = ZegoLiveStreamingRole.audience;
         
               realTimeData.current.memberConnectStateMap[userID] = ZegoCoHostConnectState.idle;
               setMemberConnectStateMap({ ...realTimeData.current.memberConnectStateMap });
@@ -400,14 +403,14 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
   }, []);
 
   const showAudioVideoContainer = () => {
-    return role === ZegoRole.host || role !== ZegoRole.host && hostID && liveStatus === ZegoLiveStatus.start;
+    return role === ZegoLiveStreamingRole.host || role !== ZegoLiveStreamingRole.host && hostID && liveStatus === ZegoLiveStatus.start;
   };
   const showStartLiveButton = () => {
-    return role === ZegoRole.host && hostID && hostID === userID && liveStatus === ZegoLiveStatus.default;
+    return role === ZegoLiveStreamingRole.host && hostID && hostID === userID && liveStatus === ZegoLiveStatus.default;
   };
   const showBottomBar = () => {
-    return role === ZegoRole.host && hostID && hostID === userID && liveStatus === ZegoLiveStatus.start ||
-    role === ZegoRole.audience || role === ZegoRole.coHost;
+    return role === ZegoLiveStreamingRole.host && hostID && hostID === userID && liveStatus === ZegoLiveStatus.start ||
+    role === ZegoLiveStreamingRole.audience || role === ZegoLiveStreamingRole.coHost;
   }
   const onFullPageTouch = () => {
     hideCountdownOnToast = hideCountdownOnToastLimit;
@@ -529,7 +532,7 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
     return new Promise((resolve, reject) => {
       temp().then(async () => {
         // Intercept confirm 
-        if (role === ZegoRole.host) {
+        if (role === ZegoLiveStreamingRole.host) {
           if (liveStatus === ZegoLiveStatus.start) {
             // Clear room properties
             await ZegoUIKit.updateRoomProperties({ live_status: `${ZegoLiveStatus.default}`, host: '' });
@@ -538,7 +541,7 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
             // Clear room properties
             await ZegoUIKit.updateRoomProperties({ live_status: `${ZegoLiveStatus.default}`, host: '' });
           }
-        } else if (role === ZegoRole.coHost) {
+        } else if (role === ZegoLiveStreamingRole.coHost) {
 
         } else {
           
@@ -554,7 +557,7 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
   const connectStateChangedHandle = (changedUserID, connectState) => {
     // The audience connection status changes
     changedUserID = changedUserID || userID;
-    const temp = connectState === ZegoCoHostConnectState.connected ? ZegoRole.coHost : ZegoRole.audience;
+    const temp = connectState === ZegoCoHostConnectState.connected ? ZegoLiveStreamingRole.coHost : ZegoLiveStreamingRole.audience;
   
     // Just take the value in state, because there's no closure
     memberConnectStateMap[changedUserID] = connectState;
@@ -595,7 +598,7 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
         <ZegoAudioVideoContainer
           audioVideoConfig={{
             showSoundWavesInAudioMode: showSoundWavesInAudioMode,
-            useVideoViewAspectFill: true,
+            useVideoViewAspectFill: useVideoViewAspectFill,
           }}
           layout={{mode: ZegoLayoutMode.pictureInPicture}}
           sortAudioVideo={sortAudioVideo}
@@ -613,7 +616,7 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
       {/* Top bar */}
       <View style={styles.topBarContainer}>
         <View style={styles.left}>
-          <View style={[styles.hostInfo, (role === ZegoRole.host && hostID && liveStatus === ZegoLiveStatus.start) || (role !== ZegoRole.host && hostID) ? styles.show : null]}>
+          <View style={[styles.hostInfo, (role === ZegoLiveStreamingRole.host && hostID && liveStatus === ZegoLiveStatus.start) || (role !== ZegoLiveStreamingRole.host && hostID) ? styles.show : null]}>
             <View style={styles.avatar}>
               <Text style={styles.nameLabel}>
                 {getShotName(getHostNameByID(hostID))}
@@ -622,13 +625,13 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
             <Text style={styles.hostName}>{getHostNameByID(hostID)}</Text>
           </View>
           {/* Return home */}
-          <TouchableOpacity onPress={onNavBackPressed} style={[styles.navBackButton, (role === ZegoRole.host && hostID && liveStatus !== ZegoLiveStatus.start) ? styles.show : null]}>
+          <TouchableOpacity onPress={onNavBackPressed} style={[styles.navBackButton, (role === ZegoLiveStreamingRole.host && hostID && liveStatus !== ZegoLiveStatus.start) ? styles.show : null]}>
             <Image resizeMode='contain' source={require('./resources/icon_nav_back.png')} />
           </TouchableOpacity>
         </View>
         <View style={styles.right}>
           {
-            role === ZegoRole.host && liveStatus === ZegoLiveStatus.start || role !== ZegoRole.host ? <TouchableOpacity onPress={onMemberButtonPressed}>
+            role === ZegoLiveStreamingRole.host && liveStatus === ZegoLiveStatus.start || role !== ZegoLiveStreamingRole.host ? <TouchableOpacity onPress={onMemberButtonPressed}>
               <View style={styles.memberButton}>
                 <Image source={require('./resources/white_top_button_member.png')} />
                 <Text style={styles.memberCountLabel}>{memberCount}</Text>
@@ -637,7 +640,7 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
             </TouchableOpacity> : null
           }
           {
-            role === ZegoRole.host && liveStatus === ZegoLiveStatus.start || role !== ZegoRole.host ? <View style={styles.leaveButton}>
+            role === ZegoLiveStreamingRole.host && liveStatus === ZegoLiveStatus.start || role !== ZegoLiveStreamingRole.host ? <View style={styles.leaveButton}>
               <ZegoLeaveButton
                 style={styles.fillParent}
                 onLeaveConfirmation={onLeaveLiveStreamingConfirmingWrap.bind(this, onLeaveLiveStreamingConfirming)}
@@ -647,7 +650,7 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
             </View> : null
           }
           {
-            role === ZegoRole.host && hostID && hostID === userID && (liveStatus === ZegoLiveStatus.default || liveStatus === ZegoLiveStatus.default) ? <View style={styles.switchCameraButton}>
+            role === ZegoLiveStreamingRole.host && hostID && hostID === userID && (liveStatus === ZegoLiveStatus.default || liveStatus === ZegoLiveStatus.default) ? <View style={styles.switchCameraButton}>
               <ZegoSwitchCameraButton
                 iconFrontFacingCamera={require('./resources/icon_nav_flip.png')}
                 iconBackFacingCamera={require('./resources/icon_nav_flip.png')}
@@ -737,19 +740,19 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
               <ZegoBottomBar
                 menuBarButtonsMaxCount={maxCount}
                 menuBarButtons={
-                  role === ZegoRole.host ?
+                  role === ZegoLiveStreamingRole.host ?
                   hostButtons :
-                    role === ZegoRole.audience ?
+                    role === ZegoLiveStreamingRole.audience ?
                     audienceButtons :
-                      role === ZegoRole.coHost ? 
+                      role === ZegoLiveStreamingRole.coHost ? 
                       coHostButtons : []
                 }
                 menuBarExtendedButtons={
-                  role === ZegoRole.host ?
+                  role === ZegoLiveStreamingRole.host ?
                   hostExtendButtons :
-                    role === ZegoRole.audience ?
+                    role === ZegoLiveStreamingRole.audience ?
                     audienceExtendButtons :
-                      role === ZegoRole.coHost ? 
+                      role === ZegoLiveStreamingRole.coHost ? 
                       coHostExtendButtons : []
                 }
                 turnOnCameraWhenJoining={turnOnCameraWhenJoining}
