@@ -1,7 +1,8 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View, Button } from 'react-native';
 import ZegoUIKitPrebuiltLiveStreaming, { HOST_DEFAULT_CONFIG } from '@zegocloud/zego-uikit-prebuilt-live-streaming-rn'
 import KeyCenter from './KeyCenter';
+import ZegoUIKitSignalingPlugin from '@zegocloud/zego-uikit-signaling-plugin-rn';
 
 export default function HostPage(props) {
     const { route } = props;
@@ -19,8 +20,12 @@ export default function HostPage(props) {
 
                 config={{
                     ...HOST_DEFAULT_CONFIG,
+                    // startLiveButtonBuilder: (startLive) => <Button onPress={startLive} title="Start Live"></Button>,
+                    onStartLiveButtonPressed: () => { console.log('########HostPage onStartLiveButtonPressed'); },
+                    onLiveStreamingEnded: () => { console.log('########HostPage onLiveStreamingEnded'); },
                     onLeaveLiveStreaming: () => { props.navigation.navigate('HomePage') },
                 }}
+                plugins={[ZegoUIKitSignalingPlugin]}
             />
         </View>
     );

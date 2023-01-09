@@ -6,8 +6,7 @@ import ZegoUIKitPrebuiltLiveStreaming, {
   AUDIENCE_DEFAULT_CONFIG,
 } from '@zegocloud/zego-uikit-prebuilt-live-streaming-rn';
 import KeyCenter from './KeyCenter';
-// import ZegoUIKit, {ZegoToggleCameraButton} from @zego-uikit/components-rn
-// import {ZegoUIKitPrebuiltCall} from @zego-uikit/prebuilt-call-rn
+import ZegoUIKitSignalingPlugin from '@zegocloud/zego-uikit-signaling-plugin-rn';
 
 export default function AudiencePage(props) {
   const {route} = props;
@@ -24,10 +23,12 @@ export default function AudiencePage(props) {
         liveID={liveID}
         config={{
           ...AUDIENCE_DEFAULT_CONFIG,
+          onLiveStreamingEnded: () => { console.log('########AudiencePage onLiveStreamingEnded'); },
           onLeaveLiveStreaming: () => {
             props.navigation.navigate('HomePage');
           },
         }}
+        plugins={[ZegoUIKitSignalingPlugin]}
       />
     </View>
   );

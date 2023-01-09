@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { View, StyleSheet, TouchableOpacity } from "react-native";
-import {
+import ZegoUIKit, {
     ZegoLeaveButton,
     ZegoSwitchAudioOutputButton,
     ZegoSwitchCameraButton,
     ZegoToggleCameraButton,
-    ZegoToggleMicrophoneButton
+    ZegoToggleMicrophoneButton,
 } from '@zegocloud/zego-uikit-rn'
 
 import ZegoMoreButton from './ZegoMoreButton';
 import ZegoMessageButton from './ZegoMessageButton';
 import ZegoMenuBarButtonName from "./ZegoMenuBarButtonName";
+import ZegoCoHostControlButton from "./components/ZegoCoHostControlButton";
 
 export default function ZegoBottomBar(props) {
     const {
@@ -24,7 +25,16 @@ export default function ZegoBottomBar(props) {
         useSpeakerWhenJoining,
         onMoreButtonPress,
         onMessageButtonPress,
-        showInRoomMessageButton = false
+        showInRoomMessageButton = false,
+        onConnectStateChanged,
+        setIsToastVisable,
+        setToastExtendedData,
+        setIsDialogVisable,
+        setDialogExtendedData,
+        hostID,
+        liveStatus,
+        isPluginsInit,
+        memberConnectState,
     } = props;
     const [isNormalStyle, setIsNormalStyle] = useState(true);
 
@@ -66,6 +76,19 @@ export default function ZegoBottomBar(props) {
                     useSpeaker={useSpeakerWhenJoining}
                     width={buttonSize}
                     height={buttonSize}
+                />
+            case ZegoMenuBarButtonName.coHostControlButton:
+                return <ZegoCoHostControlButton
+                    key={buttonIndex}
+                    hostID={hostID}
+                    liveStatus={liveStatus}
+                    isPluginsInit={isPluginsInit}
+                    memberConnectState={memberConnectState}
+                    onConnectStateChanged={onConnectStateChanged}
+                    setIsToastVisable={setIsToastVisable}
+                    setToastExtendedData={setToastExtendedData}
+                    setIsDialogVisable={setIsDialogVisable}
+                    setDialogExtendedData={setDialogExtendedData}
                 />
         }
     }
@@ -115,7 +138,7 @@ export default function ZegoBottomBar(props) {
 
                 <View style={styles.rightBar}>
                     {firstLevelButtons.map((button, index) => (
-                        <View style={styles.rightBtn}>
+                        <View style={styles.rightBtn} key={'firstLevel' + index}>
                             {button}
                         </View>
                     ))}
@@ -127,7 +150,7 @@ export default function ZegoBottomBar(props) {
                 </View>
                 <View style={styles.popupBar}>
                     {secondLevelButtons.map((button, index) => (
-                        <View style={{ marginBottom: 20, marginRight: 32 / 2, marginLeft: 32 / 2 }}>
+                        <View style={{ marginBottom: 20, marginRight: 32 / 2, marginLeft: 32 / 2 }} key={'secondLevel' + index}>
                             {button}
                         </View>
                     ))}
@@ -161,9 +184,10 @@ const styles = StyleSheet.create({
         right: 0,
         height: 50,
         bottom: 0,
-        zIndex: 2
+        zIndex: 2,
     },
     popupContainer: {
+        position: 'absolute',
         flex: 1,
         justifyContent: 'flex-end',
     },
@@ -174,7 +198,8 @@ const styles = StyleSheet.create({
     },
     popupMask: {
         backgroundColor: '#262A2D',
-        opacity: 0.3,
+        opacity: 1,
+        backgroundColor: 'red',
     },
     popupBar: {
         flex: 1,

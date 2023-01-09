@@ -45,16 +45,17 @@
     "registry": "https://registry.npmjs.org/"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.9",
-    "@babel/runtime": "^7.12.5",
     "@arkweid/lefthook": "^0.7.7",
+    "@babel/core": "^7.12.9",
     "@babel/eslint-parser": "^7.18.2",
+    "@babel/runtime": "^7.12.5",
     "@commitlint/config-conventional": "^17.0.2",
     "@react-native-community/eslint-config": "^3.0.2",
     "@release-it/conventional-changelog": "^5.0.0",
     "@types/jest": "^28.1.2",
     "@types/react": "~17.0.21",
     "@types/react-native": "0.68.0",
+    "@zegocloud/zego-uikit-rn": "link: ../../",
     "commitlint": "^17.0.2",
     "eslint": "^8.4.1",
     "eslint-config-prettier": "^8.5.0",
@@ -66,17 +67,16 @@
     "react-native": "0.68.2",
     "react-native-builder-bob": "^0.18.2",
     "release-it": "^15.0.0",
-    "typescript": "^4.5.2",
-    "@zegocloud/zego-uikit-rn": "link: ../../"
+    "typescript": "^4.5.2"
   },
   "resolutions": {
     "@types/react": "17.0.21"
   },
   "peerDependencies": {
+    "@zegocloud/zego-uikit-rn": "*",
     "react": "*",
     "react-native": "*",
-    "zego-express-engine-reactnative": "*",
-    "@zegocloud/zego-uikit-rn": "*"
+    "zego-express-engine-reactnative": "*"
   },
   "jest": {
     "preset": "react-native",
