@@ -4,7 +4,6 @@ import { ZegoAcceptInvitationButton } from '@zegocloud/zego-uikit-rn';
 
 export default function ZegoAgreeCoHostButton(props) {
     const { onPressed, inviterID } = props;
-    console.log('#######ZegoAgreeCoHostButton', inviterID);
 
     return (
         <ZegoAcceptInvitationButton

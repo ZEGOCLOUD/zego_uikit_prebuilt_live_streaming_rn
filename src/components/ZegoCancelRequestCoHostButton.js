@@ -10,7 +10,6 @@ export default function ZegoCancelRequestCoHostButton(props) {
         setIsToastVisable,
         setToastExtendedData,
     } = props;
-    console.log('#######ZegoCancelRequestCoHostButton', hostID);
 
     const pressedHandle = () => {
         onCancelSuccessfully();
