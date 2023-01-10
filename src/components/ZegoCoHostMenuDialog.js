@@ -1,7 +1,7 @@
 import React, { useEffect, useState, Fragment }from "react";
 import ZegoUIKit from '@zegocloud/zego-uikit-rn';
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
-import { ZegoStartInvitationButton } from '@zegocloud/zego-uikit-rn';
+import { ZegoSendInvitationButton } from '@zegocloud/zego-uikit-rn';
 import { ZegoTranslationText, ZegoInvitationType } from "../services/defines";
 
 
@@ -21,7 +21,7 @@ export default function ZegoCoHostMenuDialog(props) {
     });
 
     return <View style={[styles.container, getCustomContainerStyle(visable).customContainer]}>
-        <ZegoStartInvitationButton
+        <ZegoSendInvitationButton
             backgroundColor={'transparent'}
             width='100%'
             height={50}
@@ -35,7 +35,7 @@ export default function ZegoCoHostMenuDialog(props) {
             invitees={[inviteeID]}
             type={invitationType}
             onPressed={onOk}
-        ></ZegoStartInvitationButton>
+        ></ZegoSendInvitationButton>
         <View style={styles.divide}></View>
         <TouchableOpacity style={styles.cancelButton} onPress={onCancel}>
             <Text style={styles.cancelText}>{ZegoTranslationText.cancelMenuDialogButton}</Text>
