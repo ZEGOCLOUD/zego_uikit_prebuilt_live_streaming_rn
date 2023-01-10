@@ -171,15 +171,12 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
           memberConnectStateMap = realTimeData.current.memberConnectStateMap;
           setMemberConnectStateMap(memberConnectStateMap);
 
-          // The sorting will not be triggered if the member list pop-up is not reopened, the sorting must be forced
-          if (isMemberListVisable) {
+          setTimeout(() => {
+            // The sorting will not be triggered if the member list pop-up is not reopened, the sorting must be forced
             ZegoUIKit.forceSortMemberList();
-          }
+          }, 0);
         } else if (type === ZegoInvitationType.inviteToCoHost) {
           // The audience is invited to connect the cohost by host
-          realTimeData.current.memberConnectStateMap[userID] = ZegoCoHostConnectState.connecting;
-          setMemberConnectStateMap({ ...realTimeData.current.memberConnectStateMap });
-
           setIsDialogVisable(true);
           setDialogExtendedData({
             title: ZegoTranslationText.receivedCoHostInvitationDialogInfo.title,
@@ -953,7 +950,6 @@ const styles = StyleSheet.create({
     width: 330,
     height: 90,
     fontSize: 14,
-    fontFamily: 'PingFangSC-Regular, PingFang SC',
     lineHeight: 45,
     color: 'white',
     textAlign: 'center',
