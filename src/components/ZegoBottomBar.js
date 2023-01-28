@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
         left: 0,
         right: 0,
         height: 50,
-        bottom: 0,
+        bottom: 25,
         zIndex: 2,
     },
     popupContainer: {
