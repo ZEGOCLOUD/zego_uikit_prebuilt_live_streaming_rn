@@ -6,6 +6,7 @@ import ZegoEndCoHostButton from './ZegoEndCoHostButton';
 import { ZegoCoHostConnectState, ZegoToastType, ZegoTranslationText } from '../services/defines'
 import ZegoUIKit from '@zegocloud/zego-uikit-rn';
 import { zloginfo } from "../utils/logger";
+import { grantPermissions } from '../utils';
 
 export default function ZegoCoHostControlButton(props) {
     const {
@@ -47,9 +48,13 @@ export default function ZegoCoHostControlButton(props) {
                 console.log('#######onInvitationResponseTimeout, The host did not process your cohost request, resulting in a timeout');
                 onConnectStateChanged('', ZegoCoHostConnectState.idle);
             });
-            ZegoUIKit.getSignalingPlugin().onInvitationAccepted(callbackID, ({ callID, invitee, data }) => {
+            ZegoUIKit.getSignalingPlugin().onInvitationAccepted(callbackID, async ({ callID, invitee, data }) => {
                 // The host accepted your cohost request
                 console.log('#######onInvitationAccepted, The host accepted your cohost request');
+                try {
+                    await grantPermissions();
+                } catch (error) {
+                }
                 ZegoUIKit.turnCameraOn('', true);
                 ZegoUIKit.turnMicrophoneOn('', true);
                 onConnectStateChanged('', ZegoCoHostConnectState.connected);

@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import ZegoUIKit, {
+  ZegoRoomPropertyUpdateType,
   ZegoLeaveButton,
   ZegoInRoomMessageInput,
   ZegoInRoomMessageView,
@@ -26,7 +27,8 @@ import ZegoCoHostMenuDialog from "./components/ZegoCoHostMenuDialog";
 import ZegoToast from "./components/ZegoToast";
 import ZegoDialog from "./components/ZegoDialog";
 import ZegoPrebuiltPlugins from './services/plugins';
-import { getShotName } from './utils';
+import { getShotName, grantPermissions } from './utils';
+import ZegoAudioVideoForegroundView from './components/ZegoAudioVideoForegroundView';
 import {
   HOST_DEFAULT_CONFIG,
   AUDIENCE_DEFAULT_CONFIG,
@@ -48,6 +50,7 @@ export {
 export default function ZegoUIKitPrebuiltLiveStreaming(props) {
   const { appID, appSign, userID, userName, liveID, config, plugins = [] } = props;
   const realTimeData = useRef(); // Resolve the problem where closures cannot obtain new values, add as needed
+  const isIgnore = useRef(); // Resolved callback delay in receiving room attached message
 
   config.role === undefined && (config.role = ZegoLiveStreamingRole.audience);
   Object.assign(ZegoTranslationText, config.translationText || {});
@@ -92,7 +95,7 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
   const keyboardHeight = useKeyboard();
   const [textInputVisable, setTextInputVisable] = useState(false);
   const [textInput, setTextInput] = useState(null);
-  const [textInputHeight, setTextInputHeight] = useState(45);
+  const [textInputHeight, setTextInputHeight] = useState(75);
   const [role, setRole] = useState(config.role);
   const [hostID, setHostID] = useState('');
   const [liveStatus, setLiveStatus] = useState(''); // init: '' default: 0, start: 1
@@ -113,48 +116,7 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
 
   let hideCountdownOnToast = hideCountdownOnToastLimit;
   let hideCountdownOnDialog = hideCountdownOnDialogLimit;
-  let shouldSortHostAtFirst = true; // Whether to sort host currently
 
-  const grantPermissions = async (callback) => {
-    // Android: Dynamically obtaining device permissions
-    if (Platform.OS === 'android') {
-      // Check if permission granted
-      let grantedAudio = PermissionsAndroid.check(
-        PermissionsAndroid.PERMISSIONS.RECORD_AUDIO
-      );
-      let grantedCamera = PermissionsAndroid.check(
-        PermissionsAndroid.PERMISSIONS.CAMERA
-      );
-      const ungrantedPermissions = [];
-      try {
-        const isAudioGranted = await grantedAudio;
-        const isVideoGranted = await grantedCamera;
-        if (!isAudioGranted) {
-          ungrantedPermissions.push(
-            PermissionsAndroid.PERMISSIONS.RECORD_AUDIO
-          );
-        }
-        if (!isVideoGranted) {
-          ungrantedPermissions.push(PermissionsAndroid.PERMISSIONS.CAMERA);
-        }
-      } catch (error) {
-        ungrantedPermissions.push(
-          PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
-          PermissionsAndroid.PERMISSIONS.CAMERA
-        );
-      }
-      // If not, request it
-      return PermissionsAndroid.requestMultiple(ungrantedPermissions).then(
-        (data) => {
-          if (callback) {
-            callback();
-          }
-        }
-      );
-    } else if (callback) {
-      callback();
-    }
-  };
   const registerPluginCallback = () => {
     if (ZegoUIKit.getPlugin(ZegoUIKitPluginType.signaling)) {
       ZegoUIKit.getSignalingPlugin().onInvitationReceived(callbackID, ({ callID, type, inviter, data }) => {
@@ -196,10 +158,13 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
             },
             onOk: () => {
               // Accept the cohost request of the host
-              ZegoUIKit.getSignalingPlugin().acceptInvitation(inviter.id).then(() => {
+              ZegoUIKit.getSignalingPlugin().acceptInvitation(inviter.id).then(async () => {
                 realTimeData.current.memberConnectStateMap[userID] = ZegoCoHostConnectState.connected;
                 setMemberConnectStateMap({ ...realTimeData.current.memberConnectStateMap });
-
+                try {
+                  await grantPermissions();
+                } catch (error) {
+                }
                 ZegoUIKit.turnCameraOn('', true);
                 ZegoUIKit.turnMicrophoneOn('', true);
                 setIsDialogVisable(false);
@@ -274,6 +239,7 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
     ZegoUIKit.onRoomStateChanged(callbackID, (reason) => {
       if (ZegoUIKit.isRoomConnected()) {
         // Anchor set host
+        console.log('########onRoomStateChanged anchor set host', realTimeData.current);
         if (realTimeData.current.role === ZegoLiveStreamingRole.host && !realTimeData.current.hostID) {
           ZegoUIKit.updateRoomProperties({ host: userID, live_status: `${ZegoLiveStatus.default}` });
           // Unequal results update the local value first
@@ -282,6 +248,7 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
 
           setLiveStatus(ZegoLiveStatus.default);
           realTimeData.current.liveStatus = ZegoLiveStatus.default;
+          console.log('########onRoomStateChanged anchor set host end', realTimeData.current);
         }
       }
     });
@@ -291,11 +258,24 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
     ZegoUIKit.onUserLeave(callbackID, (userList) => {
       setMemberCount(ZegoUIKit.getAllUsers().length);
     });
-    ZegoUIKit.onRoomPropertiesFullUpdated(callbackID, (keys, oldRoomProperties, roomProperties) => {
-      console.log('########onRoomPropertiesFullUpdated', keys, oldRoomProperties, roomProperties);
+    ZegoUIKit.onRoomPropertiesFullUpdated(callbackID, (keys, oldRoomProperties, roomProperties, type) => {
+      console.log('########onRoomPropertiesFullUpdated', keys, oldRoomProperties, roomProperties, type);
     });
-    ZegoUIKit.onRoomPropertiesUpdated(callbackID, (key, oldValue, value) => {
-      console.log('########onRoomPropertiesUpdated', key, oldValue, value);
+    ZegoUIKit.onRoomPropertiesUpdated(callbackID, (key, oldValue, value, type) => {
+      console.log('########onRoomPropertiesUpdated', key, oldValue, value, type);
+      // Resolved callback delay in receiving room attached message
+      if (realTimeData.current.role === ZegoLiveStreamingRole.host && type === ZegoRoomPropertyUpdateType.remote) {
+        // Set again, update uikit data
+        console.log('########Set again, update uikit data', userID, realTimeData.current.liveStatus);
+        isIgnore.current = true;
+        ZegoUIKit.updateRoomProperties({ host: userID, live_status: `${realTimeData.current.liveStatus}` });
+        return;
+      }
+      if (isIgnore.current) {
+        console.log('########onRoomPropertiesUpdated ignore');
+        isIgnore.current = false;
+        return;
+      }
       if (key === 'host') {
         setHostID(value);
         realTimeData.current.hostID = value;
@@ -304,7 +284,6 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
         if (temp === ZegoLiveStatus.default) {
           // The live_status is set to 0 before the host enters the room
           console.log('########onRoomPropertiesUpdated Update the reorder identity', true);
-          shouldSortHostAtFirst = true;
           if (realTimeData.current.role !== ZegoLiveStreamingRole.host) {
             // When the audience character receives the broadcast notification, stop pull all streams
             // Uikit is also pulled by default, so you have to stop here as well
@@ -330,6 +309,7 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
             }
           }
         } else {
+          ZegoUIKit.forceSortAudioVideoList();
           ZegoUIKit.startPlayingAllAudioVideo();
         }
 
@@ -339,10 +319,9 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
     });
     ZegoUIKit.onAudioVideoAvailable(callbackID, (userList) => {
       console.log('########onAudioVideoAvailable', userList);
-      // Solved the problem of the audience entering the room at the back not knowing who cohost is
       userList.forEach((userInfo) => {
         // Not in memberConnectStateMap but already connected
-        if (realTimeData.current.memberConnectStateMap[userInfo.userID] === undefined && realTimeData.current.hostID !== userInfo.userID) {
+        if (realTimeData.current.hostID !== userInfo.userID) {
           realTimeData.current.memberConnectStateMap[userInfo.userID] = ZegoCoHostConnectState.connected;
           setMemberConnectStateMap({ ...realTimeData.current.memberConnectStateMap });
         }
@@ -351,13 +330,9 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
     ZegoUIKit.onAudioVideoUnavailable(callbackID, (userList) => {
       userList.forEach((userInfo) => {
         if (userInfo.userID === realTimeData.current.hostID) {
-          // Host turn off their cameras and microphones
+          // Host turn off their cameras and microphones, cohost will fill in the bit, so it needs to be reordered next time
           console.log('########onAudioVideoUnavailable Update the reorder identity', true);
-          shouldSortHostAtFirst = true;
-        } else if (
-          realTimeData.current.memberConnectStateMap[userInfo.userID] === ZegoCoHostConnectState.connecting ||
-          realTimeData.current.memberConnectStateMap[userInfo.userID] === ZegoCoHostConnectState.connected
-        ) {
+        } else {
           realTimeData.current.memberConnectStateMap[userInfo.userID] = ZegoCoHostConnectState.idle;
           setMemberConnectStateMap({ ...realTimeData.current.memberConnectStateMap });
         }
@@ -381,6 +356,7 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
       requestCoHostCount: 0,
       memberConnectStateMap: {},
     }
+    isIgnore.current = false;
     ZegoPrebuiltPlugins.init(appID, appSign, userID, userName, plugins).then(() => {
       setIsPluginsInit(true);
       // Register plugin callback
@@ -391,9 +367,13 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
           ZegoUIKit.turnMicrophoneOn('', turnOnMicrophoneWhenJoining);
           ZegoUIKit.setAudioOutputToSpeaker(useSpeakerWhenJoining);
 
-          grantPermissions(() => {
+          if (config.role === ZegoLiveStreamingRole.host) {
+            grantPermissions(() => {
+              ZegoUIKit.joinRoom(liveID);
+            });
+          } else {
             ZegoUIKit.joinRoom(liveID);
-          });
+          }
         }
       );
     });
@@ -405,7 +385,7 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
   }, []);
 
   const showAudioVideoContainer = () => {
-    return role === ZegoLiveStreamingRole.host || role !== ZegoLiveStreamingRole.host && hostID && liveStatus === ZegoLiveStatus.start;
+    return role === ZegoLiveStreamingRole.host || role !== ZegoLiveStreamingRole.host && liveStatus === ZegoLiveStatus.start;
   };
   const showStartLiveButton = () => {
     return role === ZegoLiveStreamingRole.host && hostID && hostID === userID && liveStatus === ZegoLiveStatus.default;
@@ -413,6 +393,9 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
   const showBottomBar = () => {
     return role === ZegoLiveStreamingRole.host && hostID && hostID === userID && liveStatus === ZegoLiveStatus.start ||
     role === ZegoLiveStreamingRole.audience || role === ZegoLiveStreamingRole.coHost;
+  }
+  const showMessageListView = () => {
+    return role === ZegoLiveStreamingRole.host && liveStatus === ZegoLiveStatus.start || role !== ZegoLiveStreamingRole.host;
   }
   const onFullPageTouch = () => {
     hideCountdownOnToast = hideCountdownOnToastLimit;
@@ -483,20 +466,22 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
     }
   };
   const sortAudioVideo = (globalAudioVideoUserList) => {
-    console.log('########sortAudioVideo', globalAudioVideoUserList, realTimeData.current.hostID, shouldSortHostAtFirst);
+    console.log('########sortAudioVideo', globalAudioVideoUserList, realTimeData.current.hostID);
     const index = globalAudioVideoUserList.findIndex((userInfo) => userInfo.userID === realTimeData.current.hostID);
-    if (shouldSortHostAtFirst && index !== -1 && index !== 0) {
+    if (index !== -1 && index !== 0) {
       // Put host first
       const temp = globalAudioVideoUserList.splice(index, 1)[0];
       globalAudioVideoUserList.unshift(temp);
       // You don't have to deal with the sorting once, because the addition to the internal stream is also added to the end of the queue
       console.log('########sortAudioVideo Sort completion and update the reorder identity', false);
-      shouldSortHostAtFirst = false;
     }
     return globalAudioVideoUserList;
   };
   const onStartLiveStreaming = () => {
-    ZegoUIKit.updateRoomProperties({ live_status: `${ZegoLiveStatus.start}` }).then(() => {
+    // After the host enters the room and sets the room properties successfully
+    // The host receives the callback of the additional message of the room
+    // You must also set the property host, otherwise host will be null
+    ZegoUIKit.updateRoomProperties({ host: hostID, live_status: `${ZegoLiveStatus.start}` }).then(() => {
       typeof onStartLiveButtonPressed === 'function' && onStartLiveButtonPressed();
     });
   };
@@ -555,7 +540,6 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
       });
     });
   };
-  // Need to determine whether the callback is triggered
   const connectStateChangedHandle = (changedUserID, connectState) => {
     // The audience connection status changes
     changedUserID = changedUserID || userID;
@@ -564,10 +548,10 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
     // Just take the value in state, because there's no closure
     memberConnectStateMap[changedUserID] = connectState;
     // Rerendering causes realTimeData.current to be empty, so a reassignment is required here
-    realTimeData.current.role = temp;
+    role !== ZegoLiveStreamingRole.host && (realTimeData.current.role = temp);
     realTimeData.current.memberConnectStateMap = { ...memberConnectStateMap };
 
-    setRole(temp);
+    role !== ZegoLiveStreamingRole.host && setRole(temp);
     setMemberConnectStateMap({ ...memberConnectStateMap });
   };
   const coHostDisagreeHandle = (changedUserID) => {
@@ -604,7 +588,12 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
           }}
           layout={{mode: ZegoLayoutMode.pictureInPicture}}
           sortAudioVideo={sortAudioVideo}
-          foregroundBuilder={foregroundBuilder}
+          foregroundBuilder={foregroundBuilder || (({userInfo}) => <ZegoAudioVideoForegroundView
+            userInfo={userInfo}
+            showUserNameOnView={true}
+            showCameraStateOnView={false}
+            showMicrophoneStateOnView={true}
+          />) }
         />
         <View style={[styles.fillParent, {zIndex: showAudioVideoContainer() ? -1 : 1}]}>
           <ImageBackground
@@ -672,9 +661,11 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
         </View> : null
       }
       {/* Message list */}
-      <View style={styles.messageListView}>
-        <ZegoInRoomMessageView itemBuilder={messageItemBuilder} style={styles.fillParent} />
-      </View>
+      {
+        showMessageListView() ? <View style={styles.messageListView}>
+          <ZegoInRoomMessageView itemBuilder={messageItemBuilder} style={styles.fillParent} />
+        </View> : null
+      }
       {/* Member list */}
       {
         isMemberListVisable ?
@@ -702,6 +693,8 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
         invitationType={coHostDialogExtendedData.invitationType}
         onCancel={coHostDialogExtendedData.onCancel}
         onOk={coHostDialogExtendedData.onOk}
+        setIsToastVisable={(visable) => setIsToastVisable(visable)}
+        setToastExtendedData={(toastExtendedData) => setToastExtendedData(toastExtendedData)}
       />
       {/* Common toast */}
       <ZegoToast
@@ -809,7 +802,7 @@ const styles = StyleSheet.create({
   messageListView: {
     position: 'absolute',
     left: 16,
-    bottom: 62,
+    bottom: 80,
     width: 270,
     maxHeight: 200,
     zIndex: 12,

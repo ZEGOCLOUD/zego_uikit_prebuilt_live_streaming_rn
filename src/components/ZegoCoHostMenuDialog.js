@@ -1,17 +1,21 @@
-import React, { useEffect, useState, Fragment }from "react";
+import React, { useEffect, useState, useRef, Fragment }from "react";
 import ZegoUIKit from '@zegocloud/zego-uikit-rn';
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import { ZegoSendInvitationButton } from '@zegocloud/zego-uikit-rn';
-import { ZegoTranslationText, ZegoInvitationType } from "../services/defines";
+import { ZegoTranslationText, ZegoInvitationType, ZegoToastType } from "../services/defines";
 
 
 export default function ZegoCoHostMenuDialog(props) {
+    const countdown = useRef();
+    const countdownTimer = useRef();
     const {
         visable,
         inviteeID,
         invitationType = ZegoInvitationType.inviteToCoHost,
         onCancel,
         onOk,
+        setIsToastVisable,
+        setToastExtendedData,
     } = props;
 
     const getCustomContainerStyle = (visable) => StyleSheet.create({
@@ -19,6 +23,53 @@ export default function ZegoCoHostMenuDialog(props) {
             display: visable ? 'flex' : 'none',
         },
     });
+    // Verify whether invitations can be sent
+    const willPressedHandle = () => {
+        let result = true;
+        if (invitationType === ZegoInvitationType.inviteToCoHost) {
+            // Check whether the timer is running out
+            console.log('#########Timer: Check whether the timer is running out', countdown.current, countdownTimer.current);
+            if (countdownTimer.current) {
+                // The timer did not complete and the request was not allowed to occur
+                console.log('#########Timer: The timer did not complete and the request was not allowed to occur', countdown.current, countdownTimer.current);
+                setIsToastVisable(true);
+                setToastExtendedData({ type: ZegoToastType.error, text: ZegoTranslationText.repeatInviteCoHostFailedToast });
+                result = false;
+            } else {
+                // Restart timer
+                clearInterval(countdownTimer.current);
+                countdownTimer.current = setInterval(() => {
+                    console.log('#########Timer: countdown', countdown.current, countdownTimer.current);
+                    if (countdown.current === 0) {
+                        clearInterval(countdownTimer.current);
+                        countdownTimer.current = null;
+                        countdown.current = 60;
+                    } else {
+                        countdown.current -= 1;
+                    }
+                }, 1000);
+                if (!ZegoUIKit.getUser(inviteeID)) {
+                    result = false;
+                    setIsToastVisable(true);
+                    setToastExtendedData({ type: ZegoToastType.error, text: ZegoTranslationText.inviteCoHostFailedToast });
+                }
+            }
+        }
+        return result;
+    }
+
+    useEffect(() => {
+        // First render initializes and clears timer
+        console.log('#########Timer: First render initializes and clears timer', countdown.current, countdownTimer.current);
+        countdown.current = 60;
+        countdownTimer.current = null;
+        return () => {
+            // Initializes and clears timer when component is destroyed
+            console.log('#########Timer: Initializes and clears timer when component is destroyed', countdown.current, countdownTimer.current);
+            clearInterval(countdownTimer.current);
+            countdownTimer.current = null;
+        };
+    }, []);
 
     return <View style={[styles.container, getCustomContainerStyle(visable).customContainer]}>
         <ZegoSendInvitationButton
@@ -34,6 +85,7 @@ export default function ZegoCoHostMenuDialog(props) {
             }
             invitees={[inviteeID]}
             type={invitationType}
+            onWillPressed={willPressedHandle}
             onPressed={onOk}
         ></ZegoSendInvitationButton>
         <View style={styles.divide}></View>

@@ -1,10 +1,23 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet } from "react-native"
-import { ZegoMicrophoneStateIcon, ZegoCameraStateIcon } from '@zegocloud/zego-uikit-rn'
+import ZegoUIKit, { ZegoMicrophoneStateIcon, ZegoCameraStateIcon } from '@zegocloud/zego-uikit-rn'
 
-export default function AudioVideoForegroundView(props) {
+export default function ZegoAudioVideoForegroundView(props) {
     const { userInfo, showUserNameOnView, showCameraStateOnView, showMicrophoneStateOnView } = props;
     const { userID = '', userName = '' } = userInfo;
+
+    const [isMicDeviceOn, setIsMicDeviceOn] = useState(!!ZegoUIKit.isMicrophoneOn()); // Resolved callback delay in receiving room attached message
+    useEffect(() => {
+        const callbackID = 'ZegoAudioVideoForegroundView' + String(Math.floor(Math.random() * 10000));
+        ZegoUIKit.onMicrophoneOn(callbackID, (userID_, isOn) => {
+            if (userID_ === userID) {
+                setIsMicDeviceOn(isOn);
+            }
+        });
+        return () => {
+            ZegoUIKit.onMicrophoneOn(callbackID);
+        };
+    }, []);
 
     return (
         <View style={styles.foregroundViewContainer}>
@@ -15,8 +28,8 @@ export default function AudioVideoForegroundView(props) {
                     </View> :
                     <View />
                 }
-                {showCameraStateOnView ? <ZegoCameraStateIcon userID={userID} style={styles.deviceIcon} /> : <View />}
-                {showMicrophoneStateOnView ? <ZegoMicrophoneStateIcon userID={userID} style={styles.deviceIcon} /> : <View />}
+                {/* {showCameraStateOnView ? <ZegoCameraStateIcon userID={userID} style={styles.deviceIcon} /> : <View />} */}
+                {showMicrophoneStateOnView && !isMicDeviceOn ? <ZegoMicrophoneStateIcon userID={userID} style={styles.deviceIcon} /> : <View />}
             </View>
         </View>
     );

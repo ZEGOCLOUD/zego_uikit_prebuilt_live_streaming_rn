@@ -18,11 +18,11 @@ export default function ZegoRequestCoHostButton(props) {
         let result = true;
         if (!hostID) {
             setIsToastVisable(true);
-            setToastExtendedData({ type: ZegoToastType.error, text: ZegoTranslationText.noHostOnline });
+            setToastExtendedData({ type: ZegoToastType.error, text: ZegoTranslationText.requestCoHostFailed });
             result = false;
         } else if (liveStatus !== ZegoLiveStatus.start) {
             setIsToastVisable(true);
-            setToastExtendedData({ type: ZegoToastType.error, text: ZegoTranslationText.noHostOnline });
+            setToastExtendedData({ type: ZegoToastType.error, text: ZegoTranslationText.requestCoHostFailed });
             result = false;
         }
         return result;
