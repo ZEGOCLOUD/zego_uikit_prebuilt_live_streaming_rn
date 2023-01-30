@@ -46,7 +46,7 @@ export default function ZegoCoHostControlButton(props) {
             ZegoUIKit.getSignalingPlugin().onInvitationResponseTimeout(callbackID, ({ callID, invitees, data }) => {
                 // The host did not process your cohost request, resulting in a timeout
                 console.log('#######onInvitationResponseTimeout, The host did not process your cohost request, resulting in a timeout');
-                onConnectStateChanged('', ZegoCoHostConnectState.idle);
+                onConnectStateChanged('', ZegoCoHostConnectState.idle, true);
             });
             ZegoUIKit.getSignalingPlugin().onInvitationAccepted(callbackID, async ({ callID, invitee, data }) => {
                 // The host accepted your cohost request
@@ -57,12 +57,12 @@ export default function ZegoCoHostControlButton(props) {
                 }
                 ZegoUIKit.turnCameraOn('', true);
                 ZegoUIKit.turnMicrophoneOn('', true);
-                onConnectStateChanged('', ZegoCoHostConnectState.connected);
+                onConnectStateChanged('', ZegoCoHostConnectState.connected, true);
             });
             ZegoUIKit.getSignalingPlugin().onInvitationRefused(callbackID, ({ callID, invitee, data }) => {
                 // The host rejected your cohost request
                 console.log('#######onInvitationRefused, The host rejected your cohost request');
-                onConnectStateChanged('', ZegoCoHostConnectState.idle);
+                onConnectStateChanged('', ZegoCoHostConnectState.idle, true);
                 setIsToastVisable(true);
                 setToastExtendedData({ type: ZegoToastType.error, text: ZegoTranslationText.hostRejectCoHostRequestToast });
             });

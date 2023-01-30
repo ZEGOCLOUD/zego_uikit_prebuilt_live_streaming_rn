@@ -52,6 +52,7 @@ export default function ZegoCoHostMenuDialog(props) {
                     result = false;
                     setIsToastVisable(true);
                     setToastExtendedData({ type: ZegoToastType.error, text: ZegoTranslationText.inviteCoHostFailedToast });
+                    onCancel();
                 }
             }
         }

@@ -540,19 +540,29 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
       });
     });
   };
-  const connectStateChangedHandle = (changedUserID, connectState) => {
+  const connectStateChangedHandle = (changedUserID, connectState, isClosure) => {
+    console.log('#########connectStateChangedHandle', changedUserID, connectState, memberConnectStateMap, realTimeData.current.memberConnectStateMap);
     // The audience connection status changes
     changedUserID = changedUserID || userID;
     const temp = connectState === ZegoCoHostConnectState.connected ? ZegoLiveStreamingRole.coHost : ZegoLiveStreamingRole.audience;
-  
-    // Just take the value in state, because there's no closure
-    memberConnectStateMap[changedUserID] = connectState;
-    // Rerendering causes realTimeData.current to be empty, so a reassignment is required here
-    role !== ZegoLiveStreamingRole.host && (realTimeData.current.role = temp);
-    realTimeData.current.memberConnectStateMap = { ...memberConnectStateMap };
+    if (!isClosure) {
+      // Just take the value in state, because there's no closure
+      memberConnectStateMap[changedUserID] = connectState;
+      // Rerendering causes realTimeData.current to be empty, so a reassignment is required here
+      role !== ZegoLiveStreamingRole.host && (realTimeData.current.role = temp);
+      realTimeData.current.memberConnectStateMap = { ...memberConnectStateMap };
 
-    role !== ZegoLiveStreamingRole.host && setRole(temp);
-    setMemberConnectStateMap({ ...memberConnectStateMap });
+      role !== ZegoLiveStreamingRole.host && setRole(temp);
+      setMemberConnectStateMap({ ...memberConnectStateMap });
+    } else {
+      // There are closures, status values cannot be used directly
+      realTimeData.current.memberConnectStateMap[changedUserID] = connectState;
+      setMemberConnectStateMap({ ...realTimeData.current.memberConnectStateMap });
+      if (realTimeData.current.role !== ZegoLiveStreamingRole.host) {
+        realTimeData.current.role = temp;
+        setRole(temp);
+      }
+    }
   };
   const coHostDisagreeHandle = (changedUserID) => {
     // Just take the value in state, because there's no closure

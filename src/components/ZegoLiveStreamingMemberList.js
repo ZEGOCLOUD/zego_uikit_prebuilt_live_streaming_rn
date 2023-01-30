@@ -23,6 +23,7 @@ export default function ZegoLiveStreamingMemberList(props) {
         setIsCoHostDialogVisable,
         setCoHostDialogExtendedData,
     } = props;
+    console.log('#######ZegoLiveStreamingMemberList', memberConnectStateMap);
 
     const maxWidthLimit1 = 140; // Anchor interface with buttons
     const maxWidthLimit2 = 250; // Non-anchor interface and no buttons
@@ -68,6 +69,7 @@ export default function ZegoLiveStreamingMemberList(props) {
         }
     };
     const roleDescription = (item) => {
+        console.log('#######roleDescription', item, memberConnectStateMap);
         item.connectState = memberConnectStateMap[item.userID];
         const showMe = item.userID === localUserID ? 'You' : '';
         let roleName = item.userID === hostID ? 'Host' : item.connectState === ZegoCoHostConnectState.connected ? 'Co-host' : '';

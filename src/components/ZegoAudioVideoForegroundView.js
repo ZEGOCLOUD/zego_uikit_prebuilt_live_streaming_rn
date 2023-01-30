@@ -4,20 +4,8 @@ import ZegoUIKit, { ZegoMicrophoneStateIcon, ZegoCameraStateIcon } from '@zegocl
 
 export default function ZegoAudioVideoForegroundView(props) {
     const { userInfo, showUserNameOnView, showCameraStateOnView, showMicrophoneStateOnView } = props;
-    const { userID = '', userName = '' } = userInfo;
-
-    const [isMicDeviceOn, setIsMicDeviceOn] = useState(!!ZegoUIKit.isMicrophoneOn()); // Resolved callback delay in receiving room attached message
-    useEffect(() => {
-        const callbackID = 'ZegoAudioVideoForegroundView' + String(Math.floor(Math.random() * 10000));
-        ZegoUIKit.onMicrophoneOn(callbackID, (userID_, isOn) => {
-            if (userID_ === userID) {
-                setIsMicDeviceOn(isOn);
-            }
-        });
-        return () => {
-            ZegoUIKit.onMicrophoneOn(callbackID);
-        };
-    }, []);
+    const { userID = '', userName = '', isMicDeviceOn } = userInfo;
+    console.log('########ZegoAudioVideoForegroundView', userInfo);
 
     return (
         <View style={styles.foregroundViewContainer}>
