@@ -301,8 +301,8 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
     ZegoUIKit.onRoomPropertiesFullUpdated(callbackID, (keys, oldRoomProperties, roomProperties, type) => {
       console.log('########onRoomPropertiesFullUpdated', keys, oldRoomProperties, roomProperties, type);
     });
-    ZegoUIKit.onRoomPropertiesUpdated(callbackID, (key, oldValue, value, type) => {
-      console.log('########onRoomPropertiesUpdated', key, oldValue, value, type);
+    ZegoUIKit.onRoomPropertyUpdated(callbackID, (key, oldValue, value, type) => {
+      console.log('########onRoomPropertyUpdated', key, oldValue, value, type);
       // Resolved callback delay in receiving room attached message
       if (realTimeData.current.role === ZegoLiveStreamingRole.host && type === ZegoRoomPropertyUpdateType.remote) {
         // Set again, update uikit data
@@ -312,7 +312,7 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
         return;
       }
       if (isIgnore.current) {
-        console.log('########onRoomPropertiesUpdated ignore');
+        console.log('########onRoomPropertyUpdated ignore');
         isIgnore.current = false;
         return;
       }
@@ -323,7 +323,7 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
         let temp = value ? parseInt(value) : '';
         if (temp === ZegoLiveStatus.default) {
           // The live_status is set to 0 before the host enters the room
-          console.log('########onRoomPropertiesUpdated Update the reorder identity', true);
+          console.log('########onRoomPropertyUpdated Update the reorder identity', true);
           if (realTimeData.current.role !== ZegoLiveStreamingRole.host) {
             // When the audience character receives the broadcast notification, stop pull all streams
             // Uikit is also pulled by default, so you have to stop here as well
@@ -401,7 +401,7 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
       ZegoUIKit.onUserJoin(callbackID);
       ZegoUIKit.onUserLeave(callbackID);
       ZegoUIKit.onRoomPropertiesFullUpdated(callbackID);
-      ZegoUIKit.onRoomPropertiesUpdated(callbackID);
+      ZegoUIKit.onRoomPropertyUpdated(callbackID);
       ZegoUIKit.onUserInfoUpdate(callbackID);
       ZegoUIKit.onAudioVideoAvailable(callbackID);
       ZegoUIKit.onAudioVideoUnavailable(callbackID);
