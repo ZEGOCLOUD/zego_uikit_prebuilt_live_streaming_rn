@@ -116,7 +116,9 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
   const hideCountdownOnDialogLimit = 60;
 
   let hideCountdownOnToast = hideCountdownOnToastLimit;
-  let hideCountdownOnDialog = hideCountdownOnDialogLimit;
+
+  const hideCountdownOn_Dialog = useRef();
+  const hideCountdownOn_DialogTimer = useRef();
 
   const registerPluginCallback = () => {
     if (ZegoUIKit.getPlugin(ZegoUIKitPluginType.signaling)) {
@@ -155,6 +157,8 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
                 ZegoUIKit.turnCameraOn('', false);
                 ZegoUIKit.turnMicrophoneOn('', false);
                 setIsDialogVisable(false);
+                setDialogExtendedData({});
+                initDialogTimer();
               });
             },
             onOk: () => {
@@ -169,12 +173,15 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
                 ZegoUIKit.turnCameraOn('', true);
                 ZegoUIKit.turnMicrophoneOn('', true);
                 setIsDialogVisable(false);
+                setDialogExtendedData({});
+                initDialogTimer();
 
                 setRole(ZegoLiveStreamingRole.coHost);
                 realTimeData.current.role = ZegoLiveStreamingRole.coHost;
               });
             }
           });
+          startDialogTimer();
         } else if (type == ZegoInvitationType.removeCoHost) {
           // The audience was forced off the cohost by host
           ZegoUIKit.turnCameraOn('', false);
@@ -242,6 +249,32 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
     }
   };
 
+  const initDialogTimer = () => {
+    clearInterval(hideCountdownOn_DialogTimer.current);
+    hideCountdownOn_DialogTimer.current = null;
+    hideCountdownOn_Dialog.current = hideCountdownOnDialogLimit;
+  }
+  const startDialogTimer = () => {
+    clearInterval(hideCountdownOn_DialogTimer.current);
+    hideCountdownOn_DialogTimer.current = setInterval(() => {
+      if (hideCountdownOn_Dialog.current === 0) {
+        setIsDialogVisable(false);
+        setDialogExtendedData({});
+        initDialogTimer();
+      } else {
+        hideCountdownOn_Dialog.current -= 1;
+      }
+    }, 1000);
+  }
+  const setIsDialogVisableHandle = (visable) => {
+    if (visable) {
+      startDialogTimer();
+    } else {
+      initDialogTimer();
+    }
+    setIsDialogVisable(visable);
+  }
+
   useEffect(() => {
     ZegoUIKit.onRoomStateChanged(callbackID, (reason) => {
       if (ZegoUIKit.isRoomConnected()) {
@@ -299,6 +332,7 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
               // Hide the host's invitation to cohost dialog
               setIsDialogVisable(false);
               setDialogExtendedData({});
+              initDialogTimer();
 
               // Cancel the invitation to cohost
               ZegoUIKit.getSignalingPlugin().cancelInvitation([realTimeData.current.hostID]);
@@ -374,6 +408,8 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
     };
   }, []);
   useEffect(() => {
+    initDialogTimer();
+
     realTimeData.current = {
       role: config.role,
       hostID: '',
@@ -453,15 +489,6 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
       hideCountdownOnToast = hideCountdownOnToastLimit;
       setIsToastVisable(false);
       setToastExtendedData({});
-    }
-  }, 1000);
-  // Close dialog on time
-  useInterval(() => {
-    hideCountdownOnDialog--;
-    if (hideCountdownOnDialog <= 0) {
-      hideCountdownOnDialog = hideCountdownOnDialogLimit;
-      setIsDialogVisable(false);
-      setDialogExtendedData({});
     }
   }, 1000);
   const getHostNameByID = (hostID) => {
@@ -798,7 +825,7 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
                 onConnectStateChanged={connectStateChangedHandle}
                 setIsToastVisable={(visable) => setIsToastVisable(visable)}
                 setToastExtendedData={(toastExtendedData) => setToastExtendedData(toastExtendedData)}
-                setIsDialogVisable={(visable) => setIsDialogVisable(visable)}
+                setIsDialogVisable={setIsDialogVisableHandle}
                 setDialogExtendedData={(dialogExtendedData) => setDialogExtendedData(dialogExtendedData)}
                 isPluginsInit={isPluginsInit}
                 hostID={hostID}
