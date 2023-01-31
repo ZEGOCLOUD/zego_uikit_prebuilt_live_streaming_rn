@@ -51,6 +51,7 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
   const { appID, appSign, userID, userName, liveID, config, plugins = [] } = props;
   const realTimeData = useRef(); // Resolve the problem where closures cannot obtain new values, add as needed
   const isIgnore = useRef(); // Resolved callback delay in receiving room attached message
+  const shouldSortHostAtFirst = useRef();
 
   config.role === undefined && (config.role = ZegoLiveStreamingRole.audience);
   Object.assign(ZegoTranslationText, config.translationText || {});
@@ -136,7 +137,7 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
           setTimeout(() => {
             // The sorting will not be triggered if the member list pop-up is not reopened, the sorting must be forced
             ZegoUIKit.forceSortMemberList();
-          }, 0);
+          }, 50);
         } else if (type === ZegoInvitationType.inviteToCoHost) {
           // The audience is invited to connect the cohost by host
           setIsDialogVisable(true);
@@ -309,12 +310,24 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
             }
           }
         } else {
+          // The launch needs to be sorted, with the owner at the top of the list
+          shouldSortHostAtFirst.current = true;
           ZegoUIKit.forceSortAudioVideoList();
+
           ZegoUIKit.startPlayingAllAudioVideo();
         }
 
         setLiveStatus(temp);
         realTimeData.current.liveStatus = temp;
+      }
+    });
+    ZegoUIKit.onUserInfoUpdate(callbackID, (userInfo) => {
+      // This callback is executed before onAudioVideoAvailable and onAudioVideoUnavailable
+      const { userID, isMicDeviceOn, isCameraDeviceOn } = userInfo;
+      if (userID === realTimeData.current.hostID && !isMicDeviceOn && !isCameraDeviceOn) {
+        // Host turn off their cameras and microphones, cohost will fill in the bit, so it needs to be reordered next time
+        console.log('########onAudioVideoUnavailable Update the reorder identity', true);
+        shouldSortHostAtFirst.current = true;
       }
     });
     ZegoUIKit.onAudioVideoAvailable(callbackID, (userList) => {
@@ -331,10 +344,14 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
       userList.forEach((userInfo) => {
         if (userInfo.userID === realTimeData.current.hostID) {
           // Host turn off their cameras and microphones, cohost will fill in the bit, so it needs to be reordered next time
-          console.log('########onAudioVideoUnavailable Update the reorder identity', true);
+          // Move to the onUserInfoUpdate callback for processing
         } else {
-          realTimeData.current.memberConnectStateMap[userInfo.userID] = ZegoCoHostConnectState.idle;
-          setMemberConnectStateMap({ ...realTimeData.current.memberConnectStateMap });
+          if (userInfo.userID !== userID) {
+            realTimeData.current.memberConnectStateMap[userInfo.userID] = ZegoCoHostConnectState.idle;
+            setMemberConnectStateMap({ ...realTimeData.current.memberConnectStateMap });
+          } else {
+            // Do not deal with
+          }
         }
       })
     });
@@ -345,6 +362,8 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
       ZegoUIKit.onUserLeave(callbackID);
       ZegoUIKit.onRoomPropertiesFullUpdated(callbackID);
       ZegoUIKit.onRoomPropertiesUpdated(callbackID);
+      ZegoUIKit.onUserInfoUpdate(callbackID);
+      ZegoUIKit.onAudioVideoAvailable(callbackID);
       ZegoUIKit.onAudioVideoUnavailable(callbackID);
     };
   }, []);
@@ -357,6 +376,7 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
       memberConnectStateMap: {},
     }
     isIgnore.current = false;
+    shouldSortHostAtFirst.current = true;
     ZegoPrebuiltPlugins.init(appID, appSign, userID, userName, plugins).then(() => {
       setIsPluginsInit(true);
       // Register plugin callback
@@ -466,14 +486,15 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
     }
   };
   const sortAudioVideo = (globalAudioVideoUserList) => {
-    console.log('########sortAudioVideo', globalAudioVideoUserList, realTimeData.current.hostID);
+    console.log('########sortAudioVideo', globalAudioVideoUserList, realTimeData.current.hostID, shouldSortHostAtFirst.current);
     const index = globalAudioVideoUserList.findIndex((userInfo) => userInfo.userID === realTimeData.current.hostID);
-    if (index !== -1 && index !== 0) {
+    if (shouldSortHostAtFirst.current && index !== -1) {
       // Put host first
       const temp = globalAudioVideoUserList.splice(index, 1)[0];
       globalAudioVideoUserList.unshift(temp);
       // You don't have to deal with the sorting once, because the addition to the internal stream is also added to the end of the queue
       console.log('########sortAudioVideo Sort completion and update the reorder identity', false);
+      shouldSortHostAtFirst.current = false;
     }
     return globalAudioVideoUserList;
   };

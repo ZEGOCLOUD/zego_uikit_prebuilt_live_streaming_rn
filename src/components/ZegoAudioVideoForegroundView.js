@@ -5,7 +5,6 @@ import ZegoUIKit, { ZegoMicrophoneStateIcon, ZegoCameraStateIcon } from '@zegocl
 export default function ZegoAudioVideoForegroundView(props) {
     const { userInfo, showUserNameOnView, showCameraStateOnView, showMicrophoneStateOnView } = props;
     const { userID = '', userName = '', isMicDeviceOn } = userInfo;
-    console.log('########ZegoAudioVideoForegroundView', userInfo);
 
     return (
         <View style={styles.foregroundViewContainer}>

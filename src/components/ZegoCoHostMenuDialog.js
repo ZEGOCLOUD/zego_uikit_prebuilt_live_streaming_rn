@@ -34,6 +34,7 @@ export default function ZegoCoHostMenuDialog(props) {
                 console.log('#########Timer: The timer did not complete and the request was not allowed to occur', countdown.current, countdownTimer.current);
                 setIsToastVisable(true);
                 setToastExtendedData({ type: ZegoToastType.error, text: ZegoTranslationText.repeatInviteCoHostFailedToast });
+                onCancel();
                 result = false;
             } else {
                 // Restart timer
