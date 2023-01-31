@@ -212,6 +212,9 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
           // The audience accept the cohost request
           realTimeData.current.memberConnectStateMap[invitee.id] = ZegoCoHostConnectState.connected;
           setMemberConnectStateMap({ ...realTimeData.current.memberConnectStateMap });
+
+          // Reset invitation timer
+          setCoHostDialogExtendedData({ resetTimer: true, inviteeID: invitee.id});
         }
       });
       ZegoUIKit.getSignalingPlugin().onInvitationRefused(callbackID, ({ callID, invitee, data }) => {
@@ -222,6 +225,9 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
 
           setIsToastVisable(true);
           setToastExtendedData({ type: ZegoToastType.error, text: ZegoTranslationText.audienceRejectInvitationToast.replace('%0', invitee.id) });
+
+          // Reset invitation timer
+          setCoHostDialogExtendedData({ resetTimer: true, inviteeID: invitee.id });
         }
       });
     }
@@ -726,6 +732,7 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
         onOk={coHostDialogExtendedData.onOk}
         setIsToastVisable={(visable) => setIsToastVisable(visable)}
         setToastExtendedData={(toastExtendedData) => setToastExtendedData(toastExtendedData)}
+        resetTimer={coHostDialogExtendedData.resetTimer}
       />
       {/* Common toast */}
       <ZegoToast

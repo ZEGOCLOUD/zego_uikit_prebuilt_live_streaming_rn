@@ -6,8 +6,8 @@ import { ZegoTranslationText, ZegoInvitationType, ZegoToastType } from "../servi
 
 
 export default function ZegoCoHostMenuDialog(props) {
-    const countdown = useRef();
-    const countdownTimer = useRef();
+    const countdownMap = useRef();
+    const countdownTimerMap = useRef();
     const {
         visable,
         inviteeID,
@@ -16,7 +16,21 @@ export default function ZegoCoHostMenuDialog(props) {
         onOk,
         setIsToastVisable,
         setToastExtendedData,
+        resetTimer,
     } = props;
+
+    if (visable) {
+        const inviteeCountdown = countdownMap.current.get(inviteeID);
+        if (!inviteeCountdown) {
+            countdownMap.current.set(inviteeID, 60);
+        }
+    }
+    if (resetTimer) {
+        // Reset invitation timer
+        clearInterval(countdownTimerMap.current.get(inviteeID));
+        countdownMap.current.set(inviteeID, 60);
+        countdownTimerMap.current.set(inviteeID, null);
+    }
 
     const getCustomContainerStyle = (visable) => StyleSheet.create({
         customContainer: {
@@ -28,27 +42,28 @@ export default function ZegoCoHostMenuDialog(props) {
         let result = true;
         if (invitationType === ZegoInvitationType.inviteToCoHost) {
             // Check whether the timer is running out
-            console.log('#########Timer: Check whether the timer is running out', countdown.current, countdownTimer.current);
-            if (countdownTimer.current) {
+            console.log('#########Timer: Check whether the timer is running out', countdownMap.current, countdownTimerMap.current);
+
+            if (countdownTimerMap.current.get(inviteeID)) {
                 // The timer did not complete and the request was not allowed to occur
-                console.log('#########Timer: The timer did not complete and the request was not allowed to occur', countdown.current, countdownTimer.current);
+                console.log('#########Timer: The timer did not complete and the request was not allowed to occur', countdownMap.current, countdownTimerMap.current);
                 setIsToastVisable(true);
                 setToastExtendedData({ type: ZegoToastType.error, text: ZegoTranslationText.repeatInviteCoHostFailedToast });
                 onCancel();
                 result = false;
             } else {
                 // Restart timer
-                clearInterval(countdownTimer.current);
-                countdownTimer.current = setInterval(() => {
-                    console.log('#########Timer: countdown', countdown.current, countdownTimer.current);
-                    if (countdown.current === 0) {
-                        clearInterval(countdownTimer.current);
-                        countdownTimer.current = null;
-                        countdown.current = 60;
+                clearInterval(countdownTimerMap.current.get(inviteeID));
+                countdownTimerMap.current.set(inviteeID ,setInterval(() => {
+                    console.log('#########Timer: countdown', countdownMap.current, countdownTimerMap.current);
+                    if (countdownMap.current.get(inviteeID) === 0) {
+                        clearInterval(countdownTimerMap.current.get(inviteeID));
+                        countdownTimerMap.current.set(inviteeID, null);
+                        countdownMap.current.set(inviteeID, 60);
                     } else {
-                        countdown.current -= 1;
+                        countdownMap.current.set(inviteeID, countdownMap.current.get(inviteeID) - 1);
                     }
-                }, 1000);
+                }, 1000));
                 if (!ZegoUIKit.getUser(inviteeID)) {
                     result = false;
                     setIsToastVisable(true);
@@ -62,14 +77,16 @@ export default function ZegoCoHostMenuDialog(props) {
 
     useEffect(() => {
         // First render initializes and clears timer
-        console.log('#########Timer: First render initializes and clears timer', countdown.current, countdownTimer.current);
-        countdown.current = 60;
-        countdownTimer.current = null;
+        console.log('#########Timer: First render initializes and clears timer', countdownMap.current, countdownTimerMap.current);
+        countdownMap.current = new Map();
+        countdownTimerMap.current = new Map();
         return () => {
             // Initializes and clears timer when component is destroyed
-            console.log('#########Timer: Initializes and clears timer when component is destroyed', countdown.current, countdownTimer.current);
-            clearInterval(countdownTimer.current);
-            countdownTimer.current = null;
+            console.log('#########Timer: Initializes and clears timer when component is destroyed', countdownMap.current, countdownTimerMap.current);
+            Array.from(countdownTimerMap.current.keys()).forEach((key) => {
+                clearInterval(countdownTimerMap.current.get(key));
+                countdownTimerMap.current.set(key, null);
+            });
         };
     }, []);
 
