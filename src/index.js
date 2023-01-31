@@ -419,8 +419,8 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
     }
     isIgnore.current = false;
     shouldSortHostAtFirst.current = true;
-    ZegoPrebuiltPlugins.init(appID, appSign, userID, userName, plugins).then(() => {
-      setIsPluginsInit(true);
+    ZegoPrebuiltPlugins.init(appID, appSign, userID, userName, plugins).then((result) => {
+      setIsPluginsInit(result);
       // Register plugin callback
       registerPluginCallback();
       ZegoUIKit.init(appID, appSign, { userID: userID, userName: userName }).then(
@@ -734,6 +734,7 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
       {
         isMemberListVisable ?
           <ZegoLiveStreamingMemberList
+            isPluginsInit={isPluginsInit}
             showMicrophoneState={showMicrophoneState}
             showCameraState={showCameraState}
             itemBuilder={itemBuilder}

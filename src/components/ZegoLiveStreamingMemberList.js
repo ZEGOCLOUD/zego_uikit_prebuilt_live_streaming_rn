@@ -8,6 +8,7 @@ import ZegoDisagreeCoHostButton from "./ZegoDisagreeCoHostButton";
 
 export default function ZegoLiveStreamingMemberList(props) {
     const {
+        isPluginsInit,
         showMicrophoneState,
         showCameraState,
         itemBuilder,
@@ -34,7 +35,7 @@ export default function ZegoLiveStreamingMemberList(props) {
         return localUserID === hostID && memberConnectStateMap[userID] === ZegoCoHostConnectState.connecting;
     };
     const showOperationIcon = (userID) => {
-        return localUserID === hostID && userID !== localUserID && memberConnectStateMap[userID] !== ZegoCoHostConnectState.connecting;
+        return isPluginsInit && (localUserID === hostID && userID !== localUserID && memberConnectStateMap[userID] !== ZegoCoHostConnectState.connecting);
     };
     const operateHandle = (userID) => {
         onCloseMemberList();

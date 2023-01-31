@@ -39,10 +39,11 @@ const ZegoPrebuiltPlugins = {
       _localUser.userName = userName;
       return ZegoUIKit.getSignalingPlugin().login(userID, userName).then(() => {
         zloginfo('[Plugins] login success.');
+        return true;
       });
     } else {
       zloginfo('[Plugins]The plugin passed in is empty');
-      return Promise.resolve();
+      return Promise.resolve(false);
     }
   },
   reconnectIfDisconnected: () => {
