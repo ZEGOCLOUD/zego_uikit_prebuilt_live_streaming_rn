@@ -1,6 +1,6 @@
 {
   "name": "@zegocloud/zego-uikit-prebuilt-live-streaming-rn",
-  "version": "1.2.2",
+  "version": "1.3.0",
   "description": "PrebuiltLiveStreaming is a full-featured live streaming kit that provides ready-made video streaming, live text chat, face beautification, and supports unlimited viewers.",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
@@ -74,10 +74,10 @@
     "@types/react": "17.0.21"
   },
   "peerDependencies": {
-    "@zegocloud/zego-uikit-rn": "*",
+    "@zegocloud/zego-uikit-rn": ">=1.12.0",
     "react": "*",
     "react-native": "*",
-    "zego-express-engine-reactnative": "*"
+    "zego-express-engine-reactnative": ">=3.2.0"
   },
   "jest": {
     "preset": "react-native",
