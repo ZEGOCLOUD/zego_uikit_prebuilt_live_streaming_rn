@@ -76,8 +76,7 @@
   "peerDependencies": {
     "@zegocloud/zego-uikit-rn": ">=1.12.0",
     "react": "*",
-    "react-native": "*",
-    "zego-express-engine-reactnative": ">=3.2.0"
+    "react-native": "*"
   },
   "jest": {
     "preset": "react-native",
