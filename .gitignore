@@ -64,6 +64,7 @@ android/keystores/debug.keystore
 lib/
 
 # ZegoCloud
+npm
 example/src/KeyCenter.js
 
 
