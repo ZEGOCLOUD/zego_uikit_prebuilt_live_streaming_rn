@@ -21,7 +21,7 @@ const ZegoTranslationText = {
     cancelMenuDialogButton: "Cancel",
 
     noHostOnline: "No host is online.",
-    memberListTitle: "Attendance",
+    memberListTitle: "Audience",
 
     sendRequestCoHostToast: "You are applying to be a co-host, please wait for confirmation.", // green
     hostRejectCoHostRequestToast: "Your request to co-host with the host has been refused.", // red
