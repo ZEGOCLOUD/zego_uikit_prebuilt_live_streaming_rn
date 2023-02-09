@@ -650,7 +650,7 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
             showSoundWavesInAudioMode: showSoundWavesInAudioMode,
             useVideoViewAspectFill: useVideoViewAspectFill,
           }}
-          layout={{mode: ZegoLayoutMode.pictureInPicture}}
+          layout={{mode: ZegoLayoutMode.pictureInPicture, removeViewWhenAudioVideoUnavailable: true}}
           sortAudioVideo={sortAudioVideo}
           foregroundBuilder={foregroundBuilder || (({userInfo}) => <ZegoAudioVideoForegroundView
             userInfo={userInfo}
