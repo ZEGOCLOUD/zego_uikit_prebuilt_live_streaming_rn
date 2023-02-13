@@ -269,6 +269,9 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
           setCoHostDialogExtendedData({ resetTimer: true, inviteeID: invitee.id });
         }
       });
+      ZegoUIKit.getSignalingPlugin().onInRoomTextMessageReceived(callbackID, (messageList) => {
+        console.log('[Prebuilt]onInRoomTextMessageReceived', messageList);
+      });
     }
   };
   const unRegisterPluginCallback = () => {
@@ -278,6 +281,7 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
       ZegoUIKit.getSignalingPlugin().onInvitationTimeout(callbackID);
       ZegoUIKit.getSignalingPlugin().onInvitationAccepted(callbackID);
       ZegoUIKit.getSignalingPlugin().onInvitationRefused(callbackID);
+      ZegoUIKit.getSignalingPlugin().onInRoomTextMessageReceived(callbackID);
     }
   };
 
@@ -452,6 +456,9 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
     ZegoUIKit.onMeRemovedFromRoom(callbackID, () => {
       onLeaveLiveStreaming();
     });
+    ZegoUIKit.onInRoomCommandReceived(callbackID, (fromUser, command) => {
+      console.log('[Prebuilt]onInRoomCommandReceived', fromUser, command);
+    });
     
     return () => {
       ZegoUIKit.onRoomStateChanged(callbackID);
@@ -465,6 +472,7 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
       ZegoUIKit.onTurnOnYourCameraRequest(callbackID);
       ZegoUIKit.onTurnOnYourMicrophoneRequest(callbackID);
       ZegoUIKit.onMeRemovedFromRoom(callbackID);
+      ZegoUIKit.onInRoomCommandReceived(callbackID);
     };
   }, []);
   useEffect(() => {
