@@ -46,6 +46,17 @@ const ZegoPrebuiltPlugins = {
       return Promise.resolve(false);
     }
   },
+  joinRoom(roomID) {
+    if (ZegoUIKit.getPlugin(ZegoUIKitPluginType.signaling)) {
+      return ZegoUIKit.getSignalingPlugin().joinRoom(roomID).then(() => {
+        zloginfo('[Plugins] join room success.');
+        return true;
+      });
+    } else {
+      zloginfo('[Plugins]The plugin passed in is empty');
+      return Promise.resolve(false);
+    }
+  },
   reconnectIfDisconnected: () => {
     if (ZegoUIKit.getPlugin(ZegoUIKitPluginType.signaling)) {
       zloginfo(

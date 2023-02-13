@@ -491,6 +491,11 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
       setIsPluginsInit(result);
       // Register plugin callback
       registerPluginCallback();
+      ZegoPrebuiltPlugins.joinRoom(liveID).then((result) => {
+        if (result) {
+          zloginfo('[ZegoUIKitPrebuiltLiveStreaming] join room success.');
+        }
+      });
       ZegoUIKit.init(appID, appSign, { userID: userID, userName: userName }).then(
         () => {
           ZegoUIKit.turnCameraOn('', turnOnCameraWhenJoining);
