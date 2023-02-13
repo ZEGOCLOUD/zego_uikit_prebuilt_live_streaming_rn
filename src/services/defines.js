@@ -31,6 +31,7 @@ const ZegoTranslationText = {
     requestCoHostFailed: "Failed to apply for connection.", // red
     receivedRequestCoHostToast: "%0 wants to co-host with you.", // green
     inviteCoHostSuccessfullyToast: "Sent the invitation successfully.", // green
+    removeUserMenuDialogButton: "Remove %0 from the room",
 
     cameraPermissionSettingDialogInfo: new ZegoDialogInfo({
         title: "Can not use Camera!",
@@ -92,7 +93,7 @@ const HOST_DEFAULT_CONFIG = {
     },
     bottomMenuBarConfig: {
         showInRoomMessageButton: true,
-        hostButtons: [ZegoMenuBarButtonName.toggleCameraButton, ZegoMenuBarButtonName.toggleMicrophoneButton, ZegoMenuBarButtonName.switchCameraButton],
+        hostButtons: [ZegoMenuBarButtonName.toggleCameraButton, ZegoMenuBarButtonName.toggleMicrophoneButton, ZegoMenuBarButtonName.switchCameraButton, ZegoMenuBarButtonName.enableChatButton],
         coHostButtons: [ZegoMenuBarButtonName.toggleCameraButton, ZegoMenuBarButtonName.toggleMicrophoneButton, ZegoMenuBarButtonName.switchCameraButton, ZegoMenuBarButtonName.coHostControlButton],
         audienceButtons: [ZegoMenuBarButtonName.coHostControlButton],
         hostExtendButtons: [],

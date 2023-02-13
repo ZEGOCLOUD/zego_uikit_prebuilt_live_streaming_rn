@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, TouchableOpacity } from "react-native";
+import { View, StyleSheet, TouchableOpacity, Text } from "react-native";
 import ZegoUIKit, {
     ZegoLeaveButton,
     ZegoSwitchAudioOutputButton,
@@ -12,6 +12,7 @@ import ZegoMoreButton from './ZegoMoreButton';
 import ZegoMessageButton from './ZegoMessageButton';
 import ZegoMenuBarButtonName from "./ZegoMenuBarButtonName";
 import ZegoCoHostControlButton from "./ZegoCoHostControlButton";
+import ZegoEnableChatButton from "./ZegoEnableChatButton";
 
 export default function ZegoBottomBar(props) {
     const {
@@ -31,6 +32,7 @@ export default function ZegoBottomBar(props) {
         setToastExtendedData,
         setIsDialogVisable,
         setDialogExtendedData,
+        userID,
         hostID,
         liveStatus,
         isPluginsInit,
@@ -90,6 +92,11 @@ export default function ZegoBottomBar(props) {
                     setIsDialogVisable={setIsDialogVisable}
                     setDialogExtendedData={setDialogExtendedData}
                 />
+            case ZegoMenuBarButtonName.enableChatButton: 
+                return <ZegoEnableChatButton 
+                    width={buttonSize}
+                    height={buttonSize}
+                />;
         }
     }
     const getDisplayButtons = () => {
@@ -128,9 +135,9 @@ export default function ZegoBottomBar(props) {
     var secondLevelButtons = allButtons['secondLevelButtons']
 
     return (
-        isNormalStyle ?
+        isNormalStyle ? 
             <View style={styles.normalBar}>
-                {showInRoomMessageButton ? <ZegoMessageButton onPress={() => {
+                {showInRoomMessageButton ? <ZegoMessageButton userID={userID} hostID={hostID} onPress={() => {
                     if (typeof onMessageButtonPress == 'function') {
                         onMessageButtonPress();
                     }
@@ -198,8 +205,7 @@ const styles = StyleSheet.create({
     },
     popupMask: {
         backgroundColor: '#262A2D',
-        opacity: 1,
-        backgroundColor: 'red',
+        opacity: 0.5,
     },
     popupBar: {
         flex: 1,

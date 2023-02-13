@@ -55,6 +55,34 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
 
   config.role === undefined && (config.role = ZegoLiveStreamingRole.audience);
   Object.assign(ZegoTranslationText, config.translationText || {});
+  config.deviceConfirmDialogInfo === undefined && (config.deviceConfirmDialogInfo = {});
+
+  const showDefaultDeviceOnDialog = (isCamera, formUser) => {
+    console.log('########showDefaultDeviceOnDialog', formUser, isCamera);
+    return new Promise((resolve, reject) => {
+      const {
+        title = `${formUser.userID} wants to turn on your ${isCamera ? 'camera' : 'microphone'}`,
+        message = `Are you sure to turn on your ${isCamera ? 'camera' : 'microphone'}?`,
+        cancelButtonName = "Cancel",
+        confirmButtonName = "Confirm"
+      } = config.deviceConfirmDialogInfo;
+      Alert.alert(
+        title,
+        message,
+        [
+          {
+            text: cancelButtonName,
+            onPress: () => reject(),
+            style: "cancel"
+          },
+          {
+            text: confirmButtonName,
+            onPress: () => resolve()
+          }
+        ]
+      );
+    })
+  }
 
   const {
     turnOnCameraWhenJoining = true,
@@ -64,12 +92,15 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
     bottomMenuBarConfig = {},
     memberListConfig = {},
     inRoomMessageViewConfig = {},
-    confirmDialogInfo,
+    confirmDialogInfo = {},
     onLeaveLiveStreaming,
     onLeaveLiveStreamingConfirming,
     onLiveStreamingEnded,
     onStartLiveButtonPressed,
     startLiveButtonBuilder,
+    markAsLargeRoom = false,
+    onCameraTurnOnByOthersConfirmation = showDefaultDeviceOnDialog.bind(this, true),
+    onMicrophoneTurnOnByOthersConfirmation = showDefaultDeviceOnDialog.bind(this, false),
   } = config;
   const {
     showSoundWavesInAudioMode = true,
@@ -96,7 +127,7 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
   const keyboardHeight = useKeyboard();
   const [textInputVisable, setTextInputVisable] = useState(false);
   const [textInput, setTextInput] = useState(null);
-  const [textInputHeight, setTextInputHeight] = useState(75);
+  const [textInputHeight, setTextInputHeight] = useState(95);
   const [role, setRole] = useState(config.role);
   const [hostID, setHostID] = useState('');
   const [liveStatus, setLiveStatus] = useState(''); // init: '' default: 0, start: 1
@@ -111,6 +142,7 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
   const [toastExtendedData, setToastExtendedData] = useState({});
   const [isDialogVisable, setIsDialogVisable] = useState(false);
   const [dialogExtendedData, setDialogExtendedData] = useState({});
+
   const callbackID = 'ZegoUIKitPrebuiltLiveStreaming' + String(Math.floor(Math.random() * 10000));
   const hideCountdownOnToastLimit = 5;
   const hideCountdownOnDialogLimit = 60;
@@ -395,6 +427,31 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
         }
       })
     });
+    ZegoUIKit.onTurnOnYourCameraRequest(callbackID, (formUser) => {
+      console.log('########onTurnOnYourCameraRequest', formUser);
+      onCameraTurnOnByOthersConfirmation && onCameraTurnOnByOthersConfirmation(formUser).then(async () => {
+        // Allow to open
+        try {
+          await grantPermissions();
+        } catch (error) {
+        }
+        ZegoUIKit.turnCameraOn('', true);
+      });
+    });
+    ZegoUIKit.onTurnOnYourMicrophoneRequest(callbackID, (formUser) => {
+      console.log('########onTurnOnYourMicrophoneRequest', formUser);
+      onMicrophoneTurnOnByOthersConfirmation && onMicrophoneTurnOnByOthersConfirmation(formUser).then(async () => {
+        // Allow to open
+        try {
+          await grantPermissions();
+        } catch (error) {
+        }
+        ZegoUIKit.turnMicrophoneOn('', true);
+      });
+    });
+    ZegoUIKit.onMeRemovedFromRoom(callbackID, () => {
+      onLeaveLiveStreaming();
+    });
     
     return () => {
       ZegoUIKit.onRoomStateChanged(callbackID);
@@ -405,6 +462,9 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
       ZegoUIKit.onUserInfoUpdate(callbackID);
       ZegoUIKit.onAudioVideoAvailable(callbackID);
       ZegoUIKit.onAudioVideoUnavailable(callbackID);
+      ZegoUIKit.onTurnOnYourCameraRequest(callbackID);
+      ZegoUIKit.onTurnOnYourMicrophoneRequest(callbackID);
+      ZegoUIKit.onMeRemovedFromRoom(callbackID);
     };
   }, []);
   useEffect(() => {
@@ -431,10 +491,10 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
 
           if (config.role === ZegoLiveStreamingRole.host) {
             grantPermissions(() => {
-              ZegoUIKit.joinRoom(liveID);
+              ZegoUIKit.joinRoom(liveID, '', !!markAsLargeRoom);
             });
           } else {
-            ZegoUIKit.joinRoom(liveID);
+            ZegoUIKit.joinRoom(liveID, '', !!markAsLargeRoom);
           }
         }
       );
@@ -460,12 +520,14 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
     return role === ZegoLiveStreamingRole.host && liveStatus === ZegoLiveStatus.start || role !== ZegoLiveStreamingRole.host;
   }
   const onFullPageTouch = () => {
+    console.log('####onFullPageTouch####');
     hideCountdownOnToast = hideCountdownOnToastLimit;
     setIsToastVisable(false);
     setTextInputVisable(false);
     setIsMemberListVisable(false);
     setIsCoHostDialogVisable(false);
     setCoHostDialogExtendedData({});
+    setTextInputHeight(95); // It needs to be reinitialized, otherwise the height will be wrong
   };
   const useInterval = (callback, delay) => {
     const savedCallback = useRef();
@@ -653,7 +715,11 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
           layout={{mode: ZegoLayoutMode.pictureInPicture, removeViewWhenAudioVideoUnavailable: true}}
           sortAudioVideo={sortAudioVideo}
           foregroundBuilder={foregroundBuilder || (({userInfo}) => <ZegoAudioVideoForegroundView
+            role={role}
             userInfo={userInfo}
+            localUserID={userID}
+            turnOnCameraWhenJoining={turnOnCameraWhenJoining}
+            turnOnMicrophoneWhenJoining={turnOnMicrophoneWhenJoining}
             showUserNameOnView={true}
             showCameraStateOnView={false}
             showMicrophoneStateOnView={true}
@@ -829,6 +895,7 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
                 setIsDialogVisable={setIsDialogVisableHandle}
                 setDialogExtendedData={(dialogExtendedData) => setDialogExtendedData(dialogExtendedData)}
                 isPluginsInit={isPluginsInit}
+                userID={userID}
                 hostID={hostID}
                 liveStatus={liveStatus}
                 memberConnectState={memberConnectStateMap[userID]}

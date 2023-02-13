@@ -74,6 +74,14 @@ export default function ZegoCoHostMenuDialog(props) {
         }
         return result;
     }
+    const removeHandle = () => {
+        ZegoUIKit.removeUserFromRoom([inviteeID]).then(() => {
+            console.log(`remove ${inviteeID} from room successfully`);
+            // The handling here is the same as the cancel
+            onCancel();
+        });
+        
+    }
 
     useEffect(() => {
         // First render initializes and clears timer
@@ -108,6 +116,11 @@ export default function ZegoCoHostMenuDialog(props) {
             onPressed={onOk}
         ></ZegoSendInvitationButton>
         <View style={styles.divide}></View>
+        {/* remove xxx from the room */}
+        <TouchableOpacity style={styles.removeButton} onPress={removeHandle}>
+            <Text style={styles.removeText}>{ZegoTranslationText.removeUserMenuDialogButton.replace('%0', inviteeID)}</Text>
+        </TouchableOpacity>
+        <View style={styles.divide}></View>
         <TouchableOpacity style={styles.cancelButton} onPress={onCancel}>
             <Text style={styles.cancelText}>{ZegoTranslationText.cancelMenuDialogButton}</Text>
         </TouchableOpacity>
@@ -137,6 +150,15 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     cancelText: {
+        fontSize: 14,
+        color: '#fff',
+    },
+    removeButton: {
+        height: 50,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    removeText: {
         fontSize: 14,
         color: '#fff',
     },
