@@ -270,7 +270,7 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
         }
       });
       ZegoUIKit.getSignalingPlugin().onInRoomTextMessageReceived(callbackID, (messageList) => {
-        console.log('[Prebuilt]onInRoomTextMessageReceived', messageList);
+        console.warn('[Prebuilt]onInRoomTextMessageReceived', messageList);
       });
     }
   };
@@ -457,7 +457,7 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
       onLeaveLiveStreaming();
     });
     ZegoUIKit.onInRoomCommandReceived(callbackID, (fromUser, command) => {
-      console.log('[Prebuilt]onInRoomCommandReceived', fromUser, command);
+      console.warn('[Prebuilt]onInRoomCommandReceived', fromUser, command);
     });
     
     return () => {
