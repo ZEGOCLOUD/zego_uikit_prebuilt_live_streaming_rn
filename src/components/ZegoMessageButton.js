@@ -9,7 +9,7 @@ export default function ZegoMessageButton(props) {
         onPress,
         width = 36,
         height = 36,
-        icon = require('../resources/white_bottom_button_message.png'),
+        icon = require('../resources/white_bottom_button_chat_on.png'),
     } = props;
     const [isChatOn, setIsChatOn] = useState(true);
 
@@ -31,7 +31,7 @@ export default function ZegoMessageButton(props) {
             disabled={!isChatOn}>
             <Image
                 resizeMode='contain'
-                source={icon}
+                source={isChatOn ? icon : require('../resources/white_bottom_button_chat_off.png')}
                 onLoad={({nativeEvent: {source: {width, height}}}) => console.log('>>>>>', width, height)}
                 style={{ width: "100%", height: "100%" }} />
         </TouchableOpacity>)
