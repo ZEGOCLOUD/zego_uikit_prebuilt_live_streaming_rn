@@ -7,20 +7,20 @@ export default function ZegoAudioVideoForegroundView(props) {
     const { userInfo, showUserNameOnView, showCameraStateOnView, showMicrophoneStateOnView, turnOnMicrophoneWhenJoining, turnOnCameraWhenJoining, role, localUserID } = props;
     const { userID = '', userName = '', isMicDeviceOn } = userInfo;
 
-    const panResponder = useRef(PanResponder.create({
-        onStartShouldSetPanResponderCapture: () => {
-            console.log(`Toggle the state of other people's devices`);
-        }
-    })).current;
+    // const panResponder = useRef(PanResponder.create({
+    //     onStartShouldSetPanResponderCapture: () => {
+    //         console.log(`Toggle the state of other people's devices`);
+    //     }
+    // })).current;
 
     return (
         <View style={styles.foregroundViewContainer}>
-            {
-                role === ZegoLiveStreamingRole.host && userID !== localUserID ? <View style={styles.topContainer} {...panResponder.panHandlers}>
+            {/* {
+                role === ZegoLiveStreamingRole.host && userID !== localUserID ? <View style={styles.topContainer}>
                     <ZegoToggleMicrophoneButton userID={userID} isOn={turnOnMicrophoneWhenJoining} width={24} height={24}></ZegoToggleMicrophoneButton>
                     <ZegoToggleCameraButton userID={userID} isOn={turnOnCameraWhenJoining} width={24} height={24}></ZegoToggleCameraButton>
                 </View> : null
-            }
+            } */}
             <View style={styles.bottomContainer}>
                 {showUserNameOnView ?
                     <View style={styles.nameLabelContainer}>

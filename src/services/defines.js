@@ -93,7 +93,7 @@ const HOST_DEFAULT_CONFIG = {
     },
     bottomMenuBarConfig: {
         showInRoomMessageButton: true,
-        hostButtons: [ZegoMenuBarButtonName.toggleCameraButton, ZegoMenuBarButtonName.toggleMicrophoneButton, ZegoMenuBarButtonName.switchCameraButton, ZegoMenuBarButtonName.enableChatButton],
+        hostButtons: [ZegoMenuBarButtonName.toggleCameraButton, ZegoMenuBarButtonName.toggleMicrophoneButton, ZegoMenuBarButtonName.switchCameraButton],
         coHostButtons: [ZegoMenuBarButtonName.toggleCameraButton, ZegoMenuBarButtonName.toggleMicrophoneButton, ZegoMenuBarButtonName.switchCameraButton, ZegoMenuBarButtonName.coHostControlButton],
         audienceButtons: [ZegoMenuBarButtonName.coHostControlButton],
         hostExtendButtons: [],
