@@ -2,7 +2,7 @@ import React from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 import { ZegoToastType } from '../services/defines'
 
-export default function ZegoToast(props) {
+export default function ZegoToast(props: any) {
     const {
         visable = false,
         text = '',
@@ -25,12 +25,12 @@ export default function ZegoToast(props) {
             break;
     }
 
-    const getCustomTextStyle = (color) => StyleSheet.create({
+    const getCustomTextStyle = (color: string) => StyleSheet.create({
         text: {
             color,
         },
     });
-    const getCustomContainerStyle = (visable, backgroundColor) => StyleSheet.create({
+    const getCustomContainerStyle = (visable: boolean, backgroundColor: string) => StyleSheet.create({
         customContainer: {
             display: visable ? 'flex' : 'none',
             backgroundColor,

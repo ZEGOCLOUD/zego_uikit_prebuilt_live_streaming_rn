@@ -2,7 +2,7 @@ import React from "react";
 import { StyleSheet, TouchableOpacity, Text } from "react-native"
 import { ZegoTranslationText } from "../services/defines";
 
-export default function ZegoStartLiveButton(props) {
+export default function ZegoStartLiveButton(props: any) {
     const { onPressed } = props;
 
     return (

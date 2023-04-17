@@ -3,7 +3,7 @@ import React from "react";
 import { ZegoTranslationText } from "../services/defines";
 import { ZegoCancelInvitationButton } from '@zegocloud/zego-uikit-rn';
 
-export default function ZegoCancelRequestCoHostButton(props) {
+export default function ZegoCancelRequestCoHostButton(props: any) {
     const {
         hostID,
         onCancelSuccessfully,

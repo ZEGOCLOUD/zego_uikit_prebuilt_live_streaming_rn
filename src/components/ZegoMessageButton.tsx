@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { TouchableOpacity, Image, StyleSheet} from "react-native"
+import { TouchableOpacity, Image} from "react-native"
 import ZegoUIKit from '@zegocloud/zego-uikit-rn';
 
-export default function ZegoMessageButton(props) {
+export default function ZegoMessageButton(props: any) {
     const {
         userID,
         hostID,
@@ -15,7 +15,7 @@ export default function ZegoMessageButton(props) {
 
     useEffect(() => {
         const callbackID = 'ZegoMessageButton' + String(Math.floor(Math.random() * 10000));
-        ZegoUIKit.onRoomPropertyUpdated(callbackID, (key, oldValue, value, type) => {
+        ZegoUIKit.onRoomPropertyUpdated(callbackID, (key: string, oldValue: any, value: any) => {
             if (key === 'enableChat' && value && userID !== hostID) {
                 setIsChatOn(!!parseInt(value));
             }

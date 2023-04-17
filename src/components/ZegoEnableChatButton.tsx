@@ -1,8 +1,8 @@
 import React, { useState }from "react";
-import { TouchableOpacity, Image, StyleSheet, Text } from "react-native";
+import { TouchableOpacity, Image, StyleSheet } from "react-native";
 import ZegoUIKit from '@zegocloud/zego-uikit-rn';
 
-export default function ZegoEnableChatButton(props) {
+export default function ZegoEnableChatButton(props: any) {
     const {
         width = 36,
         height = 36,
@@ -13,7 +13,7 @@ export default function ZegoEnableChatButton(props) {
     const enableChat = ZegoUIKit.getRoomProperties().enableChat;
     const [isChatOn, setIsChatOn] = useState(enableChat === undefined || enableChat === '1');
     
-    const getCustomStyle = (width, height, borderRadius) => StyleSheet.create({
+    const getCustomStyle = (width: number, height: number, borderRadius: number) => StyleSheet.create({
         enableChatButton: {
           width,
           height,

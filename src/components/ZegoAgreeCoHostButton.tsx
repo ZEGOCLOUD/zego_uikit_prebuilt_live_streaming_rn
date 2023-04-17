@@ -2,7 +2,7 @@ import React from "react";
 
 import { ZegoAcceptInvitationButton } from '@zegocloud/zego-uikit-rn';
 
-export default function ZegoAgreeCoHostButton(props) {
+export default function ZegoAgreeCoHostButton(props: any) {
     const { onPressed, inviterID } = props;
 
     return (

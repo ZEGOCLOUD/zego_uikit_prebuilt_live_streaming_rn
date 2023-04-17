@@ -3,7 +3,7 @@ import { StyleSheet, Image, Text, TouchableOpacity } from "react-native"
 import ZegoUIKit from '@zegocloud/zego-uikit-rn';
 import { ZegoTranslationText } from "../services/defines";
 
-export default function ZegoEndCoHostButton(props) {
+export default function ZegoEndCoHostButton(props: any) {
     const {
         onEndSuccessfully,
         setIsDialogVisable,

@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { View, StyleSheet, TouchableOpacity, Text } from "react-native";
-import ZegoUIKit, {
+import React, { useState } from "react";
+import { View, StyleSheet, TouchableOpacity } from "react-native";
+import {
     ZegoLeaveButton,
     ZegoSwitchAudioOutputButton,
     ZegoSwitchCameraButton,
@@ -14,7 +14,7 @@ import ZegoMenuBarButtonName from "./ZegoMenuBarButtonName";
 import ZegoCoHostControlButton from "./ZegoCoHostControlButton";
 import ZegoEnableChatButton from "./ZegoEnableChatButton";
 
-export default function ZegoBottomBar(props) {
+export default function ZegoBottomBar(props: any) {
     const {
         menuBarButtonsMaxCount = 5,
         menuBarButtons = [],
@@ -40,7 +40,7 @@ export default function ZegoBottomBar(props) {
     } = props;
     const [isNormalStyle, setIsNormalStyle] = useState(true);
 
-    const getButtonByButtonIndex = (buttonIndex, isFirstLevel) => {
+    const getButtonByButtonIndex = (buttonIndex: number, isFirstLevel: boolean) => {
         const buttonSize = isFirstLevel ? 36 : 48;
         switch (buttonIndex) {
             case ZegoMenuBarButtonName.leaveButton:
@@ -103,9 +103,9 @@ export default function ZegoBottomBar(props) {
         var maxCount = menuBarButtonsMaxCount < 1 ? 1 : menuBarButtonsMaxCount;
         maxCount = maxCount > 5 ? 5 : maxCount;
         const needMoreButton = (menuBarButtons.length + menuBarExtendedButtons.length) > maxCount;
-        const firstLevelButtons = [];
-        const secondLevelButtons = [];
-        menuBarButtons.forEach(buttonIndex => {
+        const firstLevelButtons: any[] = [];
+        const secondLevelButtons: any[] = [];
+        menuBarButtons.forEach((buttonIndex: number) => {
             const limitCount = needMoreButton ? maxCount - 1 : maxCount;
             if (firstLevelButtons.length < limitCount) {
                 firstLevelButtons.push(getButtonByButtonIndex(buttonIndex, true));
@@ -113,7 +113,7 @@ export default function ZegoBottomBar(props) {
                 secondLevelButtons.push(getButtonByButtonIndex(buttonIndex, false));
             }
         });
-        menuBarExtendedButtons.forEach(button => {
+        menuBarExtendedButtons.forEach((button: any) => {
             const limitCount = needMoreButton ? maxCount - 1 : maxCount;
             if (firstLevelButtons.length < limitCount) {
                 firstLevelButtons.push(button, true);

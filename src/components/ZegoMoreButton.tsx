@@ -1,7 +1,7 @@
 import React from "react";
-import { View, TouchableOpacity, Image } from "react-native"
+import { TouchableOpacity, Image } from "react-native"
 
-export default function ZegoMoreButton(props) {
+export default function ZegoMoreButton(props: any) {
     const { onPress, width = 36, height = 36 } = props;
 
     return (

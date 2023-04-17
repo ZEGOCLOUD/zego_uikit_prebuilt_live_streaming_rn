@@ -14,7 +14,7 @@ const getShotName = (name: string | undefined) => {
     return shotName;
 };
 
-const grantPermissions = async (callback: () => void) => {
+const grantPermissions = async (callback?: () => void) => {
     // Android: Dynamically obtaining device permissions
     if (Platform.OS === 'android') {
         // Check if permission granted
@@ -44,7 +44,7 @@ const grantPermissions = async (callback: () => void) => {
         }
         // If not, request it
         return PermissionsAndroid.requestMultiple(ungrantedPermissions).then(
-            (data) => {
+            () => {
                 if (callback) {
                     callback();
                 }

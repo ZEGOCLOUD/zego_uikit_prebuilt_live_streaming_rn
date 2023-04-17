@@ -2,7 +2,7 @@ import React from "react";
 
 import { ZegoRefuseInvitationButton } from '@zegocloud/zego-uikit-rn';
 
-export default function ZegoDisagreeCoHostButton(props) {
+export default function ZegoDisagreeCoHostButton(props: any) {
     const { onPressed, inviterID } = props;
 
     return (

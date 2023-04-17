@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, PanResponder } from "react-native"
 import ZegoUIKit, { ZegoMicrophoneStateIcon, ZegoCameraStateIcon, ZegoToggleCameraButton, ZegoToggleMicrophoneButton } from '@zegocloud/zego-uikit-rn'
 import { ZegoLiveStreamingRole } from "../services/defines";
 
-export default function ZegoAudioVideoForegroundView(props) {
+export default function ZegoAudioVideoForegroundView(props: any) {
     const { userInfo, showUserNameOnView, showCameraStateOnView, showMicrophoneStateOnView, turnOnMicrophoneWhenJoining, turnOnCameraWhenJoining, role, localUserID } = props;
     const { userID = '', userName = '', isMicDeviceOn } = userInfo;
 

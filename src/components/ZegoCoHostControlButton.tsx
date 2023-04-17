@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { StyleSheet, View, Text } from "react-native"
+import React, { useEffect } from "react";
+import { StyleSheet, View } from "react-native"
 import ZegoRequestCoHostButton from './ZegoRequestCoHostButton';
 import ZegoCancelRequestCoHostButton from './ZegoCancelRequestCoHostButton';
 import ZegoEndCoHostButton from './ZegoEndCoHostButton';
@@ -8,7 +8,7 @@ import ZegoUIKit from '@zegocloud/zego-uikit-rn';
 import { zloginfo } from "../utils/logger";
 import { grantPermissions } from '../utils';
 
-export default function ZegoCoHostControlButton(props) {
+export default function ZegoCoHostControlButton(props: any) {
     const {
         hostID,
         liveStatus,
@@ -26,7 +26,7 @@ export default function ZegoCoHostControlButton(props) {
         end: 2,
     };
 
-    const coHostControlHandle = (btnType) => {
+    const coHostControlHandle = (btnType: number) => {
         let newConnectState = memberConnectState;
         if (btnType === ZegoCoHostControlButtonType.request) {
             newConnectState = ZegoCoHostConnectState.connecting;
@@ -43,12 +43,12 @@ export default function ZegoCoHostControlButton(props) {
         if (isPluginsInit) {
             // Plugins init success and register plugins callback
             zloginfo('[ZegoCoHostControlButton]Plugins init success and register plugins callback');
-            ZegoUIKit.getSignalingPlugin().onInvitationResponseTimeout(callbackID, ({ callID, invitees, data }) => {
+            ZegoUIKit.getSignalingPlugin().onInvitationResponseTimeout(callbackID, () => {
                 // The host did not process your cohost request, resulting in a timeout
                 console.log('#######onInvitationResponseTimeout, The host did not process your cohost request, resulting in a timeout');
                 onConnectStateChanged('', ZegoCoHostConnectState.idle, true);
             });
-            ZegoUIKit.getSignalingPlugin().onInvitationAccepted(callbackID, async ({ callID, invitee, data }) => {
+            ZegoUIKit.getSignalingPlugin().onInvitationAccepted(callbackID, async () => {
                 // The host accepted your cohost request
                 console.log('#######onInvitationAccepted, The host accepted your cohost request');
                 try {
@@ -59,7 +59,7 @@ export default function ZegoCoHostControlButton(props) {
                 ZegoUIKit.turnMicrophoneOn('', true);
                 onConnectStateChanged('', ZegoCoHostConnectState.connected, true);
             });
-            ZegoUIKit.getSignalingPlugin().onInvitationRefused(callbackID, ({ callID, invitee, data }) => {
+            ZegoUIKit.getSignalingPlugin().onInvitationRefused(callbackID, () => {
                 // The host rejected your cohost request
                 console.log('#######onInvitationRefused, The host rejected your cohost request');
                 onConnectStateChanged('', ZegoCoHostConnectState.idle, true);
@@ -82,6 +82,7 @@ export default function ZegoCoHostControlButton(props) {
                 memberConnectState === ZegoCoHostConnectState.idle ? <ZegoRequestCoHostButton
                     hostID={hostID}
                     liveStatus={liveStatus}
+                    // @ts-ignore
                     onRequestSuccessfully={coHostControlHandle.bind(this, ZegoCoHostControlButtonType.request)}
                     setIsToastVisable={setIsToastVisable}
                     setToastExtendedData={setToastExtendedData}
@@ -89,11 +90,13 @@ export default function ZegoCoHostControlButton(props) {
                 /> :
                 memberConnectState === ZegoCoHostConnectState.connecting ? <ZegoCancelRequestCoHostButton
                     hostID={hostID}
+                    // @ts-ignore
                     onCancelSuccessfully={coHostControlHandle.bind(this, ZegoCoHostControlButtonType.cancel)}
                     setIsToastVisable={setIsToastVisable}
                     setToastExtendedData={setToastExtendedData}
                 /> :
                 memberConnectState === ZegoCoHostConnectState.connected ? <ZegoEndCoHostButton
+                    // @ts-ignore
                     onEndSuccessfully={coHostControlHandle.bind(this, ZegoCoHostControlButtonType.end)}
                     setIsDialogVisable={setIsDialogVisable}
                     setDialogExtendedData={setDialogExtendedData}

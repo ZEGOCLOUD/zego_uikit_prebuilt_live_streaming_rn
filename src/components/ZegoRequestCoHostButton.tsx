@@ -1,10 +1,8 @@
 import React from "react";
-import { Alert } from "react-native"
-
 import { ZegoTranslationText, ZegoInvitationType, ZegoLiveStatus, ZegoToastType } from "../services/defines";
 import { ZegoSendInvitationButton } from '@zegocloud/zego-uikit-rn';
 
-export default function ZegoRequestCoHostButton(props) {
+export default function ZegoRequestCoHostButton(props: any) {
     const { 
         hostID,
         liveStatus,

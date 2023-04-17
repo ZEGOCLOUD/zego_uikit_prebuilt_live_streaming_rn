@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 
-export default function ZegoDialog(props) {
+export default function ZegoDialog(props: any) {
     const {
         visable = false,
         title = '',
@@ -12,7 +12,7 @@ export default function ZegoDialog(props) {
         onOk,
     } = props;
 
-    const getCustomContainerStyle = (visable) => StyleSheet.create({
+    const getCustomContainerStyle = (visable: boolean) => StyleSheet.create({
         customContainer: {
             display: visable ? 'flex' : 'none',
         },
