@@ -1,14 +1,20 @@
 import ZegoMenuBarButtonName from '../components/ZegoMenuBarButtonName';
+interface ZegoDialogInfoParams {
+    title: string,
+    message: string,
+    cancelButtonName: string,
+    confirmButtonName: string,
+}
 class ZegoDialogInfo {
     title = '';
     message = '';
-    cancelButtonName = 'Cancel';
-    confirmButtonName = 'OK';
-    constructor({ title, message, cancelButtonName, confirmButtonName }) {
+    cancelButtonName = '';
+    confirmButtonName = '';
+    constructor({ title, message, cancelButtonName, confirmButtonName }: ZegoDialogInfoParams) {
         this.title = title;
         this.message = message;
-        this.cancelButtonName = cancelButtonName;
-        this.confirmButtonName = confirmButtonName;
+        this.cancelButtonName = cancelButtonName || 'Cancel';
+        this.confirmButtonName = confirmButtonName || 'OK';
     }
 };
 const ZegoTranslationText = {
@@ -54,6 +60,8 @@ const ZegoTranslationText = {
     endConnectionDialogInfo: new ZegoDialogInfo({
         title: "End the connection",
         message: "Do you want to end the cohosting?",
+        cancelButtonName: 'Cancel',
+        confirmButtonName: 'OK',
     }),
 };
 const ZegoLiveStreamingRole = {

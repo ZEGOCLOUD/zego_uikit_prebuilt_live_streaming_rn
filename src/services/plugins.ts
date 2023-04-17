@@ -4,15 +4,15 @@ import ZegoUIKit, {
 } from '@zegocloud/zego-uikit-rn';
 import { zloginfo } from '../utils/logger';
 
-const _appInfo = {};
-const _localUser = {};
-let _pluginConnectionState;
-const _install = (plugins) => {
+const _appInfo = {} as any;
+const _localUser = {} as any;
+let _pluginConnectionState: number;
+const _install = (plugins: any[]) => {
   ZegoUIKit.installPlugins(plugins);
   Object.values(ZegoUIKitPluginType).forEach((pluginType) => {
     const plugin = ZegoUIKit.getPlugin(pluginType);
     plugin && plugin.getVersion()
-      .then((pluginVersion) => {
+      .then((pluginVersion: string) => {
         zloginfo(
           `[Plugins] install success, pluginType: ${pluginType}, version: ${pluginVersion}`
         );
@@ -21,7 +21,7 @@ const _install = (plugins) => {
 };
 
 const ZegoPrebuiltPlugins = {
-  init: (appID, appSign, userID, userName, plugins) => {
+  init: (appID: string, appSign: string, userID: string, userName: string, plugins: any[]) => {
     const callbackID =
       'ZegoPrebuiltPlugins' + String(Math.floor(Math.random() * 10000));
     _install(plugins);
@@ -29,7 +29,7 @@ const ZegoPrebuiltPlugins = {
       ZegoUIKit.getSignalingPlugin().init(appID, appSign);
       ZegoUIKit.getSignalingPlugin().onConnectionStateChanged(
         callbackID,
-        ({ state }) => {
+        ({ state }: any) => {
           _pluginConnectionState = state;
         }
       );
@@ -46,7 +46,7 @@ const ZegoPrebuiltPlugins = {
       return Promise.resolve(false);
     }
   },
-  joinRoom(roomID) {
+  joinRoom(roomID: string) {
     if (ZegoUIKit.getPlugin(ZegoUIKitPluginType.signaling)) {
       return ZegoUIKit.getSignalingPlugin().joinRoom(roomID).then(() => {
         zloginfo('[Plugins] join room success.');

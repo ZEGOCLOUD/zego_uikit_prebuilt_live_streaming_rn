@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
-import { Keyboard, KeyboardEvent } from 'react-native';
+import { Keyboard } from 'react-native';
 
 export const useKeyboard = () => {
     const [keyboardHeight, setKeyboardHeight] = useState(0);
 
-    function onKeyboardDidShow(e) { // Remove type here if not using TypeScript
+    function onKeyboardDidShow(e: any) { // Remove type here if not using TypeScript
         setKeyboardHeight(e.endCoordinates.height);
     }
 

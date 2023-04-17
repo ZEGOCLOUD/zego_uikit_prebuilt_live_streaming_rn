@@ -1,14 +1,13 @@
 import React from 'react';
-import { StyleSheet, TouchableOpacity, View, Button } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import ZegoUIKitPrebuiltLiveStreaming, { HOST_DEFAULT_CONFIG } from '@zegocloud/zego-uikit-prebuilt-live-streaming-rn'
 import KeyCenter from './KeyCenter';
 import ZegoUIKitSignalingPlugin from '@zegocloud/zego-uikit-signaling-plugin-rn';
 
-export default function HostPage(props) {
+export default function HostPage(props: any) {
     const { route } = props;
     const { params } = route;
     const { userID, userName, liveID } = params;
-
     return (
         <View style={styles.container}>
             <ZegoUIKitPrebuiltLiveStreaming

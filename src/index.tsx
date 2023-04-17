@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { PermissionsAndroid, Image, Text, ImageBackground, Alert } from 'react-native';
+import { Image, Text, ImageBackground, Alert } from 'react-native';
 
 import {
   StyleSheet,
@@ -47,7 +47,7 @@ export {
 };
 
 // https://github.com/react-native-community/hooks#usekeyboard
-export default function ZegoUIKitPrebuiltLiveStreaming(props) {
+export default function ZegoUIKitPrebuiltLiveStreaming(props: any) {
   const { appID, appSign, userID, userName, liveID, config, plugins = [] } = props;
   const realTimeData = useRef(); // Resolve the problem where closures cannot obtain new values, add as needed
   const isIgnore = useRef(); // Resolved callback delay in receiving room attached message
@@ -57,7 +57,7 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props) {
   Object.assign(ZegoTranslationText, config.translationText || {});
   config.deviceConfirmDialogInfo === undefined && (config.deviceConfirmDialogInfo = {});
 
-  const showDefaultDeviceOnDialog = (isCamera, formUser) => {
+  const showDefaultDeviceOnDialog = (isCamera: boolean, formUser: any) => {
     console.log('########showDefaultDeviceOnDialog', formUser, isCamera);
     return new Promise((resolve, reject) => {
       const {
