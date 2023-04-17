@@ -945,6 +945,7 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props: any) {
                   ref={(input: any) => {
                     setTextInput(input);
                   }}
+                  // @ts-ignore
                   onContentSizeChange={(height: number) => {
                     setTextInputHeight(height);
                   }}

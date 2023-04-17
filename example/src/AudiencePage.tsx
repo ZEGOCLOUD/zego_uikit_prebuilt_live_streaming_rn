@@ -1,14 +1,13 @@
-import React, {useEffect} from 'react';
-import {Alert} from 'react-native';
+import React from 'react';
 
-import {StyleSheet, View, Text, Button} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import ZegoUIKitPrebuiltLiveStreaming, {
   AUDIENCE_DEFAULT_CONFIG,
 } from '@zegocloud/zego-uikit-prebuilt-live-streaming-rn';
 import KeyCenter from './KeyCenter';
 import ZegoUIKitSignalingPlugin from '@zegocloud/zego-uikit-signaling-plugin-rn';
 
-export default function AudiencePage(props) {
+export default function AudiencePage(props: any) {
   const {route} = props;
   const {params} = route;
   const {userID, userName, liveID} = params;

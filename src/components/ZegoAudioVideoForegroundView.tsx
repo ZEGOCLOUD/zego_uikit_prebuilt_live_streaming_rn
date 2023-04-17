@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useRef } from "react";
 import { View, Text, StyleSheet, PanResponder } from "react-native"
 import ZegoUIKit, { ZegoMicrophoneStateIcon, ZegoCameraStateIcon, ZegoToggleCameraButton, ZegoToggleMicrophoneButton } from '@zegocloud/zego-uikit-rn'
 import { ZegoLiveStreamingRole } from "../services/defines";

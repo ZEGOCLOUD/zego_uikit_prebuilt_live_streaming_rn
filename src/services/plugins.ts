@@ -21,7 +21,7 @@ const _install = (plugins: any[]) => {
 };
 
 const ZegoPrebuiltPlugins = {
-  init: (appID: string, appSign: string, userID: string, userName: string, plugins: any[]) => {
+  init: (appID: number, appSign: string, userID: string, userName: string, plugins: any[]) => {
     const callbackID =
       'ZegoPrebuiltPlugins' + String(Math.floor(Math.random() * 10000));
     _install(plugins);
@@ -65,7 +65,7 @@ const ZegoPrebuiltPlugins = {
         ZegoInvitationConnectionState.disconnected
       );
       if (_pluginConnectionState === ZegoInvitationConnectionState.disconnected) {
-        ZegoUIKit.getSignalingPlugin().logout.then(() => {
+        ZegoUIKit.getSignalingPlugin().logout().then(() => {
           zloginfo('[Plugins] auto logout success.');
           ZegoUIKit.getSignalingPlugin().login(
             _localUser.userID,
