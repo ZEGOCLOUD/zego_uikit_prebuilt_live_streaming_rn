@@ -120,7 +120,7 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props: any) {
     showInRoomMessageButton = true,
     hostButtons = [ZegoMenuBarButtonName.toggleCameraButton, ZegoMenuBarButtonName.toggleMicrophoneButton, ZegoMenuBarButtonName.switchCameraButton],
     coHostButtons = [ZegoMenuBarButtonName.toggleCameraButton, ZegoMenuBarButtonName.toggleMicrophoneButton, ZegoMenuBarButtonName.switchCameraButton, ZegoMenuBarButtonName.coHostControlButton],
-    audienceButtons = plugins && plugins.length ? [ZegoMenuBarButtonName.coHostControlButton] : [],
+    audienceButtons = plugins && plugins.length && plugins.find((plugin: any) => plugin.ZIMConnectionState) ? [ZegoMenuBarButtonName.coHostControlButton] : [],
     hostExtendButtons = [],
     coHostExtendButtons = [],
     audienceExtendButtons = [],
