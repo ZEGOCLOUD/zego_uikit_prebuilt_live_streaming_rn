@@ -8,6 +8,8 @@
 
 ## Integrate the SDK
 
+[![Tutorial | How to build live streaming using React Native in 10 mins with ZEGOCLOUD](https://res.cloudinary.com/marcomontalbano/image/upload/v1682409295/video_to_markdown/images/youtube--Ch_szozkMfA-c05b58ac6eb4c4700831b2b3070cd403.jpg)](https://youtu.be/Ch_szozkMfA "Tutorial | How to build live streaming using React Native in 10 mins with ZEGOCLOUD")
+
 ### Import the SDK
 
 ### Add @zegocloud/zego-uikit-prebuilt-live-streaming-rn as dependencies
