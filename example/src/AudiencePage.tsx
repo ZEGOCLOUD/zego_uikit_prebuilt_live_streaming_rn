@@ -6,7 +6,6 @@ import ZegoUIKitPrebuiltLiveStreaming, {
 } from '@zegocloud/zego-uikit-prebuilt-live-streaming-rn';
 import KeyCenter from './KeyCenter';
 import * as ZIM from 'zego-zim-react-native';
-import * as ZPNs from 'zego-zpns-react-native';
 
 export default function AudiencePage(props: any) {
   const {route} = props;
@@ -28,7 +27,7 @@ export default function AudiencePage(props: any) {
             props.navigation.navigate('HomePage');
           },
         }}
-        plugins={[ZIM, ZPNs]}
+        plugins={[ZIM]}
       />
     </View>
   );

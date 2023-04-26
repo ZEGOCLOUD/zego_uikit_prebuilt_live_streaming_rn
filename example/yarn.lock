@@ -1526,11 +1526,6 @@
   version "0.0.0"
   uid ""
 
-"@zegocloud/zego-uikit-signaling-plugin-rn@^1.3.7":
-  version "1.3.7"
-  resolved "https://registry.yarnpkg.com/@zegocloud/zego-uikit-signaling-plugin-rn/-/zego-uikit-signaling-plugin-rn-1.3.7.tgz#5b04e38ff601c75af4f3d72ff5f6bd875eb972e6"
-  integrity sha512-fnt2/5hqEmBf6KsSUNAFDgTS313R2eMsPD9F2hq+AOG3UJ2POWsyQJKF2tWESqYj1iMUnoUKqH9UaE2+7pmKxw==
-
 abab@^2.0.3, abab@^2.0.5:
   version "2.0.6"
   resolved "https://registry.yarnpkg.com/abab/-/abab-2.0.6.tgz#41b80f2c871d19686216b82309231cfd3cb3d291"
@@ -7181,8 +7176,3 @@ zego-zim-react-native@2.7.1:
   version "2.7.1"
   resolved "https://registry.yarnpkg.com/zego-zim-react-native/-/zego-zim-react-native-2.7.1.tgz#0abc906cb25a92902745ba37e30ae14efe446109"
   integrity sha512-9NyOZR1yBwwcOjmao21Uow83+Cq5fnTrAtPFH4n2IU5wumA5prdvtBXz6u4WkPB8aGtTXEmDNfPwm3xk/3WAdA==
-
-zego-zpns-react-native@2.3.5:
-  version "2.3.5"
-  resolved "https://registry.yarnpkg.com/zego-zpns-react-native/-/zego-zpns-react-native-2.3.5.tgz#8069df7c0fa6f558648284cf354a01ca97adb2b4"
-  integrity sha512-pmd9fiXr4fsz1z91VfrmEZP/Gkg1gGqJLvzSmLv/ToaLHIQahvvKZ2IlXxgiLyIZcEMAqMCZTchN4nZD98vseA==
