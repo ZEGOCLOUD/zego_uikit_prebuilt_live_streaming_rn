@@ -130,7 +130,7 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props: any) {
   const keyboardHeight = useKeyboard();
   const [textInputVisable, setTextInputVisable] = useState(false);
   const [textInput, setTextInput] = useState(null);
-  const [textInputHeight, setTextInputHeight] = useState(95);
+  const [textInputHeight, setTextInputHeight] = useState(45);
   const [role, setRole] = useState(config.role);
   const [hostID, setHostID] = useState('');
   const [liveStatus, setLiveStatus] = useState(''); // init: '' default: 0, start: 1
@@ -549,7 +549,7 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props: any) {
     setIsMemberListVisable(false);
     setIsCoHostDialogVisable(false);
     setCoHostDialogExtendedData({});
-    setTextInputHeight(95); // It needs to be reinitialized, otherwise the height will be wrong
+    setTextInputHeight(45); // It needs to be reinitialized, otherwise the height will be wrong
   };
   const useInterval = (callback: Function, delay: number) => {
     const savedCallback = useRef();
@@ -882,7 +882,7 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props: any) {
             bottom:
               (Platform.OS == 'ios'
                 ? keyboardHeight + textInputHeight
-                : textInputHeight) + 10,
+                : textInputHeight) + 40,
           },
         ]}
       />
@@ -947,7 +947,7 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props: any) {
                   }}
                   // @ts-ignore
                   onContentSizeChange={(height: number) => {
-                    setTextInputHeight(height);
+                    // setTextInputHeight(height);
                   }}
                   placeholder={'Say something...'}
                   onSumit={() => {
