@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useImperativeHandle, forwardRef } from 'react';
 import { Image, Text, ImageBackground, Alert } from 'react-native';
 
 import {
@@ -28,7 +28,7 @@ import ZegoCoHostMenuDialog from "./components/ZegoCoHostMenuDialog";
 import ZegoToast from "./components/ZegoToast";
 import ZegoDialog from "./components/ZegoDialog";
 import ZegoPrebuiltPlugins from './services/plugins';
-import { getShotName, grantPermissions } from './utils';
+import { getShotName, grantPermissions, durationFormat } from './utils';
 import ZegoAudioVideoForegroundView from './components/ZegoAudioVideoForegroundView';
 import {
   HOST_DEFAULT_CONFIG,
@@ -48,7 +48,7 @@ export {
 };
 
 // https://github.com/react-native-community/hooks#usekeyboard
-export default function ZegoUIKitPrebuiltLiveStreaming(props: any) {
+function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
   const { appID, appSign, userID, userName, liveID, config, plugins = [] } = props;
   const realTimeData = useRef(); // Resolve the problem where closures cannot obtain new values, add as needed
   const isIgnore = useRef(); // Resolved callback delay in receiving room attached message
@@ -104,6 +104,7 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props: any) {
     onCameraTurnOnByOthersConfirmation = showDefaultDeviceOnDialog.bind(this, true),
     // @ts-ignore
     onMicrophoneTurnOnByOthersConfirmation = showDefaultDeviceOnDialog.bind(this, false),
+    durationConfig = {},
   } = config;
   const {
     showSoundWavesInAudioMode = true,
@@ -126,6 +127,10 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props: any) {
     audienceExtendButtons = [],
     maxCount = 5,
   } = bottomMenuBarConfig;
+  const {
+    isVisible = true,
+    onDurationUpdate
+  } = durationConfig;
 
   const keyboardHeight = useKeyboard();
   const [textInputVisable, setTextInputVisable] = useState(false);
@@ -145,6 +150,7 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props: any) {
   const [toastExtendedData, setToastExtendedData] = useState({} as any);
   const [isDialogVisable, setIsDialogVisable] = useState(false);
   const [dialogExtendedData, setDialogExtendedData] = useState({} as any);
+  const [duration, setDuration] = useState(0);
 
   const callbackID = 'ZegoUIKitPrebuiltLiveStreaming' + String(Math.floor(Math.random() * 10000));
   const hideCountdownOnToastLimit = 5;
@@ -154,6 +160,11 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props: any) {
 
   const hideCountdownOn_Dialog = useRef();
   const hideCountdownOn_DialogTimer = useRef();
+
+  const liveStreamingTiming = useRef();
+  const liveStreamingTimingTimer = useRef();
+
+  const debounce = useRef();
 
   const registerPluginCallback = () => {
     if (ZegoUIKit.getPlugin(ZegoUIKitPluginType.signaling)) {
@@ -313,6 +324,46 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props: any) {
     }
     setIsDialogVisable(visable);
   }
+  const startLiveStreamingTimingTimer = () => {
+    if (!isVisible) return;
+    if (liveStreamingTimingTimer.current) {
+      // Avoid double timing
+    } else {
+      console.log('########startLiveStreamingTimingTimer');
+      (liveStreamingTiming.current as any) = 0;
+      (liveStreamingTimingTimer.current as any) = setInterval(() => {
+        (liveStreamingTiming.current as any) += 1;
+        setDuration(liveStreamingTiming.current);
+        typeof onDurationUpdate === 'function' && onDurationUpdate(liveStreamingTiming.current);
+      }, 1000);
+    }
+  };
+  const initLiveStreamingTimingTimer = () => {
+    console.log('########initLiveStreamingTimingTimer');
+    clearInterval(liveStreamingTimingTimer.current);
+    (liveStreamingTimingTimer.current as any) = null;
+    (liveStreamingTiming.current as any) = 0;
+  }
+
+  useImperativeHandle(ref, () => ({
+    leave: async (showConfirmation = false) => {
+      if (debounce.current) return;
+      if (!showConfirmation) {
+        (debounce.current as any) = true;
+        await tempHandle();
+        ZegoUIKit.leaveRoom();
+        typeof onLeaveLiveStreaming == 'function' && onLeaveLiveStreaming(liveStreamingTiming.current);
+        (debounce.current as any) = false;
+      } else {
+        (debounce.current as any) = true;
+        onLeaveLiveStreamingConfirmingWrap(onLeaveLiveStreamingConfirming).then(() => {
+          ZegoUIKit.leaveRoom();
+          typeof onLeaveLiveStreaming == 'function' && onLeaveLiveStreaming(liveStreamingTiming.current);
+          (debounce.current as any) = false;
+        });
+      }
+    }
+  }));
 
   useEffect(() => {
     ZegoUIKit.onRoomStateChanged(callbackID, () => {
@@ -386,7 +437,7 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props: any) {
               (realTimeData.current as any).memberConnectStateMap[userID] = ZegoCoHostConnectState.idle;
               setMemberConnectStateMap({ ...(realTimeData.current as any).memberConnectStateMap });
 
-              typeof onLiveStreamingEnded === 'function' && onLiveStreamingEnded();
+              typeof onLiveStreamingEnded === 'function' && onLiveStreamingEnded(liveStreamingTiming.current);
             }
           }
         } else {
@@ -399,6 +450,9 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props: any) {
 
         // @ts-ignore
         setLiveStatus(temp);
+        if (temp === ZegoLiveStatus.start) {
+          startLiveStreamingTimingTimer();
+        }
         (realTimeData.current as any).liveStatus = temp;
       }
     });
@@ -459,7 +513,7 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props: any) {
       });
     });
     ZegoUIKit.onMeRemovedFromRoom(callbackID, () => {
-      onLeaveLiveStreaming();
+      typeof onLeaveLiveStreaming == 'function' && onLeaveLiveStreaming(liveStreamingTiming.current);
     });
     ZegoUIKit.onInRoomCommandReceived(callbackID, (fromUser: any, command: any) => {
       console.warn('[Prebuilt]onInRoomCommandReceived', fromUser, command);
@@ -481,8 +535,6 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props: any) {
     };
   }, []);
   useEffect(() => {
-    initDialogTimer();
-
     (realTimeData.current as any) = {
       role: config.role,
       hostID: '',
@@ -518,6 +570,8 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props: any) {
       );
     });
     return () => {
+      initDialogTimer();
+      initLiveStreamingTimingTimer();
       ZegoUIKit.leaveRoom();
       unRegisterPluginCallback();
       ZegoPrebuiltPlugins.uninit();
@@ -588,9 +642,7 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props: any) {
     const leaveHandle = async () => {
       // Leave the room
       ZegoUIKit.leaveRoom();
-      if (typeof onLeaveLiveStreaming == 'function') {
-        onLeaveLiveStreaming();
-      }
+      typeof onLeaveLiveStreaming == 'function' && onLeaveLiveStreaming(liveStreamingTiming.current);
     }
     const temp = onLeaveLiveStreamingConfirmingWrap(onLeaveLiveStreamingConfirming);
     if (temp) {
@@ -652,26 +704,29 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props: any) {
       }
     })
   };
+  const tempHandle = async () => {
+    // Intercept confirm 
+    if (role === ZegoLiveStreamingRole.host) {
+      // @ts-ignore
+      if (liveStatus === ZegoLiveStatus.start) {
+        // Clear room properties
+        await ZegoUIKit.updateRoomProperties({ live_status: `${ZegoLiveStatus.default}`, host: '' });
+        typeof onLiveStreamingEnded === 'function' && onLiveStreamingEnded(liveStreamingTiming.current);
+      } else {
+        // Clear room properties
+        await ZegoUIKit.updateRoomProperties({ live_status: `${ZegoLiveStatus.default}`, host: '' });
+      }
+    } else if (role === ZegoLiveStreamingRole.coHost) {
+
+    } else {
+      
+    }
+  }
   const onLeaveLiveStreamingConfirmingWrap = (onLeaveLiveStreamingConfirming: any) => {
     const temp = onLeaveLiveStreamingConfirming || showDefaultLeaveDialog;
     return new Promise<void>((resolve, reject) => {
       temp().then(async () => {
-        // Intercept confirm 
-        if (role === ZegoLiveStreamingRole.host) {
-          // @ts-ignore
-          if (liveStatus === ZegoLiveStatus.start) {
-            // Clear room properties
-            await ZegoUIKit.updateRoomProperties({ live_status: `${ZegoLiveStatus.default}`, host: '' });
-            typeof onLiveStreamingEnded === 'function' && onLiveStreamingEnded();
-          } else {
-            // Clear room properties
-            await ZegoUIKit.updateRoomProperties({ live_status: `${ZegoLiveStatus.default}`, host: '' });
-          }
-        } else if (role === ZegoLiveStreamingRole.coHost) {
-
-        } else {
-          
-        }
+        await tempHandle();
         resolve();
       }).catch(() => {
         // Intercept confirm cancel
@@ -793,7 +848,9 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props: any) {
                 style={styles.fillParent}
                 // @ts-ignore
                 onLeaveConfirmation={onLeaveLiveStreamingConfirmingWrap.bind(this, onLeaveLiveStreamingConfirming)}
-                onPressed={onLeaveLiveStreaming}
+                onPressed={() => {
+                  onLeaveLiveStreaming(liveStreamingTiming.current);
+                }}
                 iconLeave={require('./resources/white_top_button_close.png')}
               />
             </View> : null
@@ -817,6 +874,13 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props: any) {
           {
             startLiveButtonBuilder ? startLiveButtonBuilder(onStartLiveStreaming) : <ZegoStartLiveButton onPressed={onStartLiveStreaming} />
           }
+        </View> : null
+      }
+      {/* Timing */}
+      {
+        // @ts-ignore
+        isVisible && liveStatus === ZegoLiveStatus.start ? <View style={styles.timingContainer}>
+          <Text style={styles.timing}>{durationFormat(duration)}</Text>
         </View> : null
       }
       {/* Message list */}
@@ -915,7 +979,9 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props: any) {
                 turnOnMicrophoneWhenJoining={turnOnMicrophoneWhenJoining}
                 useSpeakerWhenJoining={useSpeakerWhenJoining}
                 showInRoomMessageButton={showInRoomMessageButton}
-                onLeaveLiveStreaming={onLeaveLiveStreaming}
+                onLeaveLiveStreaming={() => {
+                  onLeaveLiveStreaming(liveStreamingTiming.current);
+                }}
                 // @ts-ignore
                 onLeaveLiveStreamingConfirming={onLeaveLiveStreamingConfirmingWrap.bind(this, onLeaveLiveStreamingConfirming)}
                 onMessageButtonPress={() => { setTextInputVisable(true) }}
@@ -961,6 +1027,8 @@ export default function ZegoUIKitPrebuiltLiveStreaming(props: any) {
     </View>
   );
 }
+
+export default forwardRef(ZegoUIKitPrebuiltLiveStreaming);
 
 const styles = StyleSheet.create({
   messageListView: {
@@ -1111,4 +1179,12 @@ const styles = StyleSheet.create({
     color: 'white',
     textAlign: 'center',
   },
+  timingContainer: {
+    position: 'absolute',
+    top: 6,
+    zIndex: 11,
+  },
+  timing: {
+    color: 'white',
+  }
 });

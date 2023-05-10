@@ -1,16 +1,18 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
 import ZegoUIKitPrebuiltLiveStreaming, { HOST_DEFAULT_CONFIG } from '@zegocloud/zego-uikit-prebuilt-live-streaming-rn'
 import KeyCenter from './KeyCenter';
 import * as ZIM from 'zego-zim-react-native';
 
 export default function HostPage(props: any) {
+    const prebuiltRef = useRef();
     const { route } = props;
     const { params } = route;
     const { userID, userName, liveID } = params;
     return (
         <View style={styles.container}>
             <ZegoUIKitPrebuiltLiveStreaming
+                ref={prebuiltRef}
                 appID={KeyCenter.appID}
                 appSign={KeyCenter.appSign}
                 userID={userID}
@@ -21,8 +23,22 @@ export default function HostPage(props: any) {
                     ...HOST_DEFAULT_CONFIG,
                     // startLiveButtonBuilder: (startLive) => <Button onPress={startLive} title="Start Live"></Button>,
                     onStartLiveButtonPressed: () => { console.log('########HostPage onStartLiveButtonPressed'); },
-                    onLiveStreamingEnded: () => { console.log('########HostPage onLiveStreamingEnded'); },
-                    onLeaveLiveStreaming: () => { props.navigation.navigate('HomePage') },
+                    onLiveStreamingEnded: (duration: number) => {
+                        console.log('########HostPage onLiveStreamingEnded', duration);
+                    },
+                    onLeaveLiveStreaming: (duration: number) => {
+                        console.log('########HostPage onLeaveLiveStreaming', duration);
+                        props.navigation.navigate('HomePage')
+                    },
+                    durationConfig: {
+                        isVisible: true,
+                        onDurationUpdate: (duration: number) => {
+                            console.log('########HostPage onDurationUpdate', duration);
+                            if (duration > 10) {
+                                (prebuiltRef as any).current.leave(true);
+                            }
+                        }
+                    }
                 }}
                 plugins={[ZIM]}
             />
