@@ -29,6 +29,7 @@
       "react-native"
     ],
     "exclude":[
+        "./index.js",
         "./babel.config.js",
         "./metro.config.js",
         "./node_modules",

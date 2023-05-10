@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
-import ZegoUIKitPrebuiltLiveStreaming, { HOST_DEFAULT_CONFIG } from '@zegocloud/zego-uikit-prebuilt-live-streaming-rn'
+import ZegoUIKitPrebuiltLiveStreaming, { HOST_DEFAULT_CONFIG } from '@zegocloud/zego-uikit-prebuilt-live-streaming-rn';
 import KeyCenter from './KeyCenter';
 import * as ZIM from 'zego-zim-react-native';
 
