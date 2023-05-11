@@ -343,6 +343,7 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
     clearInterval(liveStreamingTimingTimer.current);
     (liveStreamingTimingTimer.current as any) = null;
     (liveStreamingTiming.current as any) = 0;
+    setDuration(0);
   }
 
   useImperativeHandle(ref, () => ({
@@ -424,6 +425,7 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
               setIsDialogVisable(false);
               setDialogExtendedData({});
               initDialogTimer();
+              initLiveStreamingTimingTimer();
 
               // Cancel the invitation to cohost
               ZegoUIKit.getSignalingPlugin().cancelInvitation([(realTimeData.current as any).hostID]);
