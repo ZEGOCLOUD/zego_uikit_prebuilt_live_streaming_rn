@@ -4,6 +4,7 @@ import { Image, Text, ImageBackground, Alert } from 'react-native';
 import {
   StyleSheet,
   View,
+  SafeAreaView,
   Platform,
   KeyboardAvoidingView,
   TouchableOpacity,
@@ -881,9 +882,9 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
       {/* Timing */}
       {
         // @ts-ignore
-        isVisible && liveStatus === ZegoLiveStatus.start ? <View style={styles.timingContainer}>
+        isVisible && liveStatus === ZegoLiveStatus.start ? <SafeAreaView style={styles.timingContainer}>
           <Text style={styles.timing}>{durationFormat(duration)}</Text>
-        </View> : null
+        </SafeAreaView> : null
       }
       {/* Message list */}
       {
