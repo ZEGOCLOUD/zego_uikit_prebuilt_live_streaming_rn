@@ -41,11 +41,15 @@ import {
   ZegoCoHostConnectState,
   ZegoToastType,
 } from "./services/defines";
+import MinimizingHelper from "./services/minimizing_helper";
+import LiveAudioRoomHelper from "./services/live_streaming_helper";
+import ZegoUIKitPrebuiltLiveStreamingFloatingMinimizedView from "./components/ZegoUIKitPrebuiltLiveStreamingFloatingMinimizedView";
 
 export {
   ZegoMenuBarButtonName,
   HOST_DEFAULT_CONFIG,
   AUDIENCE_DEFAULT_CONFIG,
+  ZegoUIKitPrebuiltLiveStreamingFloatingMinimizedView,
 };
 
 // https://github.com/react-native-community/hooks#usekeyboard
