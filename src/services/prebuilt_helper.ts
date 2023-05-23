@@ -1,19 +1,19 @@
 import { ZegoLiveStreamingRole } from "./defines";
 
-export default class LiveStreamingHelper {
-    _instance;
+export default class PrebuiltHelper {
+    static _instance: PrebuiltHelper;
     _realTimeData = {
-        role: ZegoLiveStreamingRole.host,
+        role: ZegoLiveStreamingRole.audience,
         hostID: '',
         liveStatus: '',
         requestCoHostCount: 0,
         memberConnectStateMap: {},
     };
-    _stateData = {};
-    _notifyData = {};
+    _stateData: { [index: string]: any } = {};
+    _notifyData: { [index: string]: any }  = {};
     constructor() { }
     static getInstance() {
-        return this._instance || (this._instance = new LiveStreamingHelper());
+        return this._instance || (this._instance = new PrebuiltHelper());
     }
     // Use reference types directly, so the set method is not provided here
     getRealTimeData() {
@@ -27,13 +27,11 @@ export default class LiveStreamingHelper {
     }
     clearRealTimeData() {
         this._realTimeData = {
-            role: 0,
+            role: ZegoLiveStreamingRole.host,
             hostID: '',
+            liveStatus: '',
             requestCoHostCount: 0,
             memberConnectStateMap: {},
-            seatingAreaData: [],
-            roomProperties: {},
-            isLocked: false,
         }
     }
     clearState() {

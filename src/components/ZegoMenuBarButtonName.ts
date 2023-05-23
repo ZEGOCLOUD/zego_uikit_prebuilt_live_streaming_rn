@@ -6,6 +6,7 @@ const ZegoMenuBarButtonName = {
     leaveButton: 4,
     coHostControlButton: 5,
     enableChatButton: 6,
+    minimizingButton: 8,
 }
 
 export default ZegoMenuBarButtonName;

@@ -12,7 +12,7 @@ import { ZegoAudioVideoView } from '@zegocloud/zego-uikit-rn';
 import MinimizingHelper from "../services/minimizing_helper";
 import { zloginfo } from "../utils/logger";
   
-export default function ZegoUIKitPrebuiltLiveAudioRoomFloatingMinimizedView(props, ref) {
+export default function ZegoUIKitPrebuiltLiveAudioRoomFloatingMinimizedView(props: any) {
     const window = useWindowDimensions();
     const {
         width = 90,
@@ -92,26 +92,19 @@ export default function ZegoUIKitPrebuiltLiveAudioRoomFloatingMinimizedView(prop
         zloginfo('[ZegoUIKitPrebuiltLiveAudioRoomFloatingMinimizedView] pressedHandle');
         MinimizingHelper.getInstance().notifyMaximize();
     }
-    const defaultForegroundBuilder = ({ userInfo }) => {
+    const defaultForegroundBuilder = ({ userInfo }: any) => {
         return <View style={styles.foreground}>
-            {
-                userInfo.inRoomAttributes && userInfo.inRoomAttributes.role === '0' ? <Image
-                    resizeMode="contain"
-                    style={styles.hostIcon}
-                    source={require('../resources/host_icon.png')}
-                /> : null
-            }
             <Text style={styles.foregroundText}>{ userInfo.userName }</Text>
         </View>
     }
 
     useEffect(() => {
-        MinimizingHelper.getInstance().onLiveAudioRoomInit(callbackID, () => {
+        MinimizingHelper.getInstance().onPrebuiltInit(callbackID, () => {
             zloginfo('[ZegoUIKitPrebuiltLiveAudioRoomFloatingMinimizedView] init success');
             setIsInit(true);
         });
         return () => {
-            MinimizingHelper.getInstance().onLiveAudioRoomInit(callbackID);
+            MinimizingHelper.getInstance().onPrebuiltInit(callbackID);
         };
     }, []);
     useEffect(() => {
@@ -176,8 +169,8 @@ export default function ZegoUIKitPrebuiltLiveAudioRoomFloatingMinimizedView(prop
                         userID={activeUserID}
                         foregroundBuilder={
                             foregroundBuilder
-                                ? ({ userInfo }) => foregroundBuilder({ userInfo })
-                                : ({ userInfo }) => defaultForegroundBuilder({ userInfo })
+                                ? ({ userInfo }: any) => foregroundBuilder({ userInfo })
+                                : ({ userInfo }: any) => defaultForegroundBuilder({ userInfo })
                         }
                         showSoundWave={showSoundWaveInAudioMode}
                         audioViewBackgroudColor={backgroundColor}
@@ -216,12 +209,6 @@ const styles = StyleSheet.create({
         bottom: 0,
         width: '100%',
         alignItems: 'center',
-    },
-    hostIcon: {
-        width: 47,
-        height: 12,
-        position: 'absolute',
-        bottom: 12,
     },
     foregroundText: {
         fontSize: 10,

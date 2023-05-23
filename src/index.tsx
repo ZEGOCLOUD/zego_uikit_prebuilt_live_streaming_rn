@@ -11,7 +11,6 @@ import {
 } from 'react-native';
 import ZegoUIKit, {
   ZegoRoomPropertyUpdateType,
-  ZegoLeaveButton,
   ZegoInRoomMessageInput,
   ZegoInRoomMessageView,
   ZegoAudioVideoContainer,
@@ -41,8 +40,9 @@ import {
   ZegoCoHostConnectState,
   ZegoToastType,
 } from "./services/defines";
+import ZegoTopBar from "./components/ZegoTopBar";
 import MinimizingHelper from "./services/minimizing_helper";
-import LiveAudioRoomHelper from "./services/live_streaming_helper";
+import PrebuiltHelper from "./services/prebuilt_helper";
 import ZegoUIKitPrebuiltLiveStreamingFloatingMinimizedView from "./components/ZegoUIKitPrebuiltLiveStreamingFloatingMinimizedView";
 
 export {
@@ -54,15 +54,29 @@ export {
 
 // https://github.com/react-native-community/hooks#usekeyboard
 function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
-  const { appID, appSign, userID, userName, liveID, config, plugins = [] } = props;
-  const realTimeData = useRef(); // Resolve the problem where closures cannot obtain new values, add as needed
-  const isIgnore = useRef(); // Resolved callback delay in receiving room attached message
-  const shouldSortHostAtFirst = useRef();
-
-  config.role === undefined && (config.role = ZegoLiveStreamingRole.audience);
-  Object.assign(ZegoTranslationText, config.translationText || {});
-  config.deviceConfirmDialogInfo === undefined && (config.deviceConfirmDialogInfo = {});
-
+  let { appID, appSign, userID, userName, liveID, config, plugins = [] } = props;
+  const isMinimizeSwitch = MinimizingHelper.getInstance().getIsMinimizeSwitch();
+  if (isMinimizeSwitch) {
+    const initAppInfo = MinimizingHelper.getInstance().getInitAppInfo();
+    const initUser = MinimizingHelper.getInstance().getInitUser();
+    const initLiveID = MinimizingHelper.getInstance().getInitRoomID();
+    const initConfig = MinimizingHelper.getInstance().getInitConfig();
+    const initPlugins = MinimizingHelper.getInstance().getInitPlugins();
+    appID = initAppInfo.appID;
+    appSign = initAppInfo.appSign
+    userID = initUser.userID;
+    userName = initUser.userName;
+    liveID = initLiveID;
+    config = initConfig;
+    plugins = initPlugins;
+  } else {
+    MinimizingHelper.getInstance().notifyEntryNormal();
+    config.role === undefined && (config.role = ZegoLiveStreamingRole.audience);
+    Object.assign(ZegoTranslationText, config.translationText || {});
+    config.deviceConfirmDialogInfo === undefined && (config.deviceConfirmDialogInfo = {});
+    MinimizingHelper.getInstance().setInitParams(appID, appSign, userID, userName, liveID, config);
+  }
+  
   const showDefaultDeviceOnDialog = (isCamera: boolean, formUser: any) => {
     console.log('########showDefaultDeviceOnDialog', formUser, isCamera);
     return new Promise<void>((resolve, reject) => {
@@ -96,6 +110,7 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
     useSpeakerWhenJoining = true,
     audioVideoViewConfig = {},
     bottomMenuBarConfig = {},
+    topMenuBarConfig = {},
     memberListConfig = {},
     inRoomMessageViewConfig = {},
     confirmDialogInfo = {},
@@ -133,9 +148,14 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
     maxCount = 5,
   } = bottomMenuBarConfig;
   const {
+    buttons = [ZegoMenuBarButtonName.leaveButton],
+  } = topMenuBarConfig;
+  const {
     isVisible = true,
     onDurationUpdate
   } = durationConfig;
+
+  const stateData = useRef(PrebuiltHelper.getInstance().getStateData());
 
   const keyboardHeight = useKeyboard();
   const [textInputVisable, setTextInputVisable] = useState(false);
@@ -163,14 +183,26 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
 
   let hideCountdownOnToast = hideCountdownOnToastLimit;
 
-  const hideCountdownOn_Dialog = useRef();
-  const hideCountdownOn_DialogTimer = useRef();
+  const hideCountdownOn_Dialog = useRef(hideCountdownOnDialogLimit);
+  const hideCountdownOn_DialogTimer = useRef(null);
 
-  const liveStreamingTiming = useRef();
-  const liveStreamingTimingTimer = useRef();
+  const liveStreamingTiming = useRef(0);
+  const liveStreamingTimingTimer = useRef(null);
 
-  const debounce = useRef();
+  const realTimeData = useRef(PrebuiltHelper.getInstance().getRealTimeData()); // Resolve the problem where closures cannot obtain new values, add as needed
+  if (!isMinimizeSwitch) {
+    realTimeData.current.role = config.role;
+  }
 
+  const isIgnore = useRef(false); // Resolved callback delay in receiving room attached message
+  const shouldSortHostAtFirst = useRef(true);
+  const debounce = useRef(false);
+
+  const isPageInBackground = () => {
+    const isMinimize = MinimizingHelper.getInstance().getIsMinimize();
+    console.log('######isPageInBackground', isMinimize);
+    return isMinimize;
+  }
   const registerPluginCallback = () => {
     if (ZegoUIKit.getPlugin(ZegoUIKitPluginType.signaling)) {
       ZegoUIKit.getSignalingPlugin().onInvitationReceived(callbackID, ({ callID, type, inviter, data }: any) => {
@@ -368,7 +400,10 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
           (debounce.current as any) = false;
         });
       }
-    }
+    },
+    minimizeWindow: () => {
+      MinimizingHelper.getInstance().minimizeWindow();
+    },
   }));
 
   useEffect(() => {
@@ -526,33 +561,33 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
       console.warn('[Prebuilt]onInRoomCommandReceived', fromUser, command);
     });
     
+    // Initialize after use
+    MinimizingHelper.getInstance().setIsMinimizeSwitch(false);
     return () => {
-      ZegoUIKit.onRoomStateChanged(callbackID);
-      ZegoUIKit.onUserJoin(callbackID);
-      ZegoUIKit.onUserLeave(callbackID);
-      ZegoUIKit.onRoomPropertiesFullUpdated(callbackID);
-      ZegoUIKit.onRoomPropertyUpdated(callbackID);
-      ZegoUIKit.onUserInfoUpdate(callbackID);
-      ZegoUIKit.onAudioVideoAvailable(callbackID);
-      ZegoUIKit.onAudioVideoUnavailable(callbackID);
-      ZegoUIKit.onTurnOnYourCameraRequest(callbackID);
-      ZegoUIKit.onTurnOnYourMicrophoneRequest(callbackID);
-      ZegoUIKit.onMeRemovedFromRoom(callbackID);
-      ZegoUIKit.onInRoomCommandReceived(callbackID);
+      const isMinimizeSwitch = MinimizingHelper.getInstance().getIsMinimizeSwitch();
+      if (!isMinimizeSwitch) {
+        ZegoUIKit.onRoomStateChanged(callbackID);
+        ZegoUIKit.onUserJoin(callbackID);
+        ZegoUIKit.onUserLeave(callbackID);
+        ZegoUIKit.onRoomPropertiesFullUpdated(callbackID);
+        ZegoUIKit.onRoomPropertyUpdated(callbackID);
+        ZegoUIKit.onUserInfoUpdate(callbackID);
+        ZegoUIKit.onAudioVideoAvailable(callbackID);
+        ZegoUIKit.onAudioVideoUnavailable(callbackID);
+        ZegoUIKit.onTurnOnYourCameraRequest(callbackID);
+        ZegoUIKit.onTurnOnYourMicrophoneRequest(callbackID);
+        ZegoUIKit.onMeRemovedFromRoom(callbackID);
+        ZegoUIKit.onInRoomCommandReceived(callbackID);
+
+        PrebuiltHelper.getInstance().clearState();
+        PrebuiltHelper.getInstance().clearNotify();
+      }
     };
   }, []);
   useEffect(() => {
-    (realTimeData.current as any) = {
-      role: config.role,
-      hostID: '',
-      liveStatus: '',
-      requestCoHostCount: 0,
-      memberConnectStateMap: {},
-    };
-    (isIgnore.current as any) = false;
-    (shouldSortHostAtFirst.current as any) = true;
     ZegoPrebuiltPlugins.init(appID, appSign, userID, userName, plugins).then((result: boolean) => {
       setIsPluginsInit(result);
+      MinimizingHelper.getInstance().notifyPrebuiltInit();
       // Register plugin callback
       registerPluginCallback();
       ZegoPrebuiltPlugins.joinRoom(liveID).then((result: boolean) => {
@@ -576,12 +611,20 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
         }
       );
     });
+    // Initialize after use
+    MinimizingHelper.getInstance().setIsMinimizeSwitch(false);
     return () => {
-      initDialogTimer();
-      initLiveStreamingTimingTimer();
-      ZegoUIKit.leaveRoom();
-      unRegisterPluginCallback();
-      ZegoPrebuiltPlugins.uninit();
+      const isMinimizeSwitch = MinimizingHelper.getInstance().getIsMinimizeSwitch();
+      if (!isMinimizeSwitch) {
+        initDialogTimer();
+        initLiveStreamingTimingTimer();
+        ZegoUIKit.leaveRoom();
+        unRegisterPluginCallback();
+        ZegoPrebuiltPlugins.uninit();
+
+        PrebuiltHelper.getInstance().clearState();
+        PrebuiltHelper.getInstance().clearNotify();
+      }
     };
   }, []);
 
@@ -850,17 +893,13 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
           }
           {
             // @ts-ignore
-            role === ZegoLiveStreamingRole.host && liveStatus === ZegoLiveStatus.start || role !== ZegoLiveStreamingRole.host ? <View style={styles.leaveButton}>
-              <ZegoLeaveButton
-                style={styles.fillParent}
-                // @ts-ignore
-                onLeaveConfirmation={onLeaveLiveStreamingConfirmingWrap.bind(this, onLeaveLiveStreamingConfirming)}
-                onPressed={() => {
-                  onLeaveLiveStreaming(liveStreamingTiming.current);
-                }}
-                iconLeave={require('./resources/white_top_button_close.png')}
-              />
-            </View> : null
+            role === ZegoLiveStreamingRole.host && liveStatus === ZegoLiveStatus.start || role !== ZegoLiveStreamingRole.host ? <ZegoTopBar
+              menuBarButtons={buttons}
+              onLeave={() => {
+                onLeaveLiveStreaming(liveStreamingTiming.current);
+              }}
+              onLeaveConfirmation={onLeaveLiveStreamingConfirmingWrap.bind(this, onLeaveLiveStreamingConfirming)}
+            /> : null
           }
           {
             // @ts-ignore
