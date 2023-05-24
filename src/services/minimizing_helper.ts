@@ -1,11 +1,11 @@
 import ZegoUIKit from '@zegocloud/zego-uikit-rn';
+import PrebuiltHelper from "./prebuilt_helper";
 
 export default class MinimizingHelper {
     static _instance: MinimizingHelper;
     _isMinimize = false;
     _isMinimizeSwitch = false;
     _activeUserID = '';
-    _rangeSoundLevels: { [index: string]: number[] } = {};
     _onActiveUserIDUpdateCallbackMap: { [index: string]: (data?: any) => void } = {};
     _onWindowMinimizeCallbackMap: { [index: string]: (data?: any) => void } = {};
     _onWindowMaximizeCallbackMap: { [index: string]: (data?: any) => void } = {};
@@ -23,7 +23,6 @@ export default class MinimizingHelper {
     _config: any = {};
     _plugins: any[] = [];
     _onPrebuiltInitCallbackMap: { [index: string]: (data?: any) => void } = {};
-    _onZegoDialogTriggerCallbackMap: { [index: string]: (data?: any) => void } = {};
     constructor() { }
     static getInstance() {
         return this._instance || (this._instance = new MinimizingHelper());
@@ -70,63 +69,21 @@ export default class MinimizingHelper {
         this.updateActiveUserIDByTimer();
 
         this.initUpdateTimer();
-        this._updateTimer = setInterval(() => {
-            this.updateActiveUserIDByTimer();
-        }, 1000)
     }
     initUpdateTimer() {
         clearInterval(this._updateTimer);
         this._updateTimer = null;
     }
     updateActiveUserIDByTimer() {
-        // console.log('[MinimizingHelper]updateActiveUserIDByTimer', this._rangeSoundLevels);
-        let maxAverageSoundLevel = 0;
-        Object.entries(this._rangeSoundLevels).forEach(([userID, soundLevels]) => {
-            const averageSoundLevel =
-                soundLevels.reduce((a, b) => a + b) / soundLevels.length;
-
-            if (averageSoundLevel > maxAverageSoundLevel) {
-                this._activeUserID = userID;
-                maxAverageSoundLevel = averageSoundLevel;
-            }
-        });
-
-        this._activeUserID = this._activeUserID || ZegoUIKit.getLocalUserInfo().userID || '';
-        this._rangeSoundLevels = {};
+        const activeUserID = PrebuiltHelper.getInstance().getRealTimeData().hostID;
+        this._activeUserID = activeUserID|| ZegoUIKit.getLocalUserInfo().userID || '';
         
         // console.log('[MinimizingHelper]updateActiveUserIDByTimer', this._activeUserID);
         this.notifyActiveUserIDUpdate(this._activeUserID);
     }
     registerAudioVideoListCallback(callbackID: string) {
-        ZegoUIKit.onAudioVideoAvailable(callbackID, (userList: any[]) => {
-            console.log('[MinimizingHelper]onAudioVideoAvailable', this._activeUserID);
-            userList.forEach((user) => {
-                if (this._rangeSoundLevels[user.userID]) {
-                    this._rangeSoundLevels[user.userID].push(user.soundLevel);
-                } else {
-                    this._rangeSoundLevels[user.userID] = [user.soundLevel];
-                }
-            });
-        });
-        ZegoUIKit.onAudioVideoUnavailable(callbackID, (userList: any[]) => {
-            console.log('[MinimizingHelper]onAudioVideoUnavailable', this._activeUserID);
-            userList.forEach((user) => {
-                delete this._rangeSoundLevels[user.userID];
-            });
-        });
-        ZegoUIKit.onSoundLevelUpdated(callbackID, (userID: string, soundLevel: number) => {
-            // console.log('[MinimizingHelper]onSoundLevelUpdated', this._rangeSoundLevels, userID, soundLevel);
-            if (this._rangeSoundLevels[userID]) {
-                this._rangeSoundLevels[userID].push(soundLevel);
-            } else {
-                this._rangeSoundLevels[userID] = [soundLevel];
-            }
-        });
     }
     unRegisterAudioVideoListCallback(callbackID: string) {
-        ZegoUIKit.onAudioVideoAvailable(callbackID);
-        ZegoUIKit.onAudioVideoUnavailable(callbackID);
-        ZegoUIKit.onSoundLevelUpdated(callbackID);
     }
     notifyPrebuiltInit() {
         Object.keys(this._onPrebuiltInitCallbackMap).forEach((callbackID) => {
@@ -169,13 +126,6 @@ export default class MinimizingHelper {
             }
         })
     }
-    notifyZegoDialogTrigger(visable: boolean) {
-        Object.keys(this._onZegoDialogTriggerCallbackMap).forEach((callbackID) => {
-            if (this._onZegoDialogTriggerCallbackMap[callbackID]) {
-                this._onZegoDialogTriggerCallbackMap[callbackID](visable);
-            }
-        })
-    }
     onPrebuiltInit(callbackID: string, callback?: (data: any) => void) {
         if (typeof callback !== 'function') {
             delete this._onPrebuiltInitCallbackMap[callbackID];
@@ -209,14 +159,6 @@ export default class MinimizingHelper {
             delete this._onEntryNormalCallbackMap[callbackID];
         } else {
             this._onEntryNormalCallbackMap[callbackID] = callback;
-        }
-    }
-    // Temporarily resolved an issue where dialog shutdown could not be triggered
-    onZegoDialogTrigger(callbackID: string, callback?: (data: any) => void) {
-        if (typeof callback !== 'function') {
-            delete this._onZegoDialogTriggerCallbackMap[callbackID];
-        } else {
-            this._onZegoDialogTriggerCallbackMap[callbackID] = callback;
         }
     }
 }

@@ -12,22 +12,15 @@ import { ZegoAudioVideoView } from '@zegocloud/zego-uikit-rn';
 import MinimizingHelper from "../services/minimizing_helper";
 import { zloginfo } from "../utils/logger";
   
-export default function ZegoUIKitPrebuiltLiveAudioRoomFloatingMinimizedView(props: any) {
+export default function ZegoUIKitPrebuiltLiveStreamingFloatingMinimizedView(props: any) {
     const window = useWindowDimensions();
     const {
         width = 90,
-        height = 90,
+        height = 160,
         borderRadius = 10,
         left = window.width / 2 || 100,
         top = 10,
         showSoundWaveInAudioMode = true,
-        foregroundBuilder,
-        backgroundColor = '#ffffff',
-        backgroundImage,
-        avatarBackgroundColor = '#ffffff',
-        avatarSize = { width: 54, height: 54 },
-        avatarAlignment = 0,
-        soundWaveColor = "#3655ff"
     } = props;
     const [isInit, setIsInit] = useState(false);
     const [isVisable, setIsVisable] = useState(false);
@@ -91,11 +84,6 @@ export default function ZegoUIKitPrebuiltLiveAudioRoomFloatingMinimizedView(prop
     const pressedHandle = async () => {
         zloginfo('[ZegoUIKitPrebuiltLiveAudioRoomFloatingMinimizedView] pressedHandle');
         MinimizingHelper.getInstance().notifyMaximize();
-    }
-    const defaultForegroundBuilder = ({ userInfo }: any) => {
-        return <View style={styles.foreground}>
-            <Text style={styles.foregroundText}>{ userInfo.userName }</Text>
-        </View>
     }
 
     useEffect(() => {
@@ -167,18 +155,7 @@ export default function ZegoUIKitPrebuiltLiveAudioRoomFloatingMinimizedView(prop
                     activeUserID ? <ZegoAudioVideoView
                         key={activeUserID}
                         userID={activeUserID}
-                        foregroundBuilder={
-                            foregroundBuilder
-                                ? ({ userInfo }: any) => foregroundBuilder({ userInfo })
-                                : ({ userInfo }: any) => defaultForegroundBuilder({ userInfo })
-                        }
                         showSoundWave={showSoundWaveInAudioMode}
-                        audioViewBackgroudColor={backgroundColor}
-                        audioViewBackgroudImage={backgroundImage}
-                        avatarBackgroundColor={avatarBackgroundColor}
-                        avatarSize={avatarSize}
-                        avatarAlignment={avatarAlignment}
-                        soundWaveColor={soundWaveColor}
                     /> : <View />
                 }
             </View>
@@ -199,18 +176,4 @@ const styles = StyleSheet.create({
         shadowRadius: 3.84,
         elevation: 8
     },
-    floatAudioViewText: {
-        color: 'white',
-        fontSize: 16,
-    },
-    foreground: {
-        position: 'absolute',
-        zIndex: 2,
-        bottom: 0,
-        width: '100%',
-        alignItems: 'center',
-    },
-    foregroundText: {
-        fontSize: 10,
-    }
 });

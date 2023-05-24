@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import PrebuiltHelper from "../services/prebuilt_helper";
 
 export default function ZegoDialog(props: any) {
     const {
-        visable = false,
         title = '',
         content = '',
         cancelText = 'cancel',
@@ -12,11 +12,23 @@ export default function ZegoDialog(props: any) {
         onOk,
     } = props;
 
+    const [visable, setVisable] = useState(false);
+
     const getCustomContainerStyle = (visable: boolean) => StyleSheet.create({
         customContainer: {
             display: visable ? 'flex' : 'none',
         },
     });
+
+    useEffect(() => {
+        const callbackID = 'ZegoDialog' + String(Math.floor(Math.random() * 10000));
+        PrebuiltHelper.getInstance().onZegoDialogTrigger(callbackID, (visable) => {
+            setVisable(visable);
+        });
+        return () => {
+            PrebuiltHelper.getInstance().onZegoDialogTrigger(callbackID);
+        };
+    }, []);
 
     return (
         <View style={[styles.container, getCustomContainerStyle(visable).customContainer]}>
