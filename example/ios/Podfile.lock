@@ -282,18 +282,14 @@ PODS:
   - React-jsinspector (0.68.5)
   - React-logger (0.68.5):
     - glog
-  - react-native-safe-area-context (4.5.0):
-    - RCT-Folly
-    - RCTRequired
-    - RCTTypeSafety
+  - react-native-safe-area-context (4.7.2):
     - React-Core
-    - ReactCommon/turbomodule/core
   - react-native-zego-express-engine (3.2.0):
     - React
     - ZegoExpressEngine (= 3.2.0)
-  - react-native-zego-zim (2.7.1):
+  - react-native-zego-zim (2.10.0):
     - React
-    - ZIM (= 2.7.1)
+    - ZIM (= 2.10.0)
   - React-perflogger (0.68.5)
   - React-RCTActionSheet (0.68.5):
     - React-Core/RCTActionSheetHeaders (= 0.68.5)
@@ -359,21 +355,19 @@ PODS:
     - React-jsi (= 0.68.5)
     - React-logger (= 0.68.5)
     - React-perflogger (= 0.68.5)
-  - RNScreens (3.19.0):
+  - RNScreens (3.25.0):
     - React-Core
     - React-RCTImage
-  - SocketRocket (0.6.0)
+  - SocketRocket (0.6.1)
   - Yoga (1.14.0)
   - YogaKit (1.18.1):
     - Yoga (~> 1.14)
-  - zego-uikit-prebuilt-live-streaming-rn (1.3.1):
-    - React-Core
-  - zego-uikit-rn (1.12.5):
+  - zego-uikit-prebuilt-live-streaming-rn (2.1.0):
     - React-Core
   - ZegoExpressEngine (3.2.0):
     - ZegoExpressEngine/Video (= 3.2.0)
   - ZegoExpressEngine/Video (3.2.0)
-  - ZIM (2.7.1)
+  - ZIM (2.10.0)
 
 DEPENDENCIES:
   - boost (from `../node_modules/react-native/third-party-podspecs/boost.podspec`)
@@ -436,7 +430,6 @@ DEPENDENCIES:
   - RNScreens (from `../node_modules/react-native-screens`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
   - zego-uikit-prebuilt-live-streaming-rn (from `../..`)
-  - zego-uikit-rn (from `../../../..`)
 
 SPEC REPOS:
   trunk:
@@ -531,8 +524,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/yoga"
   zego-uikit-prebuilt-live-streaming-rn:
     :path: "../.."
-  zego-uikit-rn:
-    :path: "../../../.."
 
 SPEC CHECKSUMS:
   boost: a7c83b31436843459a1961bfd74b96033dc77234
@@ -566,9 +557,9 @@ SPEC CHECKSUMS:
   React-jsiexecutor: 45c0496ca8cef6b02d9fa0274c25cf458fe91a56
   React-jsinspector: eb202e43b3879aba9a14f3f65788aec85d4e1ea9
   React-logger: 98f663b292a60967ebbc6d803ae96c1381183b6d
-  react-native-safe-area-context: 39c2d8be3328df5d437ac1700f4f3a4f75716acc
+  react-native-safe-area-context: 7aa8e6d9d0f3100a820efb1a98af68aa747f9284
   react-native-zego-express-engine: 47e48e9e647bc973827a04f0c09723a9f3421feb
-  react-native-zego-zim: b35ee3f60bbe3961538fdaf4e7b8601b05bf6ff4
+  react-native-zego-zim: be5c3093eb9fa72626e0d97db4dfe852c4ccd007
   React-perflogger: 0458a87ea9a7342079e7a31b0d32b3734fb8415f
   React-RCTActionSheet: 22538001ea2926dea001111dd2846c13a0730bc9
   React-RCTAnimation: 732ce66878d4aa151d56a0d142b1105aa12fd313
@@ -581,15 +572,14 @@ SPEC CHECKSUMS:
   React-RCTVibration: 9819a3bf6230e4b2a99877c21268b0b2416157a1
   React-runtimeexecutor: b1f1995089b90696dbc2a7ffe0059a80db5c8eb1
   ReactCommon: 149e2c0acab9bac61378da0db5b2880a1b5ff59b
-  RNScreens: ea4cd3a853063cda19a4e3c28d2e52180c80f4eb
-  SocketRocket: fccef3f9c5cedea1353a9ef6ada904fde10d6608
+  RNScreens: 85d3880b52d34db7b8eeebe2f1a0e807c05e69fa
+  SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
   Yoga: c4d61225a466f250c35c1ee78d2d0b3d41fe661c
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
-  zego-uikit-prebuilt-live-streaming-rn: 45ad06c43f0bb7897d66783e53a342ca82c3801b
-  zego-uikit-rn: 3255bbd44341411183205ee7856f7a80078341a3
+  zego-uikit-prebuilt-live-streaming-rn: 5b46aa34f41b6b9e3a7f8a4d2f3993564d6a26f1
   ZegoExpressEngine: 7ddbd7134c03c45bfdcddb61f4d76a1486518425
-  ZIM: 70617c39c931038adc87bbe1f4aee3c80bbc997d
+  ZIM: b0f5fdf211b723819043019373f9003d5e98420d
 
 PODFILE CHECKSUM: c49c12ef21ead37996a81ba5af1e318831481eb2
 
-COCOAPODS: 1.11.3
+COCOAPODS: 1.12.1

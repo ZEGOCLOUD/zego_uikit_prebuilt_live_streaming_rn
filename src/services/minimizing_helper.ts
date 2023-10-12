@@ -10,7 +10,7 @@ export default class MinimizingHelper {
     _onWindowMinimizeCallbackMap: { [index: string]: (data?: any) => void } = {};
     _onWindowMaximizeCallbackMap: { [index: string]: (data?: any) => void } = {};
     _onEntryNormalCallbackMap: { [index: string]: (data?: any) => void } = {};
-    _updateTimer: null | NodeJS.Timer = null;
+    _updateTimer: null | NodeJS.Timeout = null;
     _appInfo: {
         appID?: number;
         appSign?: String;

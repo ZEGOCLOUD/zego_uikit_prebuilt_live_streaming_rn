@@ -360,8 +360,8 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
           setCoHostDialogExtendedData({ resetTimer: true, inviteeID: invitee.id });
         }
       });
-      ZegoUIKit.getSignalingPlugin().onInRoomTextMessageReceived(callbackID, (messageList: any[]) => {
-        console.warn('[Prebuilt]onInRoomTextMessageReceived', messageList);
+      ZegoUIKit.getSignalingPlugin().onInRoomTextMessageReceived(callbackID, (message: any) => {
+        console.warn('[Prebuilt]onInRoomTextMessageReceived', message);
       });
     }
   };
