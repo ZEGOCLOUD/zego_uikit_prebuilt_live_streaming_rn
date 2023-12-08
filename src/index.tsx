@@ -952,7 +952,7 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
               ZegoUIKit.getAllUsers().filter(user => user.userID && (user.isCameraOn || user.isMicrophoneOn)) :
               null
           }}
-          layout={{mode: ZegoLayoutMode.pictureInPicture, removeViewWhenAudioVideoUnavailable: true}}
+          layout={{mode: ZegoLayoutMode.pictureInPicture, config: { removeViewWhenAudioVideoUnavailable: true }}}
           sortAudioVideo={sortAudioVideo}
           foregroundBuilder={foregroundBuilder || (({ userInfo }: any) => <ZegoAudioVideoForegroundView
             role={role}
