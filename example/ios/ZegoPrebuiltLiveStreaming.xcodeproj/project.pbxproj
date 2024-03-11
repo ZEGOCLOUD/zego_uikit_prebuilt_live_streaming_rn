@@ -12,9 +12,7 @@
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		7699B88040F8A987B510C191 /* libPods-ZegoPrebuiltLiveStreaming-ZegoPrebuiltLiveStreamingTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-ZegoPrebuiltLiveStreaming-ZegoPrebuiltLiveStreamingTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
-		EB7BEC00296BD9DA00ADA589 /* bundle in Resources */ = {isa = PBXBuildFile; fileRef = EB7BEBFF296BD9DA00ADA589 /* bundle */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -37,14 +35,12 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = ZegoPrebuiltLiveStreaming/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = ZegoPrebuiltLiveStreaming/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = ZegoPrebuiltLiveStreaming/main.m; sourceTree = "<group>"; };
-		19F6CBCC0A4E27FBF8BF4A61 /* libPods-ZegoPrebuiltLiveStreaming-ZegoPrebuiltLiveStreamingTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ZegoPrebuiltLiveStreaming-ZegoPrebuiltLiveStreamingTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3B4392A12AC88292D35C810B /* Pods-ZegoPrebuiltLiveStreaming.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ZegoPrebuiltLiveStreaming.debug.xcconfig"; path = "Target Support Files/Pods-ZegoPrebuiltLiveStreaming/Pods-ZegoPrebuiltLiveStreaming.debug.xcconfig"; sourceTree = "<group>"; };
 		5709B34CF0A7D63546082F79 /* Pods-ZegoPrebuiltLiveStreaming.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ZegoPrebuiltLiveStreaming.release.xcconfig"; path = "Target Support Files/Pods-ZegoPrebuiltLiveStreaming/Pods-ZegoPrebuiltLiveStreaming.release.xcconfig"; sourceTree = "<group>"; };
 		5B7EB9410499542E8C5724F5 /* Pods-ZegoPrebuiltLiveStreaming-ZegoPrebuiltLiveStreamingTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ZegoPrebuiltLiveStreaming-ZegoPrebuiltLiveStreamingTests.debug.xcconfig"; path = "Target Support Files/Pods-ZegoPrebuiltLiveStreaming-ZegoPrebuiltLiveStreamingTests/Pods-ZegoPrebuiltLiveStreaming-ZegoPrebuiltLiveStreamingTests.debug.xcconfig"; sourceTree = "<group>"; };
 		5DCACB8F33CDC322A6C60F78 /* libPods-ZegoPrebuiltLiveStreaming.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ZegoPrebuiltLiveStreaming.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = ZegoPrebuiltLiveStreaming/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-ZegoPrebuiltLiveStreaming-ZegoPrebuiltLiveStreamingTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ZegoPrebuiltLiveStreaming-ZegoPrebuiltLiveStreamingTests.release.xcconfig"; path = "Target Support Files/Pods-ZegoPrebuiltLiveStreaming-ZegoPrebuiltLiveStreamingTests/Pods-ZegoPrebuiltLiveStreaming-ZegoPrebuiltLiveStreamingTests.release.xcconfig"; sourceTree = "<group>"; };
-		EB7BEBFF296BD9DA00ADA589 /* bundle */ = {isa = PBXFileReference; lastKnownFileType = folder; path = bundle; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -53,7 +49,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7699B88040F8A987B510C191 /* libPods-ZegoPrebuiltLiveStreaming-ZegoPrebuiltLiveStreamingTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -103,24 +98,14 @@
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				5DCACB8F33CDC322A6C60F78 /* libPods-ZegoPrebuiltLiveStreaming.a */,
-				19F6CBCC0A4E27FBF8BF4A61 /* libPods-ZegoPrebuiltLiveStreaming-ZegoPrebuiltLiveStreamingTests.a */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Libraries;
 			sourceTree = "<group>";
 		};
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				EB7BEBFF296BD9DA00ADA589 /* bundle */,
 				13B07FAE1A68108700A75B9A /* ZegoPrebuiltLiveStreaming */,
-				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* ZegoPrebuiltLiveStreamingTests */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
@@ -246,7 +231,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
-				EB7BEC00296BD9DA00ADA589 /* bundle in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -156,6 +156,8 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
   } = bottomMenuBarConfig;
   const {
     buttons = [ZegoMenuBarButtonName.leaveButton],
+    showMemberListButton = true,
+    showHostLabel = true,
   } = topMenuBarConfig;
   const {
     isVisible = true,
@@ -978,7 +980,7 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
       <View style={styles.topBarContainer}>
         <View style={styles.left}>
           {/* @ts-ignore */}
-          <View style={[styles.hostInfo, (role === ZegoLiveStreamingRole.host && hostID && liveStatus === ZegoLiveStatus.start) || (role !== ZegoLiveStreamingRole.host && hostID) ? styles.show : null]}>
+          <View style={[styles.hostInfo, ((role === ZegoLiveStreamingRole.host && hostID && liveStatus === ZegoLiveStatus.start) || (role !== ZegoLiveStreamingRole.host && hostID)) && showHostLabel ? styles.show : null]}>
             <View style={styles.avatar}>
               <Text style={styles.nameLabel}>
                 {getShotName(getHostNameByID(hostID))}
@@ -995,7 +997,7 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
         <View style={styles.right}>
           {
             // @ts-ignore
-            role === ZegoLiveStreamingRole.host && liveStatus === ZegoLiveStatus.start || role !== ZegoLiveStreamingRole.host ? <TouchableOpacity onPress={onMemberButtonPressed}>
+            (role === ZegoLiveStreamingRole.host && liveStatus === ZegoLiveStatus.start || role !== ZegoLiveStreamingRole.host) && showMemberListButton ? <TouchableOpacity onPress={onMemberButtonPressed}>
               <View style={styles.memberButton}>
                 <Image source={require('./resources/white_top_button_member.png')} />
                 <Text style={styles.memberCountLabel}>{memberCount}</Text>
