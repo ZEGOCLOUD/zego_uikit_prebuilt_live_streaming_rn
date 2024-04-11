@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { TouchableOpacity, Image} from "react-native"
+import { TouchableOpacity, Image, StyleSheet } from "react-native"
 import ZegoUIKit from '@zegocloud/zego-uikit-rn';
 
 export default function ZegoMessageButton(props: any) {
@@ -10,6 +10,7 @@ export default function ZegoMessageButton(props: any) {
         width = 36,
         height = 36,
         icon = require('../resources/white_bottom_button_chat_on.png'),
+        iconBuilder,
     } = props;
     const [isChatOn, setIsChatOn] = useState(true);
 
@@ -25,14 +26,21 @@ export default function ZegoMessageButton(props: any) {
         }
     }, []);
 
+    const getButtonStyle = () => StyleSheet.create({
+      button: {
+        opacity: isChatOn ? 1 : 0.7,
+      },
+    });
+
     return (
-        <TouchableOpacity style={{ width: width, height: height, opacity: isChatOn ? 1 : 0.7 }}
+        <TouchableOpacity style={[{ width: width, height: height, justifyContent: 'center'}, iconBuilder ? null : getButtonStyle().button]}
             onPress={onPress}
             disabled={!isChatOn}>
-            <Image
+            { iconBuilder ? iconBuilder(isChatOn)
+            : <Image
                 resizeMode='contain'
                 source={isChatOn ? icon : require('../resources/white_bottom_button_chat_off.png')}
                 onLoad={({nativeEvent: {source: {width, height}}}) => console.log('>>>>>', width, height)}
-                style={{ width: "100%", height: "100%" }} />
+                style={{ width: "100%", height: "100%" }} />}
         </TouchableOpacity>)
 }

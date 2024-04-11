@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, StyleSheet, TouchableOpacity } from "react-native";
 import {
     ZegoLeaveButton,
@@ -13,6 +13,7 @@ import ZegoMessageButton from './ZegoMessageButton';
 import ZegoMenuBarButtonName from "./ZegoMenuBarButtonName";
 import ZegoCoHostControlButton from "./ZegoCoHostControlButton";
 import ZegoEnableChatButton from "./ZegoEnableChatButton";
+import PrebuiltHelper from "../services/prebuilt_helper";
 
 export default function ZegoBottomBar(props: any) {
     const {
@@ -37,6 +38,7 @@ export default function ZegoBottomBar(props: any) {
         liveStatus,
         isPluginsInit,
         memberConnectState,
+        buttonBuilders,
     } = props;
     const [isNormalStyle, setIsNormalStyle] = useState(true);
 
@@ -51,6 +53,7 @@ export default function ZegoBottomBar(props: any) {
                     iconLeave={require("../resources/white_bottom_button_close.png")}
                     width={buttonSize}
                     height={buttonSize}
+                    iconBuilder={buttonBuilders.leaveButtonBuilder}
                 />
             case ZegoMenuBarButtonName.toggleCameraButton:
                 return <ZegoToggleCameraButton
@@ -58,6 +61,7 @@ export default function ZegoBottomBar(props: any) {
                     isOn={turnOnCameraWhenJoining}
                     width={buttonSize}
                     height={buttonSize}
+                    iconBuilder={buttonBuilders.toggleCameraBuilder}
                 />;
             case ZegoMenuBarButtonName.toggleMicrophoneButton:
                 return <ZegoToggleMicrophoneButton
@@ -65,12 +69,14 @@ export default function ZegoBottomBar(props: any) {
                     isOn={turnOnMicrophoneWhenJoining}
                     width={buttonSize}
                     height={buttonSize}
+                    iconBuilder={buttonBuilders.toggleMicrophoneBuilder}
                 />;
             case ZegoMenuBarButtonName.switchCameraButton:
                 return <ZegoSwitchCameraButton
                     key={buttonIndex}
                     width={buttonSize}
                     height={buttonSize}
+                    iconBuilder={buttonBuilders.switchCameraBuilder}
                 />
             case ZegoMenuBarButtonName.switchAudioOutputButton:
                 return <ZegoSwitchAudioOutputButton
@@ -78,6 +84,7 @@ export default function ZegoBottomBar(props: any) {
                     useSpeaker={useSpeakerWhenJoining}
                     width={buttonSize}
                     height={buttonSize}
+                    iconBuilder={buttonBuilders.switchAudioOutputBuilder}
                 />
             case ZegoMenuBarButtonName.coHostControlButton:
                 return <ZegoCoHostControlButton
@@ -96,6 +103,7 @@ export default function ZegoBottomBar(props: any) {
                 return <ZegoEnableChatButton 
                     width={buttonSize}
                     height={buttonSize}
+                    iconBuilder={buttonBuilders.enableChatBuilder}
                 />;
         }
     }
@@ -134,6 +142,17 @@ export default function ZegoBottomBar(props: any) {
     var firstLevelButtons = allButtons['firstLevelButtons']
     var secondLevelButtons = allButtons['secondLevelButtons']
 
+    useEffect(() => {
+      const callbackID = 'ZegoBottomBar' + String(Math.floor(Math.random() * 10000));
+      PrebuiltHelper.getInstance().onFullPageTouch(callbackID, () => {
+        setIsNormalStyle(true);
+      });
+      return () => {
+        PrebuiltHelper.getInstance().onFullPageTouch(callbackID);
+      }
+    }, []);
+    
+
     return (
         isNormalStyle ? 
             <View style={styles.normalBar}>
@@ -141,7 +160,7 @@ export default function ZegoBottomBar(props: any) {
                     if (typeof onMessageButtonPress == 'function') {
                         onMessageButtonPress();
                     }
-                }} /> : null}
+                }} iconBuilder={buttonBuilders.chatBuilder} /> : null}
 
                 <View style={styles.rightBar}>
                     {firstLevelButtons.map((button, index) => (

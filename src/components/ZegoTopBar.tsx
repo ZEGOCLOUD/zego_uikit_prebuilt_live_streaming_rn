@@ -5,17 +5,24 @@ import ZegoMinimizingButton from './ZegoMinimizingButton';
 import ZegoMenuBarButtonName from "./ZegoMenuBarButtonName";
 
 export default function ZegoTopBar(props: any) {
-    const { menuBarButtons = [], onLeave, onLeaveConfirmation } = props;
+    const { menuBarButtons = [], onLeave, onLeaveConfirmation, buttonBuilders } = props;
 
     const getButtonByButtonIndex = (buttonIndex: number) => {
         switch (buttonIndex) {
             case ZegoMenuBarButtonName.minimizingButton:
-                return <ZegoMinimizingButton />;
+                return <ZegoMinimizingButton
+                  width={30}
+                  height={30}
+                  iconBuilder={buttonBuilders.minimizingBuilder}
+                />;
             case ZegoMenuBarButtonName.leaveButton:
                 return <ZegoLeaveButton 
                     onLeaveConfirmation={onLeaveConfirmation}
                     onPressed={onLeave}
-                    iconLeave={require('../resources/white_top_button_close.png')}
+                    width={30}
+                    height={30}
+                    iconLeave={require('../resources/white_bottom_button_close.png')}
+                    iconBuilder={buttonBuilders.leaveBuilder}
                 />;
         }
     };
@@ -33,9 +40,10 @@ const styles = StyleSheet.create({
     topRightBar: {
       flexDirection: 'row',
       alignItems: 'center',
-      justifyContent: 'center',    
+      justifyContent: 'center',
+      marginLeft: 10,    
     },
     customIconContainer: {
-        marginLeft: 0,
+        marginRight: 10,
     }
 });

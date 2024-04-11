@@ -8,7 +8,7 @@ import {
     StyleSheet,
     useWindowDimensions,
 } from 'react-native';
-import { ZegoAudioVideoView } from '@zegocloud/zego-uikit-rn';
+import ZegoUIKit, { ZegoAudioVideoView } from '@zegocloud/zego-uikit-rn';
 import MinimizingHelper from "../services/minimizing_helper";
 import { zloginfo } from "../utils/logger";
   
@@ -105,6 +105,9 @@ export default function ZegoUIKitPrebuiltLiveStreamingFloatingMinimizedView(prop
                 if (typeof onWindowMinimized === 'function') {
                     onWindowMinimized();
                     MinimizingHelper.getInstance().setIsMinimizeSwitch(true);
+                    setTimeout(() => {
+                      ZegoUIKit.forceRenderVideoView();
+                    }, 100);
                 }
             });
             MinimizingHelper.getInstance().onWindowMaximized(callbackID, () => {

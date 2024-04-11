@@ -7,6 +7,7 @@ import ZegoUIKitPrebuiltLiveStreaming, {
 } from '@zegocloud/zego-uikit-prebuilt-live-streaming-rn';
 import KeyCenter from './KeyCenter';
 import * as ZIM from 'zego-zim-react-native';
+import { CustomBuilder } from './CustomBuilder';
 
 export default function AudiencePage(props: any) {
   const {route} = props;
@@ -29,6 +30,22 @@ export default function AudiencePage(props: any) {
           },
           topMenuBarConfig: {
             buttons: [ZegoMenuBarButtonName.minimizingButton, ZegoMenuBarButtonName.leaveButton],
+            buttonBuilders: {
+              // leaveBuilder: CustomBuilder.leaveBuilder,
+              // minimizingBuilder: CustomBuilder.minimizingBuilder,
+              // memberBuilder: CustomBuilder.memberBuilder,
+              // hostAvatarBuilder: CustomBuilder.hostAvatarBuilder,
+            },
+          },
+          bottomMenuBarConfig: {
+            buttonBuilders: {
+              // toggleCameraBuilder: CustomBuilder.toggleCameraBuilder,
+              // toggleMicrophoneBuilder: CustomBuilder.toggleMicrophoneBuilder,
+              // switchCameraBuilder: CustomBuilder.switchCameraBuilder,
+              // switchAudioOutputBuilder: CustomBuilder.switchAudioOutputBuilder,
+              // enableChatBuilder: CustomBuilder.enableChatBuilder,
+              // chatBuilder: CustomBuilder.chatBuilder,
+            },
           },
           onWindowMinimized: () => {
             console.log('[Demo]AudiencePage onWindowMinimized');

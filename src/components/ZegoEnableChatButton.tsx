@@ -9,6 +9,7 @@ export default function ZegoEnableChatButton(props: any) {
         borderRadius = 1000,
         iconOn = require('../resources/white_bottom_button_chat_on.png'),
         iconOff = require('../resources/white_bottom_button_chat_off.png'),
+        iconBuilder,
     } = props;
     const enableChat = ZegoUIKit.getRoomProperties().enableChat;
     const [isChatOn, setIsChatOn] = useState(enableChat === undefined || enableChat === '1');
@@ -28,7 +29,8 @@ export default function ZegoEnableChatButton(props: any) {
 
     return (
         <TouchableOpacity onPress={pressedHandle} style={[styles.enableChatButton, getCustomStyle(width, height, borderRadius).enableChatButton]}>
-            <Image source={isChatOn ? iconOn : iconOff} style={{ width: "100%", height: "100%" }} />
+          { iconBuilder ? iconBuilder(isChatOn) :
+            <Image source={isChatOn ? iconOn : iconOff} style={{ width: "100%", height: "100%" }} />}
         </TouchableOpacity>
     )
 }

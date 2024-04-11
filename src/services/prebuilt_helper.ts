@@ -14,6 +14,7 @@ export default class PrebuiltHelper {
     };
     _notifyData: { [index: string]: any }  = {};
     _onZegoDialogTriggerCallbackMap: { [index: string]: (data?: any) => void } = {};
+    _onFullPageTouchCallbackMap: { [index: string]: () => void } = {};
     constructor() { }
     static getInstance() {
         return this._instance || (this._instance = new PrebuiltHelper());
@@ -59,5 +60,21 @@ export default class PrebuiltHelper {
         } else {
             this._onZegoDialogTriggerCallbackMap[callbackID] = callback;
         }
+    }
+
+    notifyFullPageTouch() {
+      Object.keys(this._onFullPageTouchCallbackMap).forEach((callbackID) => {
+        if (this._onFullPageTouchCallbackMap[callbackID]) {
+          this._onFullPageTouchCallbackMap[callbackID]();
+        }
+      })
+    }
+
+    onFullPageTouch(callbackID: string, callback?: () => void) {
+      if (typeof callback !== 'function') {
+          delete this._onFullPageTouchCallbackMap[callbackID];
+      } else {
+          this._onFullPageTouchCallbackMap[callbackID] = callback;
+      }
     }
 }

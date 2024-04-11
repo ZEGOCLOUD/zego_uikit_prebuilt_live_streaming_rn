@@ -153,11 +153,25 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
     coHostExtendButtons = [],
     audienceExtendButtons = [],
     maxCount = 5,
+    // toggleCameraBuilder(isOn)
+    // toggleMicrophoneBuilder(isOn)
+    // switchCameraBuilder(isFront)
+    // switchAudioOutputBuilder(deviceType)
+      // ZegoAudioRouteSpeaker=(0) ZegoAudioRouteHeadphone=(1) ZegoAudioRouteBluetooth=(2) ZegoAudioRouteReceiver=(3) ZegoAudioRouteExternalUSB=(4) ZegoAudioRouteAirPlay=(5)
+    // leaveButtonBuilder
+    // enableChatBuilder(enableChat)
+    // chatBuilder(isChatOn)
+    buttonBuilders = {},
   } = bottomMenuBarConfig;
   const {
     buttons = [ZegoMenuBarButtonName.leaveButton],
     showMemberListButton = true,
     showHostLabel = true,
+    // leaveBuilder
+    // minimizingBuilder
+    // memberBuilder(memberCount, requestCoHostCount)
+    // hostAvatarBuilder(host)
+    buttonBuilders: topButtonBuilders = {},
   } = topMenuBarConfig;
   const {
     isVisible = true,
@@ -737,6 +751,9 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
     // @ts-ignore
     return role === ZegoLiveStreamingRole.host && hostID && hostID === userID && liveStatus === ZegoLiveStatus.default;
   };
+  const showHostAvatar = () => {
+    return ((role === ZegoLiveStreamingRole.host && hostID && liveStatus === ZegoLiveStatus.start) || (role !== ZegoLiveStreamingRole.host && hostID)) && showHostLabel;
+  };
   const showBottomBar = () => {
     // @ts-ignore
     return role === ZegoLiveStreamingRole.host && hostID && hostID === userID && liveStatus === ZegoLiveStatus.start ||
@@ -755,7 +772,8 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
     setIsCoHostDialogVisable(false);
     setCoHostDialogExtendedData({});
     setTextInputHeight(45); // It needs to be reinitialized, otherwise the height will be wrong
-
+    PrebuiltHelper.getInstance().notifyFullPageTouch();
+    
     stateData.current.isMemberListVisable = false;
   };
   const useInterval = (callback: Function, delay: number) => {
@@ -786,6 +804,9 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
     const userInfo = ZegoUIKit.getUser(hostID) || { };
     const hostName = userInfo.userName || '';
     return hostName;
+  };
+  const getHostUser = () => {
+    return ZegoUIKit.getUser(hostID) || { };
   };
   const onMemberButtonPressed = () => {
     setTextInputVisable(false);
@@ -951,6 +972,7 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
             showSoundWavesInAudioMode: showSoundWavesInAudioMode,
             useVideoViewAspectFill: useVideoViewAspectFill,
             cacheAudioVideoUserList: isMinimizeSwitch ?
+              // @ts-ignore
               ZegoUIKit.getAllUsers().filter(user => user.userID && (user.isCameraOn || user.isMicrophoneOn)) :
               null
           }}
@@ -977,17 +999,18 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
         </View>
       </View>
       {/* Top bar */}
-      <View style={styles.topBarContainer}>
+      <SafeAreaView style={styles.topBarContainer}>
         <View style={styles.left}>
-          {/* @ts-ignore */}
-          <View style={[styles.hostInfo, ((role === ZegoLiveStreamingRole.host && hostID && liveStatus === ZegoLiveStatus.start) || (role !== ZegoLiveStreamingRole.host && hostID)) && showHostLabel ? styles.show : null]}>
+          {topButtonBuilders.hostAvatarBuilder && showHostAvatar()
+          ? topButtonBuilders.hostAvatarBuilder(getHostUser())
+          : <View style={[styles.hostInfo, showHostAvatar() ? styles.show : null]}>
             <View style={styles.avatar}>
               <Text style={styles.nameLabel}>
                 {getShotName(getHostNameByID(hostID))}
               </Text>
             </View>
             <Text style={styles.hostName}>{getHostNameByID(hostID)}</Text>
-          </View>
+          </View>}
           {/* Return home */}
           {/* @ts-ignore */}
           <TouchableOpacity onPress={onNavBackPressed} style={[styles.navBackButton, (role === ZegoLiveStreamingRole.host && hostID && liveStatus !== ZegoLiveStatus.start) ? styles.show : null]}>
@@ -998,17 +1021,21 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
           {
             // @ts-ignore
             (role === ZegoLiveStreamingRole.host && liveStatus === ZegoLiveStatus.start || role !== ZegoLiveStreamingRole.host) && showMemberListButton ? <TouchableOpacity onPress={onMemberButtonPressed}>
-              <View style={styles.memberButton}>
+              {
+              topButtonBuilders.memberBuilder
+              ? topButtonBuilders.memberBuilder(memberCount, requestCoHostCount)
+              : <View style={styles.memberButton}>
                 <Image source={require('./resources/white_top_button_member.png')} />
                 <Text style={styles.memberCountLabel}>{memberCount}</Text>
                 { requestCoHostCount ? <View style={styles.memberRedDot}></View> : null }
-              </View>
+              </View>}
             </TouchableOpacity> : null
           }
           {
             // @ts-ignore
             role === ZegoLiveStreamingRole.host && liveStatus === ZegoLiveStatus.start || role !== ZegoLiveStreamingRole.host ? <ZegoTopBar
               menuBarButtons={buttons}
+              buttonBuilders={topButtonBuilders}
               onLeave={() => {
                 onLeaveLiveStreaming(liveStreamingTiming.current);
               }}
@@ -1027,7 +1054,7 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
             </View> : null
           }
         </View>
-      </View>
+      </SafeAreaView>
       {/* Start live button */}
       {
         showStartLiveButton() ? <View style={styles.startLiveButtonCon}>
@@ -1159,6 +1186,7 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
                 userID={userID}
                 hostID={hostID}
                 liveStatus={liveStatus}
+                buttonBuilders={buttonBuilders}
                 memberConnectState={memberConnectStateMap[userID]}
               />
             )}
@@ -1228,7 +1256,7 @@ const styles = StyleSheet.create({
   },
   topBarContainer: {
     position: 'absolute',
-    top: 32,
+    top: 24,
     zIndex: 10,
     flexDirection: 'row',
     alignItems: 'center',
@@ -1301,7 +1329,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 17,
-    marginRight: 2,
+    // marginRight: 2,
   },
   memberCountLabel: {
     fontSize: 14,

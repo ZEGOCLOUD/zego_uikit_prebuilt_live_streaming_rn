@@ -7,8 +7,9 @@ export default function ZegoMinimizingButton(props: any) {
     const {
         width = 30,
         height = 30,
-        borderRadius = 100,
-        backgroundColor = 'rgba(30, 39, 64, 0.4000)',
+        iconBuilder,
+        borderRadius = iconBuilder ? 0 : 100,
+        backgroundColor = iconBuilder ? 'rgba(0, 0, 0, 0, 0)' : 'rgba(30, 39, 64, 0.4000)',
         icon = require('../resources/icon_minimize.png'),
         onPressed,
         onWillPressed,
@@ -31,10 +32,12 @@ export default function ZegoMinimizingButton(props: any) {
             ]}
             onPress={pressedHandle}
         >
-            <Image
-                source={icon}
-                style={{ width: 18, height: 18 }}
-            />
+          {iconBuilder
+          ? iconBuilder()
+          : <Image
+              source={icon}
+              style={{ width: 16, height: 16 }}
+            />}
         </TouchableOpacity>
     );
 }
@@ -43,6 +46,6 @@ const styles = StyleSheet.create({
     imgContainer: {
         alignItems: 'center',
         justifyContent: 'center',
-        marginLeft: 8,
+        // marginLeft: 8,
     },
 });
