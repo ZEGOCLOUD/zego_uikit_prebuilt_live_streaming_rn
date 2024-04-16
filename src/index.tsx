@@ -158,7 +158,7 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
     // switchCameraBuilder(isFront)
     // switchAudioOutputBuilder(deviceType)
       // ZegoAudioRouteSpeaker=(0) ZegoAudioRouteHeadphone=(1) ZegoAudioRouteBluetooth=(2) ZegoAudioRouteReceiver=(3) ZegoAudioRouteExternalUSB=(4) ZegoAudioRouteAirPlay=(5)
-    // leaveButtonBuilder
+    // leaveBuilder
     // enableChatBuilder(enableChat)
     // chatBuilder(isChatOn)
     buttonBuilders = {},

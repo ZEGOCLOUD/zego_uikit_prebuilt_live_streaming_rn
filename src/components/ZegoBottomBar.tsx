@@ -53,7 +53,7 @@ export default function ZegoBottomBar(props: any) {
                     iconLeave={require("../resources/white_bottom_button_close.png")}
                     width={buttonSize}
                     height={buttonSize}
-                    iconBuilder={buttonBuilders.leaveButtonBuilder}
+                    iconBuilder={buttonBuilders.leaveBuilder}
                 />
             case ZegoMenuBarButtonName.toggleCameraButton:
                 return <ZegoToggleCameraButton
