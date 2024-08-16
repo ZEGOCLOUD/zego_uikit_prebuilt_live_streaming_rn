@@ -61,6 +61,8 @@ export {
 
 // https://github.com/react-native-community/hooks#usekeyboard
 function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
+  const TAG = 'ZegoUIKitPrebuiltLiveStreaming';
+
   let { appID, appSign, userID, userName, liveID, config, plugins = [] } = props;
   const isMinimizeSwitch = MinimizingHelper.getInstance().getIsMinimizeSwitch();
   if (isMinimizeSwitch) {
@@ -253,6 +255,8 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
   const registerPluginCallback = () => {
     if (ZegoUIKit.getPlugin(ZegoUIKitPluginType.signaling)) {
       ZegoUIKit.getSignalingPlugin().onInvitationReceived(callbackID, ({ callID, type, inviter, data }: any) => {
+        zloginfo('onInvitationReceived implement by ' + TAG);
+
         console.log('[Prebuilt]onInvitationReceived', JSON.stringify(realTimeData.current), requestCoHostCount);
         if (type === ZegoInvitationType.requestCoHost && userID === realTimeData.current.hostID) {
           // The audience created a cohost request
@@ -326,7 +330,7 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
           realTimeData.current.role = ZegoLiveStreamingRole.audience;
           stateData.current.role = ZegoLiveStreamingRole.audience;
         }
-      });
+      }, TAG);
       ZegoUIKit.getSignalingPlugin().onInvitationCanceled(callbackID, ({ inviter }: any) => {
         if (userID === realTimeData.current.hostID) {
           // The audience canceled the cohost request
