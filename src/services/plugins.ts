@@ -3,7 +3,7 @@ import ZegoUIKit, {
   ZegoInvitationConnectionState,
 } from '@zegocloud/zego-uikit-rn';
 import { zloginfo } from '../utils/logger';
-import { packageVersion } from '../utils/package';
+import { getPackageVersion } from '../utils/package_version';
 
 const _appInfo = {} as any;
 const _localUser = {} as any;
@@ -11,7 +11,7 @@ let _pluginConnectionState: number;
 let ZIMKitPlugin: any = null;
 const _install = (plugins: any[]) => {
   ZegoUIKit.installPlugins(plugins);
-  ZegoUIKit.logComponentsVersion(new Map([['PrebuiltLiveStreaming', packageVersion()]]));
+  ZegoUIKit.logComponentsVersion(new Map([['PrebuiltLiveStreaming', getPackageVersion()]]));
   plugins.forEach(plugin => {
     if (plugin.ZIMKit) {
       zloginfo('[Plugins] install ZIMKit success.');
