@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { TouchableOpacity, Image, StyleSheet } from "react-native"
 import ZegoUIKit from '@zegocloud/zego-uikit-rn';
+import { zloginfo } from "../utils/logger";
 
 export default function ZegoMessageButton(props: any) {
     const {
@@ -40,7 +41,7 @@ export default function ZegoMessageButton(props: any) {
             : <Image
                 resizeMode='contain'
                 source={isChatOn ? icon : require('../resources/white_bottom_button_chat_off.png')}
-                onLoad={({nativeEvent: {source: {width, height}}}) => console.log('>>>>>', width, height)}
+                onLoad={({nativeEvent: {source: {width, height}}}) => zloginfo('>>>>>', width, height)}
                 style={{ width: "100%", height: "100%" }} />}
         </TouchableOpacity>)
 }

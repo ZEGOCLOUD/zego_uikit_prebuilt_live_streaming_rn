@@ -1,10 +1,12 @@
+import ZegoUIKit from '@zegocloud/zego-uikit-rn';
+
 export const zloginfo = (...msg: any[]) => {
-    console.log("ZEGOUIKit[INFO]: ", ...msg);
+    ZegoUIKit.kitLogInfo('PrebuiltLiveStreaming', ...msg);
 }
 export const zlogwarning = (...msg: any[]) => {
-    console.warn("ZEGOUIKit[WARNING]: ", ...msg);
+    ZegoUIKit.kitLogWarning('PrebuiltLiveStreaming', ...msg);
 }
 
 export const zlogerror = (...msg: any[]) => {
-    console.error("ZEGOUIKit[ERROR]: ", ...msg);
+    ZegoUIKit.kitLogError('PrebuiltLiveStreaming', ...msg);
 }

@@ -3,6 +3,7 @@ import ZegoUIKit from '@zegocloud/zego-uikit-rn';
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import { ZegoSendInvitationButton } from '@zegocloud/zego-uikit-rn';
 import { ZegoTranslationText, ZegoInvitationType, ZegoToastType } from "../services/defines";
+import { zloginfo } from "../utils/logger";
 
 
 export default function ZegoCoHostMenuDialog(props: any) {
@@ -42,11 +43,11 @@ export default function ZegoCoHostMenuDialog(props: any) {
         let result = true;
         if (invitationType === ZegoInvitationType.inviteToCoHost) {
             // Check whether the timer is running out
-            console.log('#########Timer: Check whether the timer is running out', countdownMap.current, countdownTimerMap.current);
+            zloginfo('#########Timer: Check whether the timer is running out', countdownMap.current, countdownTimerMap.current);
 
             if ((countdownTimerMap.current as any).get(inviteeID)) {
                 // The timer did not complete and the request was not allowed to occur
-                console.log('#########Timer: The timer did not complete and the request was not allowed to occur', countdownMap.current, countdownTimerMap.current);
+                zloginfo('#########Timer: The timer did not complete and the request was not allowed to occur', countdownMap.current, countdownTimerMap.current);
                 setIsToastVisable(true);
                 setToastExtendedData({ type: ZegoToastType.error, text: ZegoTranslationText.repeatInviteCoHostFailedToast });
                 onCancel();
@@ -55,7 +56,7 @@ export default function ZegoCoHostMenuDialog(props: any) {
                 // Restart timer
                 clearInterval((countdownTimerMap.current as any).get(inviteeID));
                 (countdownTimerMap.current as any).set(inviteeID ,setInterval(() => {
-                    console.log('#########Timer: countdown', countdownMap.current, countdownTimerMap.current);
+                    zloginfo('#########Timer: countdown', countdownMap.current, countdownTimerMap.current);
                     if ((countdownMap.current as any).get(inviteeID) === 0) {
                         clearInterval((countdownTimerMap.current as any).get(inviteeID));
                         (countdownTimerMap.current as any).set(inviteeID, null);
@@ -76,7 +77,7 @@ export default function ZegoCoHostMenuDialog(props: any) {
     }
     const removeHandle = () => {
         ZegoUIKit.removeUserFromRoom([inviteeID]).then(() => {
-            console.log(`remove ${inviteeID} from room successfully`);
+            zloginfo(`remove ${inviteeID} from room successfully`);
             // The handling here is the same as the cancel
             onCancel();
         });
@@ -85,12 +86,12 @@ export default function ZegoCoHostMenuDialog(props: any) {
 
     useEffect(() => {
         // First render initializes and clears timer
-        console.log('#########Timer: First render initializes and clears timer', countdownMap.current, countdownTimerMap.current);
+        zloginfo('#########Timer: First render initializes and clears timer', countdownMap.current, countdownTimerMap.current);
         (countdownMap.current as any) = new Map();
         (countdownTimerMap.current as any) = new Map();
         return () => {
             // Initializes and clears timer when component is destroyed
-            console.log('#########Timer: Initializes and clears timer when component is destroyed', countdownMap.current, countdownTimerMap.current);
+            zloginfo('#########Timer: Initializes and clears timer when component is destroyed', countdownMap.current, countdownTimerMap.current);
             Array.from((countdownTimerMap.current as any).keys()).forEach((key) => {
                 clearInterval((countdownTimerMap.current as any).get(key));
                 (countdownTimerMap.current as any).set(key, null);

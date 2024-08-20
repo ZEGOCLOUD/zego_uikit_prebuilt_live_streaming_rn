@@ -2,6 +2,7 @@ import React, { useRef } from "react";
 import { View, Text, StyleSheet, PanResponder } from "react-native"
 import ZegoUIKit, { ZegoMicrophoneStateIcon, ZegoCameraStateIcon, ZegoToggleCameraButton, ZegoToggleMicrophoneButton } from '@zegocloud/zego-uikit-rn'
 import { ZegoLiveStreamingRole } from "../services/defines";
+import { zloginfo } from "../utils/logger";
 
 export default function ZegoAudioVideoForegroundView(props: any) {
     const { userInfo, showUserNameOnView, showCameraStateOnView, showMicrophoneStateOnView, turnOnMicrophoneWhenJoining, turnOnCameraWhenJoining, role, localUserID } = props;
@@ -9,7 +10,7 @@ export default function ZegoAudioVideoForegroundView(props: any) {
 
     // const panResponder = useRef(PanResponder.create({
     //     onStartShouldSetPanResponderCapture: () => {
-    //         console.log(`Toggle the state of other people's devices`);
+    //         zloginfo(`Toggle the state of other people's devices`);
     //     }
     // })).current;
 

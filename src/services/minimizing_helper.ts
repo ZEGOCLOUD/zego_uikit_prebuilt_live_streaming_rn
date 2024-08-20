@@ -1,5 +1,6 @@
 import ZegoUIKit from '@zegocloud/zego-uikit-rn';
 import PrebuiltHelper from "./prebuilt_helper";
+import { zloginfo } from '../utils/logger';
 
 export default class MinimizingHelper {
     static _instance: MinimizingHelper;
@@ -78,7 +79,7 @@ export default class MinimizingHelper {
         const activeUserID = PrebuiltHelper.getInstance().getRealTimeData().hostID;
         this._activeUserID = activeUserID|| ZegoUIKit.getLocalUserInfo().userID || '';
         
-        // console.log('[MinimizingHelper]updateActiveUserIDByTimer', this._activeUserID);
+        // zloginfo('[MinimizingHelper]updateActiveUserIDByTimer', this._activeUserID);
         this.notifyActiveUserIDUpdate(this._activeUserID);
     }
     registerAudioVideoListCallback(callbackID: string) {

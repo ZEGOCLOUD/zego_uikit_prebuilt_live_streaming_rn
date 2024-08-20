@@ -5,6 +5,7 @@ import { getShotName } from '../utils';
 import { ZegoCoHostConnectState, ZegoInvitationType, ZegoToastType, ZegoTranslationText } from '../services/defines';
 import ZegoAgreeCoHostButton from "./ZegoAgreeCoHostButton";
 import ZegoDisagreeCoHostButton from "./ZegoDisagreeCoHostButton";
+import { zloginfo } from "../utils/logger";
 
 export default function ZegoLiveStreamingMemberList(props: any) {
     const {
@@ -24,7 +25,7 @@ export default function ZegoLiveStreamingMemberList(props: any) {
         setIsCoHostDialogVisable,
         setCoHostDialogExtendedData,
     } = props;
-    console.log('#######ZegoLiveStreamingMemberList', memberConnectStateMap);
+    zloginfo('#######ZegoLiveStreamingMemberList', memberConnectStateMap);
 
     const maxWidthLimit1 = 140; // Anchor interface with buttons
     const maxWidthLimit2 = 250; // Non-anchor interface and no buttons
@@ -70,7 +71,7 @@ export default function ZegoLiveStreamingMemberList(props: any) {
         }
     };
     const roleDescription = (item: any) => {
-        console.log('#######roleDescription', item, memberConnectStateMap);
+        zloginfo('#######roleDescription', item, memberConnectStateMap);
         item.connectState = memberConnectStateMap[item.userID];
         const showMe = item.userID === localUserID ? 'You' : '';
         let roleName = item.userID === hostID ? 'Host' : item.connectState === ZegoCoHostConnectState.connected ? 'Co-host' : '';

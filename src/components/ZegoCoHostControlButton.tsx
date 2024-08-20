@@ -45,12 +45,12 @@ export default function ZegoCoHostControlButton(props: any) {
             zloginfo('[ZegoCoHostControlButton]Plugins init success and register plugins callback');
             ZegoUIKit.getSignalingPlugin().onInvitationResponseTimeout(callbackID, () => {
                 // The host did not process your cohost request, resulting in a timeout
-                console.log('#######onInvitationResponseTimeout, The host did not process your cohost request, resulting in a timeout');
+                zloginfo('#######onInvitationResponseTimeout, The host did not process your cohost request, resulting in a timeout');
                 onConnectStateChanged('', ZegoCoHostConnectState.idle, true);
             });
             ZegoUIKit.getSignalingPlugin().onInvitationAccepted(callbackID, async () => {
                 // The host accepted your cohost request
-                console.log('#######onInvitationAccepted, The host accepted your cohost request');
+                zloginfo('#######onInvitationAccepted, The host accepted your cohost request');
                 try {
                     await grantPermissions();
                 } catch (error) {
@@ -61,7 +61,7 @@ export default function ZegoCoHostControlButton(props: any) {
             });
             ZegoUIKit.getSignalingPlugin().onInvitationRefused(callbackID, () => {
                 // The host rejected your cohost request
-                console.log('#######onInvitationRefused, The host rejected your cohost request');
+                zloginfo('#######onInvitationRefused, The host rejected your cohost request');
                 onConnectStateChanged('', ZegoCoHostConnectState.idle, true);
                 setIsToastVisable(true);
                 setToastExtendedData({ type: ZegoToastType.error, text: ZegoTranslationText.hostRejectCoHostRequestToast });
