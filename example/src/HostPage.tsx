@@ -76,7 +76,8 @@ export default function HostPage(props: any) {
                           userName: 'user_' + userID,
                           liveID: liveID,
                         });
-                    }
+                    },
+                    // logoutSignalingPluginOnLeaveLiveStreaming: false,
                 }}
                 plugins={[ZIM]}
             />

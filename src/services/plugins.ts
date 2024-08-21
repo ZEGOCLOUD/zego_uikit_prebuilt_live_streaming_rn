@@ -25,12 +25,16 @@ const _install = (plugins: any[]) => {
     }
   })
 };
+let logoutSignalingPluginOnLeaveLiveStreaming = true; // default value is true
 
 const ZegoPrebuiltPlugins = {
-  init: (appID: number, appSign: string, userID: string, userName: string, plugins: any[]) => {
+  init: (appID: number, appSign: string, userID: string, userName: string, plugins: any[], pluginsConfig: any) => {
     const callbackID =
       'ZegoPrebuiltPlugins' + String(Math.floor(Math.random() * 10000));
     _install(plugins);
+
+    logoutSignalingPluginOnLeaveLiveStreaming = pluginsConfig.logoutSignalingPluginOnLeaveLiveStreaming;
+
     if (ZegoUIKit.getPlugin(ZegoUIKitPluginType.signaling)) {
       ZegoUIKit.getSignalingPlugin().init(appID, appSign);
       ZegoUIKit.getSignalingPlugin().onConnectionStateChanged(
@@ -86,7 +90,9 @@ const ZegoPrebuiltPlugins = {
     }
   },
   uninit: () => {
-    if (ZegoUIKit.getPlugin(ZegoUIKitPluginType.signaling)) {
+    zloginfo(`config logoutSignalingPluginOnLeaveLiveStreaming = ${logoutSignalingPluginOnLeaveLiveStreaming}`)
+
+    if (ZegoUIKit.getPlugin(ZegoUIKitPluginType.signaling) && logoutSignalingPluginOnLeaveLiveStreaming) {
       ZegoUIKit.getSignalingPlugin().logout();
       ZegoUIKit.getSignalingPlugin().uninit();
     }

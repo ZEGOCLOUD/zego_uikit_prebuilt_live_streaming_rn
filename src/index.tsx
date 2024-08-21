@@ -134,6 +134,7 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
     // @ts-ignore
     onMicrophoneTurnOnByOthersConfirmation = showDefaultDeviceOnDialog.bind(this, false),
     durationConfig = {},
+    logoutSignalingPluginOnLeaveLiveStreaming = true,
   } = config;
   const {
     showSoundWavesInAudioMode = true,
@@ -703,7 +704,10 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
     };
   }, []);
   useEffect(() => {
-    ZegoPrebuiltPlugins.init(appID, appSign, userID, userName, plugins).then((result: boolean) => {
+    let pluginsConfig = {
+      logoutSignalingPluginOnLeaveLiveStreaming: (config.logoutSignalingPluginOnLeaveLiveStreaming === false) ? false : true,
+    };
+    ZegoPrebuiltPlugins.init(appID, appSign, userID, userName, plugins, pluginsConfig).then((result: boolean) => {
       setIsPluginsInit(result);
       MinimizingHelper.getInstance().notifyPrebuiltInit();
       // Register plugin callback
