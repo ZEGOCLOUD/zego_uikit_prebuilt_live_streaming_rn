@@ -6,16 +6,19 @@ import React, {
   forwardRef,
   useCallback,
 } from 'react';
-import { Image, Text, ImageBackground, Alert } from 'react-native';
-
-import {
-  StyleSheet,
-  View,
-  SafeAreaView,
-  Platform,
+import { Alert,
+  Image, 
+  ImageBackground, 
   KeyboardAvoidingView,
+  Platform,
+  SafeAreaView,
+  StyleSheet,
+  Text, 
   TouchableOpacity,
+  View,
 } from 'react-native';
+import Orientation from 'react-native-orientation-locker';
+
 import ZegoUIKit, {
   ZegoRoomPropertyUpdateType,
   ZegoInRoomMessageInput,
@@ -666,6 +669,20 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
       zloginfo('onAudioOutputDeviceChanged', type);
       stateData.current.useSpeakerWhenJoining = (type === 0);
     });
+
+    Orientation.addOrientationListener((orientation) => {
+      var orientationValue = 0;
+      if (orientation === 'PORTRAIT') {
+        orientationValue = 0;
+      } else if (orientation === 'LANDSCAPE-LEFT') {
+        orientationValue = 1;
+      } else if (orientation === 'LANDSCAPE-RIGHT') {
+        orientationValue = 3;
+      }
+      zloginfo('+++++++Orientation+++++++', orientation, orientationValue);
+      ZegoUIKit.setAppOrientation(orientationValue);
+    });
+
     MinimizingHelper.getInstance().onWindowMinimized(callbackID, () => {
       // Hidden input box
       setTextInputVisable(false);
@@ -703,6 +720,7 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
       }
     };
   }, []);
+
   useEffect(() => {
     let pluginsConfig = {
       logoutSignalingPluginOnLeaveLiveStreaming: (config.logoutSignalingPluginOnLeaveLiveStreaming === false) ? false : true,
