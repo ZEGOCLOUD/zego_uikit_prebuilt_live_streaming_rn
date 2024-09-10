@@ -78,7 +78,8 @@
   "peerDependencies": {
     "@zegocloud/zego-uikit-rn": ">=2.14.3",
     "react": "*",
-    "react-native": "*"
+    "react-native": "*",
+    "react-native-orientation-locker": "^1.7.0"
   },
   "jest": {
     "preset": "react-native",
