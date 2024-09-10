@@ -466,6 +466,20 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
     stateData.current.liveStreamingTimingTimer = null;
   }
 
+  // @ts-ignore
+  const orientationChangedListener = (orientation) => {
+    var orientationValue = 0;
+    if (orientation === 'PORTRAIT') {
+      orientationValue = 0;
+    } else if (orientation === 'LANDSCAPE-LEFT') {
+      orientationValue = 1;
+    } else if (orientation === 'LANDSCAPE-RIGHT') {
+      orientationValue = 3;
+    }
+    zloginfo('Orientation changed:', orientation, orientationValue);
+    ZegoUIKit.setAppOrientation(orientationValue);
+  }
+
   useImperativeHandle(ref, () => ({
     leave: async (showConfirmation = false) => {
       if (debounce.current) return;
@@ -670,18 +684,8 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
       stateData.current.useSpeakerWhenJoining = (type === 0);
     });
 
-    Orientation.addOrientationListener((orientation) => {
-      var orientationValue = 0;
-      if (orientation === 'PORTRAIT') {
-        orientationValue = 0;
-      } else if (orientation === 'LANDSCAPE-LEFT') {
-        orientationValue = 1;
-      } else if (orientation === 'LANDSCAPE-RIGHT') {
-        orientationValue = 3;
-      }
-      zloginfo('+++++++Orientation+++++++', orientation, orientationValue);
-      ZegoUIKit.setAppOrientation(orientationValue);
-    });
+    zloginfo('add orientationChangedListener');
+    Orientation.addOrientationListener(orientationChangedListener);
 
     MinimizingHelper.getInstance().onWindowMinimized(callbackID, () => {
       // Hidden input box
@@ -698,9 +702,13 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
     
     // Initialize after use
     MinimizingHelper.getInstance().setIsMinimizeSwitch(false);
+
     return () => {
       const isMinimizeSwitch = MinimizingHelper.getInstance().getIsMinimizeSwitch();
       if (!isMinimizeSwitch) {
+        zloginfo('remove orientationChangedListener');
+        Orientation.removeOrientationListener(orientationChangedListener);
+
         ZegoUIKit.onRoomStateChanged(callbackID);
         ZegoUIKit.onUserJoin(callbackID);
         ZegoUIKit.onUserLeave(callbackID);
