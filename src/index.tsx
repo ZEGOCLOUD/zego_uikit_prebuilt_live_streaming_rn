@@ -17,7 +17,7 @@ import { Alert,
   TouchableOpacity,
   View,
 } from 'react-native';
-import Orientation from 'react-native-orientation-locker';
+import Orientation, { OrientationType } from 'react-native-orientation-locker';
 
 import ZegoUIKit, {
   ZegoRoomPropertyUpdateType,
@@ -224,6 +224,12 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
   const [dialogExtendedData, setDialogExtendedData] = useState(stateData.current.dialogExtendedData || {} as any);
 
   const [duration, setDuration] = useState(stateData.current.duration || 0);
+
+  const [orientationState, setOrientationState] = useState<OrientationType>(OrientationType.UNKNOWN);
+
+  Orientation.getOrientation( (orientation: OrientationType) => {
+    setOrientationState(orientation);
+  } );
 
   if (stateData.current.callbackID) {
     stateData.current.callbackID  = 'ZegoUIKitPrebuiltLiveStreaming' +
@@ -466,8 +472,7 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
     stateData.current.liveStreamingTimingTimer = null;
   }
 
-  // @ts-ignore
-  const orientationChangedListener = (orientation) => {
+  const orientationChangedListener = (orientation: OrientationType) => {
     var orientationValue = 0;
     if (orientation === 'PORTRAIT') {
       orientationValue = 0;
@@ -478,6 +483,7 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
     }
     zloginfo('Orientation changed:', orientation, orientationValue);
     ZegoUIKit.setAppOrientation(orientationValue);
+    setOrientationState(orientation);
   }
 
   useImperativeHandle(ref, () => ({
@@ -684,7 +690,7 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
       stateData.current.useSpeakerWhenJoining = (type === 0);
     });
 
-    zloginfo('add orientationChangedListener');
+    zloginfo(`${TAG} add orientationChangedListener`);
     Orientation.addOrientationListener(orientationChangedListener);
 
     MinimizingHelper.getInstance().onWindowMinimized(callbackID, () => {
@@ -706,7 +712,7 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
     return () => {
       const isMinimizeSwitch = MinimizingHelper.getInstance().getIsMinimizeSwitch();
       if (!isMinimizeSwitch) {
-        zloginfo('remove orientationChangedListener');
+        zloginfo(`${TAG} remove orientationChangedListener`);
         Orientation.removeOrientationListener(orientationChangedListener);
 
         ZegoUIKit.onRoomStateChanged(callbackID);
@@ -1132,6 +1138,7 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
             setToastExtendedData={(toastExtendedData: any) => setToastExtendedData(toastExtendedData)}
             setIsCoHostDialogVisable={(visable: boolean) => setIsCoHostDialogVisable(visable)}
             setCoHostDialogExtendedData={(coHostDialogExtendedData: any) => setCoHostDialogExtendedData(coHostDialogExtendedData)}
+            orientationState={orientationState}
           /> : null
       }
       {/* Cohost dialog */}

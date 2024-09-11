@@ -1,6 +1,9 @@
-import React, { Fragment }from "react";
-import ZegoUIKit, { ZegoMemberList } from '@zegocloud/zego-uikit-rn';
+import React, { Fragment, useEffect, useState } from "react";
 import { StyleSheet, View, Image, Text, TouchableWithoutFeedback, TouchableOpacity } from "react-native"
+import { OrientationType } from 'react-native-orientation-locker';
+
+import ZegoUIKit, { ZegoMemberList } from '@zegocloud/zego-uikit-rn';
+
 import { getShotName } from '../utils';
 import { ZegoCoHostConnectState, ZegoInvitationType, ZegoToastType, ZegoTranslationText } from '../services/defines';
 import ZegoAgreeCoHostButton from "./ZegoAgreeCoHostButton";
@@ -24,6 +27,7 @@ export default function ZegoLiveStreamingMemberList(props: any) {
         setToastExtendedData,
         setIsCoHostDialogVisable,
         setCoHostDialogExtendedData,
+        orientationState,
     } = props;
     zloginfo('#######ZegoLiveStreamingMemberList', memberConnectStateMap);
 
@@ -156,7 +160,18 @@ export default function ZegoLiveStreamingMemberList(props: any) {
         </View>
     };
 
-    return (<View style={styles.container}>
+    const [containerHeight, setContainerHeight] = useState(260);
+
+    useEffect(() => {
+        zloginfo(`orientationState: ${orientationState}`)
+        if (orientationState === OrientationType["PORTRAIT"] || orientationState === OrientationType["PORTRAIT-UPSIDEDOWN"]) {
+            setContainerHeight(571);
+        } else {
+            setContainerHeight(260);
+        }
+    }, [orientationState]);
+
+    return (<View style={[styles.container, {height: containerHeight}]}>
         <View style={styles.header}>
             <TouchableWithoutFeedback
                 onPress={onCloseMemberList}>
@@ -187,7 +202,7 @@ const styles = StyleSheet.create({
         borderTopRightRadius: 16,
         backgroundColor: 'rgba(34,34,34,0.8)',
         width: '100%',
-        height: 571,
+        // height: 571,     // dynamic control in code
         zIndex: 12,
         position: 'absolute',
         bottom: 0,
