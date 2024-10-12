@@ -4,7 +4,7 @@ import { OrientationType } from 'react-native-orientation-locker';
 
 import ZegoUIKit, { ZegoMemberList } from '@zegocloud/zego-uikit-rn';
 
-import { getShotName } from '../utils';
+import { getShortName } from '../utils';
 import { ZegoCoHostConnectState, ZegoInvitationType, ZegoToastType, ZegoTranslationText } from '../services/defines';
 import ZegoAgreeCoHostButton from "./ZegoAgreeCoHostButton";
 import ZegoDisagreeCoHostButton from "./ZegoDisagreeCoHostButton";
@@ -121,11 +121,11 @@ export default function ZegoLiveStreamingMemberList(props: any) {
         const allArr = hostArr.concat(speakerArr, willSpeakerArr, audienceArr);
         return allArr;
     };
-    const renderItem = ({ userInfo }: any) => {
+    const streamingRenderItem = ({ userInfo }: any) => {
         return <View style={styles.memberItem}>
             <View style={styles.memberItemLeft}>
                 <View style={styles.memberAvatar}>
-                    <Text style={styles.memberNameLabel}>{getShotName(userInfo.userName)}</Text>
+                    <Text style={styles.memberNameLabel}>{getShortName(userInfo.userName)}</Text>
                 </View>
                 {/* <View style={styles.memberName}>
                     <View style={{maxWidth: 100}}>
@@ -187,7 +187,7 @@ export default function ZegoLiveStreamingMemberList(props: any) {
             <ZegoMemberList 
                 showMicrophoneState={showMicrophoneState}
                 showCameraState={showCameraState}
-                itemBuilder={itemBuilder || renderItem}
+                itemBuilder={itemBuilder || streamingRenderItem}     // itemBuilder path: ZegoUIKitPrebuiltLiveStreaming.config.memberListConfig.itemBuilder
                 sortUserList={sortUserList}
             />
         </View>

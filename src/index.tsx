@@ -38,7 +38,7 @@ import ZegoCoHostMenuDialog from "./components/ZegoCoHostMenuDialog";
 import ZegoToast from "./components/ZegoToast";
 import ZegoDialog from "./components/ZegoDialog";
 import ZegoPrebuiltPlugins from './services/plugins';
-import { getShotName, grantPermissions } from './utils';
+import { getShortName, grantPermissions } from './utils';
 import ZegoAudioVideoForegroundView from './components/ZegoAudioVideoForegroundView';
 import {
   HOST_DEFAULT_CONFIG,
@@ -1026,12 +1026,12 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
           {topButtonBuilders.hostAvatarBuilder && showHostAvatar()
           ? topButtonBuilders.hostAvatarBuilder(getHostUser())
           : <View style={[styles.hostInfo, showHostAvatar() ? styles.show : null]}>
-            <View style={styles.avatar}>
-              <Text style={styles.nameLabel}>
-                {getShotName(getHostNameByID(hostID))}
-              </Text>
-            </View>
-            <Text style={styles.hostName}>{getHostNameByID(hostID)}</Text>
+              <View style={styles.avatar}>
+                <Text style={styles.nameLabel}>
+                  {getShortName(getHostNameByID(hostID))}
+                </Text>
+              </View>
+              <Text style={styles.hostName}>{getHostNameByID(hostID)}</Text>
           </View>}
           {/* Return home */}
           {/* @ts-ignore */}

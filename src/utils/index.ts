@@ -1,6 +1,6 @@
 import { Platform, PermissionsAndroid, Permission } from 'react-native';
 
-const getShotName = (name: string | undefined) => {
+const getShortName = (name: string | undefined) => {
     if (!name) {
         return '';
     }
@@ -116,4 +116,4 @@ const getMethodReturnValue = async (func? : Function | Promise<boolean>) => {
     return result;
 }
 
-export { getShotName, grantPermissions, durationFormat, getMethodReturnValue };
+export { getShortName, grantPermissions, durationFormat, getMethodReturnValue };
