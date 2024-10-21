@@ -724,11 +724,6 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
       MinimizingHelper.getInstance().notifyPrebuiltInit();
       // Register plugin callback
       registerPluginCallback();
-      ZegoPrebuiltPlugins.joinRoom(liveID).then((result: boolean) => {
-        if (result) {
-          zloginfo('[ZegoUIKitPrebuiltLiveStreaming] join room success.');
-        }
-      });
       ZegoUIKit.init(appID, appSign, { userID: userID, userName: userName }).then(
         () => {
           ZegoUIKit.turnCameraOn('', turnOnCameraWhenJoining);
