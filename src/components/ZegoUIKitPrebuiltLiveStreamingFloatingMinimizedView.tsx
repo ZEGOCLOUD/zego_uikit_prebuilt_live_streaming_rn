@@ -76,7 +76,7 @@ export default function ZegoUIKitPrebuiltLiveStreamingFloatingMinimizedView(prop
 
     const callbackID = 'ZegoMinimizeRoom' + String(Math.floor(Math.random() * 10000));
     
-    const layoutHandle = useCallback((e) => {
+    const layoutHandle = useCallback((e: any) => {
         const  { x, y, width, height } = e.nativeEvent.layout;
         zloginfo('[ZegoUIKitPrebuiltLiveAudioRoomFloatingMinimizedView] layoutHandle', x, y, width, height);
         setFloatViewInfo({ width, height });
