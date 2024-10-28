@@ -77,9 +77,9 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.zegoprebuiltlivestreaming"
+    namespace "com.zegocloud.uikit.rn.zegoprebuiltlivestreaming"
     defaultConfig {
-        applicationId "com.zegoprebuiltlivestreaming"
+        applicationId "com.zegocloud.uikit.rn.zegoprebuiltlivestreaming"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
