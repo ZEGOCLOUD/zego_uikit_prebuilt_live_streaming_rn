@@ -34,7 +34,7 @@ export default function AudiencePage(props: any) {
               // leaveBuilder: CustomBuilder.leaveBuilder,
               // minimizingBuilder: CustomBuilder.minimizingBuilder,
               // memberBuilder: CustomBuilder.memberBuilder,
-              // hostAvatarBuilder: CustomBuilder.hostAvatarBuilder,
+              hostAvatarBuilder: CustomBuilder.hostAvatarBuilder,
             },
           },
           bottomMenuBarConfig: {
@@ -46,6 +46,9 @@ export default function AudiencePage(props: any) {
               // enableChatBuilder: CustomBuilder.enableChatBuilder,
               // chatBuilder: CustomBuilder.chatBuilder,
             },
+          },
+          memberListConfig: {
+            avatarBuilder: CustomBuilder.memberAvatarBuilder,
           },
           onWindowMinimized: () => {
             console.log('[Demo]AudiencePage onWindowMinimized');

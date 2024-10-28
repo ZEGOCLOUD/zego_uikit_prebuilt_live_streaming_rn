@@ -5,7 +5,7 @@ import { OrientationType } from 'react-native-orientation-locker';
 import ZegoUIKit, { ZegoMemberList } from '@zegocloud/zego-uikit-rn';
 
 import { getShortName } from '../utils';
-import { ZegoCoHostConnectState, ZegoInvitationType, ZegoToastType, ZegoTranslationText } from '../services/defines';
+import { ZegoCoHostConnectState, ZegoInvitationType, ZegoLiveStreamingRole, ZegoToastType, ZegoTranslationText } from '../services/defines';
 import ZegoAgreeCoHostButton from "./ZegoAgreeCoHostButton";
 import ZegoDisagreeCoHostButton from "./ZegoDisagreeCoHostButton";
 import { zloginfo } from "../utils/logger";
@@ -16,6 +16,7 @@ export default function ZegoLiveStreamingMemberList(props: any) {
         showMicrophoneState,
         showCameraState,
         itemBuilder,
+        avatarBuilder,
         onCloseMemberList,
         memberConnectStateMap,
         hostID,
@@ -74,17 +75,7 @@ export default function ZegoLiveStreamingMemberList(props: any) {
             });
         }
     };
-    const roleDescription = (item: any) => {
-        zloginfo('#######roleDescription', item, memberConnectStateMap);
-        item.connectState = memberConnectStateMap[item.userID];
-        const showMe = item.userID === localUserID ? 'You' : '';
-        let roleName = item.userID === hostID ? 'Host' : item.connectState === ZegoCoHostConnectState.connected ? 'Co-host' : '';
-        if (!showMe) {
-          return `${roleName ? ('(' + roleName + ')') : ''}`;
-        } else {
-          return `(${showMe + (roleName ? (',' + roleName) : '')})`;
-        }
-    };
+
     const sortUserList = (userList: any[]) => {
         const hostArr: any[] = [],
             speakerArr: any[] = [],
@@ -122,21 +113,32 @@ export default function ZegoLiveStreamingMemberList(props: any) {
         return allArr;
     };
     const streamingRenderItem = ({ userInfo }: any) => {
+        userInfo.connectState = memberConnectStateMap[userInfo.userID];
+        const role = (userInfo.userID === hostID) ? ZegoLiveStreamingRole.host : (userInfo.connectState === ZegoCoHostConnectState.connected ? ZegoLiveStreamingRole.coHost : ZegoLiveStreamingRole.audience);
+        userInfo.role = role;
+        userInfo.isSelf = (userInfo.userID === localUserID);
+
+        const showMe = userInfo.isSelf ? 'You' : '';
+        const roleName = userInfo.role === ZegoLiveStreamingRole.host ? 'Host' : (userInfo.role === ZegoLiveStreamingRole.coHost ? 'Co-host' : '');
+        let roleDesc = ''
+        if (!showMe) {
+          roleDesc = `${roleName ? ('(' + roleName + ')') : ''}`;
+        } else {
+          roleDesc = `(${showMe + (roleName ? (',' + roleName) : '')})`;
+        } 
+
         return <View style={styles.memberItem}>
-            <View style={styles.memberItemLeft}>
-                <View style={styles.memberAvatar}>
-                    <Text style={styles.memberNameLabel}>{getShortName(userInfo.userName)}</Text>
-                </View>
-                {/* <View style={styles.memberName}>
-                    <View style={{maxWidth: 100}}>
-                        <Text numberOfLines={1} style={{fontSize: 16, color: '#FFFFFF'}}>{userInfo.userName}</Text>
+            {avatarBuilder 
+                ? avatarBuilder(userInfo)
+                : <View style={styles.memberItemLeft}>
+                    <View style={styles.memberAvatar}>
+                        <Text style={styles.memberNameLabel}>{getShortName(userInfo.userName)}</Text>
                     </View>
-                    <Text style={{fontSize: 16, color: '#FFFFFF'}}>{roleDescription(userInfo)}</Text>
-                </View> */}
-                <View style={[styles.memberName, {maxWidth: showOperationButton(userInfo.userID) ? maxWidthLimit1 : maxWidthLimit2}]}>
-                    <Text numberOfLines={1} style={{fontSize: 16, color: '#FFFFFF'}}>{userInfo.userName}{roleDescription(userInfo)}</Text>
+                    <View style={[styles.memberName, {maxWidth: showOperationButton(userInfo.userID) ? maxWidthLimit1 : maxWidthLimit2}]}>
+                        <Text numberOfLines={1} style={{fontSize: 16, color: '#FFFFFF'}}>{userInfo.userName}{roleDesc}</Text>
+                    </View>
                 </View>
-            </View>
+            }
             <View style={styles.memberItemRight}>
                 {
                     showOperationButton(userInfo.userID) ? <Fragment>

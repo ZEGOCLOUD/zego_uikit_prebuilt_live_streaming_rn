@@ -57,6 +57,7 @@ import ZegoUIKitPrebuiltLiveStreamingFloatingMinimizedView from "./components/Ze
 import ZegoLiveStreamingClock from './components/ZegoLiveStreamingClock'
 
 export {
+  ZegoLiveStreamingRole,
   ZegoMenuBarButtonName,
   HOST_DEFAULT_CONFIG,
   AUDIENCE_DEFAULT_CONFIG,
@@ -149,6 +150,7 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
     showMicrophoneState = true,
     showCameraState = true,
     itemBuilder,
+    avatarBuilder,
   } = memberListConfig;
   const { itemBuilder: messageItemBuilder } = inRoomMessageViewConfig;
   const {
@@ -177,7 +179,6 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
     // leaveBuilder
     // minimizingBuilder
     // memberBuilder(memberCount, requestCoHostCount)
-    // hostAvatarBuilder(host)
     buttonBuilders: topButtonBuilders = {},
   } = topMenuBarConfig;
   const {
@@ -1100,6 +1101,7 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
             showMicrophoneState={showMicrophoneState}
             showCameraState={showCameraState}
             itemBuilder={itemBuilder}
+            avatarBuilder={avatarBuilder}
             onCloseMemberList={() => {
               setIsMemberListVisable(false);
               stateData.current.isMemberListVisable = false;

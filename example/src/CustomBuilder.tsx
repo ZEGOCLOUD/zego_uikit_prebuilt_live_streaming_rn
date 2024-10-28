@@ -1,4 +1,9 @@
-import { Text, View } from "react-native";
+import React from "react";
+import { Image, StyleSheet, Text, View } from "react-native";
+
+import {
+  ZegoLiveStreamingRole,
+} from '@zegocloud/zego-uikit-prebuilt-live-streaming-rn';
 
 export class CustomBuilder {
   static toggleCameraBuilder = (isOn : boolean) => {
@@ -61,11 +66,43 @@ export class CustomBuilder {
     );
   }
 
-  static hostAvatarBuilder = (host: any) => {
-    console.log('++++++++, hostAvatarBuilder', host);
+  static getUserAvatar = (userID: string) => {
+    return `https://robohash.org/${userID}.png`
+  }
+
+  static hostAvatarBuilder = (hostInfo: any) => {
     return (
-      <View style={{width: 80, height: 30, backgroundColor: 'white', alignItems: 'center', justifyContent: 'center'}}>
-        <Text>{host.userName}</Text>
+      <View style={[styles.hostInfo]}>
+          <Image
+            style={styles.memberAvatar}
+            defaultSource={require('./resources/avatar_def.png')}   // Don't take effect in Android debug mode.
+            source={{uri: this.getUserAvatar(hostInfo.userID)}}
+          />
+          <Text style={styles.hostName}>{hostInfo.userName}</Text>
+      </View>
+    );
+  }
+
+  static memberAvatarBuilder = (userInfo: any) => {
+    const showMe = userInfo.isSelf ? 'You' : '';
+    const roleName = userInfo.role === ZegoLiveStreamingRole.host ? 'Host' : (userInfo.role === ZegoLiveStreamingRole.coHost ? 'Co-host' : '');
+    let roleDesc = ''
+    if (!showMe) {
+      roleDesc = `${roleName ? ('(' + roleName + ')') : ''}`;
+    } else {
+      roleDesc = `(${showMe + (roleName ? (',' + roleName) : '')})`;
+    } 
+
+    return (
+      <View style={styles.memberItemLeft}>
+        <Image
+              style={styles.memberAvatar}
+              defaultSource={require('./resources/avatar_def.png')}   // Don't take effect in Android debug mode.
+              source={{uri: this.getUserAvatar(userInfo.userID)}}
+        />
+        <View style={[styles.memberName]}>
+            <Text numberOfLines={1} style={{fontSize: 16, color: '#FFFFFF'}}>{userInfo.userName}{roleDesc}</Text>
+        </View>
       </View>
     );
   }
@@ -86,3 +123,46 @@ export class CustomBuilder {
     );
   }
 }
+
+const styles = StyleSheet.create({
+  hostInfo: {
+    flexDirection: 'row',
+    backgroundColor: 'rgba(30, 39, 64, 0.4)',
+    borderRadius: 1000,
+    paddingLeft: 3,
+    paddingRight: 12,
+    paddingTop: 3,
+    paddingBottom: 3,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginLeft: 16,
+    display: 'flex',
+  },
+  nameLabel: {
+    fontSize: 18,
+    color: '#2A2A2A',
+  },
+  hostName: {
+    color: '#FFFFFF',
+    fontSize: 14,
+  },
+  memberItemLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  memberAvatar: {
+      width: 36,
+      height: 36,
+      backgroundColor: '#5c5c5c',
+      borderRadius: 1000,
+      marginRight: 12,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+  },
+  memberName: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+})
