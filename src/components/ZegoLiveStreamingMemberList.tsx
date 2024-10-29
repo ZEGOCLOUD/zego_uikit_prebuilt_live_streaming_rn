@@ -182,7 +182,7 @@ export default function ZegoLiveStreamingMemberList(props: any) {
                     source={require('../resources/white_button_back.png')}
                 />
             </TouchableWithoutFeedback>
-            <Text style={styles.title}>{ZegoTranslationText.memberListTitle} · {memberCount}人</Text>
+            <Text style={styles.title}>{ZegoTranslationText.memberListTitle} · {memberCount} {memberCount == 1 ? 'user' : 'users'}</Text>
         </View>
         <View style={styles.divide}></View>
         <View style={styles.memberListContainer}>
