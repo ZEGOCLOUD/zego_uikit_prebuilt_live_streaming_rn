@@ -140,6 +140,7 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
     onMicrophoneTurnOnByOthersConfirmation = showDefaultDeviceOnDialog.bind(this, false),
     durationConfig = {},
     logoutSignalingPluginOnLeaveLiveStreaming = true,
+    showBackgroundTips = false,
   } = config;
   const {
     showSoundWavesInAudioMode = true,
@@ -1012,7 +1013,7 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
             style={styles.noHostBg}
             source={require('./resources/background.png')}
           >
-            <Text style={styles.noHostTips}>{ZegoTranslationText.noHostOnline}</Text>
+            {config.showBackgroundTips ? <Text style={styles.noHostTips}>{ZegoTranslationText.noHostOnline}</Text> : null}
           </ImageBackground>
         </View>
       </View>

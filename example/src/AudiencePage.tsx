@@ -61,7 +61,8 @@ export default function AudiencePage(props: any) {
                 userName: 'user_' + userID,
                 liveID: liveID,
               });
-          }
+          },
+          showBackgroundTips: false
         }}
         plugins={[ZIM]}
       />
