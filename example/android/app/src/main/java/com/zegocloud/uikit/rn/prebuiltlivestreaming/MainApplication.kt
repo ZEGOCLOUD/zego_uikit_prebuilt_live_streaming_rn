@@ -1,4 +1,4 @@
-package com.zegocloud.uikit.rn.zegoprebuiltlivestreaming
+package com.zegocloud.uikit.rn.prebuiltlivestreaming
 
 import android.app.Application
 import com.facebook.react.PackageList

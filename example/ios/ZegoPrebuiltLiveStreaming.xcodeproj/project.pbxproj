@@ -481,7 +481,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.zegocloud.uikit.rn.zegoprebuiltlivestreamin;
+				PRODUCT_BUNDLE_IDENTIFIER = com.zegocloud.uikit.rn.prebuiltlivestreaming;
 				PRODUCT_NAME = ZegoPrebuiltLiveStreaming;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -510,7 +510,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.zegocloud.uikit.rn.zegoprebuiltlivestreamin;
+				PRODUCT_BUNDLE_IDENTIFIER = com.zegocloud.uikit.rn.prebuiltlivestreaming;
 				PRODUCT_NAME = ZegoPrebuiltLiveStreaming;
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";

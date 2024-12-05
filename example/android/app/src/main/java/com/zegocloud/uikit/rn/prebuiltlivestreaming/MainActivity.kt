@@ -1,4 +1,4 @@
-package com.zegocloud.uikit.rn.zegoprebuiltlivestreaming
+package com.zegocloud.uikit.rn.prebuiltlivestreaming
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate
