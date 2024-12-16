@@ -88,9 +88,9 @@
     "@types/react": "^17.0.21"
   },
   "peerDependencies": {
-    "@zegocloud/zego-uikit-rn": ">=2.14.3",
     "react": "*",
     "react-native": "*",
+    "@zegocloud/zego-uikit-rn": ">=2.16.1",
     "react-native-orientation-locker": "^1.7.0"
   },
   "commitlint": {
