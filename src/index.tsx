@@ -140,7 +140,7 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
     onMicrophoneTurnOnByOthersConfirmation = showDefaultDeviceOnDialog.bind(this, false),
     durationConfig = {},
     logoutSignalingPluginOnLeaveLiveStreaming = true,
-    showBackgroundTips = false,
+    showNoHostOnlineTipAfterSeconds = 3,
   } = config;
   const {
     showSoundWavesInAudioMode = true,
@@ -211,7 +211,7 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
   const [textInput, setTextInput] = useState(null);
   const [textInputHeight, setTextInputHeight] = useState(45);
   const [role, setRole] = useState(stateData.current.role !== undefined ? stateData.current.role : config.role);
-  const [hostID, setHostID] = useState(stateData.current.hostID || '');
+  const [hostID, setHostID] = useState(stateData.current.hostID || undefined);
   const [liveStatus, setLiveStatus] = useState(stateData.current.liveStatus !== undefined ? stateData.current.liveStatus : ''); // init: '' default: 0, start: 1
   const [memberCount, setMemberCount] = useState(stateData.current.memberCount || 1);
   const [isMemberListVisable, setIsMemberListVisable] = useState(stateData.current.isMemberListVisable || false);
@@ -228,6 +228,9 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
   const clockRef = useRef<any>();
 
   const [orientationState, setOrientationState] = useState<OrientationType>(OrientationType.UNKNOWN);
+
+  const [isShowNoHostOnlineTip, setShowNoHostOnlineTip] = useState(false);
+  const showNoHostOnlineTipTimeoutRef = useRef(null);
 
   Orientation.getOrientation( (orientation: OrientationType) => {
     setOrientationState(orientation);
@@ -744,7 +747,17 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
     });
     // Initialize after use
     MinimizingHelper.getInstance().setIsMinimizeSwitch(false);
+
+    showNoHostOnlineTipTimeoutRef.current = setTimeout(() => {
+      // After the configured time, if the timer has not been cleared, display the tip.
+      setShowNoHostOnlineTip(true);
+      zloginfo('showNoHostOnlineTip true when timeout')
+    }, config.showNoHostOnlineTipAfterSeconds * 1000);
+
     return () => {
+      clearTimeout(showNoHostOnlineTipTimeoutRef.current);
+      zloginfo('clear showNoHostOnlineTip timeout')
+
       const isMinimizeSwitch = MinimizingHelper.getInstance().getIsMinimizeSwitch();
       if (!isMinimizeSwitch) {
         setIsDialogVisableHandle(false);
@@ -765,6 +778,25 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
       startLiveStreamingTimingTimer()
     }
   }, [liveStatus])
+
+  useEffect(() => {
+    // Filter out the value automatically assigned to hostID by the function.
+    if (hostID === undefined) {
+      return
+    }
+
+    zloginfo(`hostID has set: ${hostID}`)
+    if (!showNoHostOnlineTipTimeoutRef.current) {
+      return
+    }
+
+    let hasHost = (hostID !== null && hostID !== '')
+    setShowNoHostOnlineTip(!hasHost);
+    zloginfo(`showNoHostOnlineTip ${!hasHost} from set hostID`)
+    
+    clearTimeout(showNoHostOnlineTipTimeoutRef.current);
+    zloginfo('clear showNoHostOnlineTip timeout where set hostID')
+}, [hostID])
 
   const showAudioVideoContainer = () => {
     // @ts-ignore
@@ -1013,7 +1045,7 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
             style={styles.noHostBg}
             source={require('./resources/background.png')}
           >
-            {config.showBackgroundTips ? <Text style={styles.noHostTips}>{ZegoTranslationText.noHostOnline}</Text> : null}
+            {isShowNoHostOnlineTip ? <Text style={styles.noHostTips}>{ZegoTranslationText.noHostOnline}</Text> : null}
           </ImageBackground>
         </View>
       </View>

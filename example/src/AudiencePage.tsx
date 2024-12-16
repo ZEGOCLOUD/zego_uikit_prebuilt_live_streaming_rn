@@ -62,7 +62,7 @@ export default function AudiencePage(props: any) {
                 liveID: liveID,
               });
           },
-          showBackgroundTips: false
+          showNoHostOnlineTipAfterSeconds: 3
         }}
         plugins={[ZIM]}
       />

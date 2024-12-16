@@ -136,7 +136,7 @@ const AUDIENCE_DEFAULT_CONFIG = {
         maxCount: 5,
     },
     translationText: ZegoTranslationText,
-    showBackgroundTips: false,
+    showNoHostOnlineTipAfterSeconds: 3,
 };
 
 export {
