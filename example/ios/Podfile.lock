@@ -1241,9 +1241,9 @@ PODS:
     - React-Core
   - react-native-safe-area-context (4.14.0):
     - React-Core
-  - react-native-zego-express-engine (3.17.2):
+  - react-native-zego-express-engine (3.19.0):
     - React
-    - ZegoExpressPrivate (= 3.17.1.41087)
+    - ZegoExpressEngine (= 3.19.0)
   - react-native-zego-zim (2.19.0):
     - React
     - ZIM (= 2.19.0)
@@ -1536,9 +1536,7 @@ PODS:
   - zego-uikit-rn (2.17.1):
     - React-Core
     - ZegoUIKitReport (= 0.2.10)
-  - ZegoExpressPrivate (3.17.1.41087):
-    - ZegoExpressPrivate/Default (= 3.17.1.41087)
-  - ZegoExpressPrivate/Default (3.17.1.41087)
+  - ZegoExpressEngine (3.19.0)
   - ZegoUIKitReport (0.2.10)
   - ZIM (2.19.0)
 
@@ -1618,7 +1616,7 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - SocketRocket
-    - ZegoExpressPrivate
+    - ZegoExpressEngine
     - ZegoUIKitReport
     - ZIM
 
@@ -1801,7 +1799,7 @@ SPEC CHECKSUMS:
   React-microtasksnativemodule: 71ca9282bce93b319218d75362c0d646b376eb43
   react-native-orientation-locker: cc6f357b289a2e0dd2210fea0c52cb8e0727fdaa
   react-native-safe-area-context: b13be9714d9771fbde0120bc519c963484de3a71
-  react-native-zego-express-engine: 564c14c5a32c42eb9771e83fdd8e710fa9c21b29
+  react-native-zego-express-engine: bd10f611ff65518aadafa8355f29c5e7f54f69ce
   react-native-zego-zim: f52f1b0666bb5dfa89bfb81852ed8f7eb162497f
   React-nativeconfig: 8c83d992b9cc7d75b5abe262069eaeea4349f794
   React-NativeModulesApple: 97f606f09fd9840b3868333984d6a0e7bcc425b5
@@ -1834,7 +1832,7 @@ SPEC CHECKSUMS:
   Yoga: 055f92ad73f8c8600a93f0e25ac0b2344c3b07e6
   zego-uikit-prebuilt-live-streaming-rn: 164a5fe803c393cc421ee5248dbfc3f2ada5d9d2
   zego-uikit-rn: 93a4c1cae3c9f4b34cb576524c86d647bb376ad9
-  ZegoExpressPrivate: d20ad3b1ed0af40f0c00ccdd977e3f8ab8d015a8
+  ZegoExpressEngine: bf3a108356847243777a1c4d5ac2b5d02e8bad94
   ZegoUIKitReport: a993f7ccc5d243998a7e601a60e16fcd6c084417
   ZIM: 0844778ce190690fdf043ec45bb14b2f060b358b
 
