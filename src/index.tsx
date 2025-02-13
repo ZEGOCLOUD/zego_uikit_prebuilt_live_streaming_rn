@@ -564,7 +564,9 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
               initLiveStreamingTimingTimer();
 
               // Cancel the invitation to cohost
-              ZegoUIKit.getSignalingPlugin().cancelInvitation([realTimeData.current.hostID]);
+              if (ZegoUIKit.getSignalingPlugin()) {
+                ZegoUIKit.getSignalingPlugin().cancelInvitation([realTimeData.current.hostID]);
+              }
               ZegoUIKit.turnCameraOn('', false);
               ZegoUIKit.turnMicrophoneOn('', false);
 
