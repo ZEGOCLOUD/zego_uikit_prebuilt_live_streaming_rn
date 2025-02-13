@@ -798,7 +798,7 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
     
     clearTimeout(showNoHostOnlineTipTimeoutRef.current);
     zloginfo('clear showNoHostOnlineTip timeout where set hostID')
-}, [hostID])
+  }, [hostID])
 
   const showAudioVideoContainer = () => {
     // @ts-ignore

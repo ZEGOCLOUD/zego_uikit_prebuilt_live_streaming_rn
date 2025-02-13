@@ -1,7 +1,9 @@
 import ZegoUIKit, {
-  ZegoUIKitPluginType,
   ZegoInvitationConnectionState,
+  ZegoUIKitLogger,
+  ZegoUIKitPluginType,
 } from '@zegocloud/zego-uikit-rn';
+
 import { zloginfo } from '../utils/logger';
 import { getPackageVersion } from '../utils/package_version';
 
@@ -29,8 +31,11 @@ let logoutSignalingPluginOnLeaveLiveStreaming = true; // default value is true
 
 const ZegoPrebuiltPlugins = {
   init: (appID: number, appSign: string, userID: string, userName: string, plugins: any[], pluginsConfig: any) => {
-    const callbackID =
-      'ZegoPrebuiltPlugins' + String(Math.floor(Math.random() * 10000));
+    ZegoUIKitLogger.logSetUserID(userID)
+
+    zloginfo(`[ZegoPrebuiltPlugins][init] appID: ${appID}, userID: ${userID}, userName: ${userName}, config: ${JSON.stringify(pluginsConfig)}`)
+
+    const callbackID = 'ZegoPrebuiltPlugins' + String(Math.floor(Math.random() * 10000));
     _install(plugins);
 
     logoutSignalingPluginOnLeaveLiveStreaming = pluginsConfig.logoutSignalingPluginOnLeaveLiveStreaming;
@@ -54,39 +59,6 @@ const ZegoPrebuiltPlugins = {
     } else {
       zloginfo('[Plugins]The signal plugin passed in is empty');
       return Promise.resolve(false);
-    }
-  },
-  joinRoom(roomID: string) {
-    if (ZegoUIKit.getPlugin(ZegoUIKitPluginType.signaling)) {
-      return ZegoUIKit.getSignalingPlugin().joinRoom(roomID).then(() => {
-        zloginfo('[Plugins] join room success.');
-        return true;
-      });
-    } else {
-      zloginfo('[Plugins]The signal plugin passed in is empty');
-      return Promise.resolve(false);
-    }
-  },
-  reconnectIfDisconnected: () => {
-    if (ZegoUIKit.getPlugin(ZegoUIKitPluginType.signaling)) {
-      zloginfo(
-        '[Plugins] reconnectIfDisconnected',
-        _pluginConnectionState,
-        ZegoInvitationConnectionState.disconnected
-      );
-      if (_pluginConnectionState === ZegoInvitationConnectionState.disconnected) {
-        ZegoUIKit.getSignalingPlugin().logout().then(() => {
-          zloginfo('[Plugins] auto logout success.');
-          ZegoUIKit.getSignalingPlugin().login(
-            _localUser.userID,
-            _localUser.userName
-          ).then(() => {
-            zloginfo('[Plugins] auto reconnect success.');
-          });
-        });
-      }
-    } else {
-      zloginfo('[Plugins]The signal plugin passed in is empty');
     }
   },
   uninit: () => {
