@@ -52,6 +52,7 @@ export default function ZegoLiveStreamingMemberList(props: any) {
                 inviteeID: userID,
                 invitationType: ZegoInvitationType.removeCoHost,
                 onOk: () => {
+                    zloginfo(`[ZegoLiveStreamingMemberList][operateHandle][removeCoHost][onOk]`)
                     setIsCoHostDialogVisable(false);
                     onConnectStateChanged(userID, ZegoCoHostConnectState.idle);
                 },
@@ -65,6 +66,7 @@ export default function ZegoLiveStreamingMemberList(props: any) {
                 inviteeID: userID,
                 invitationType: ZegoInvitationType.inviteToCoHost,
                 onOk: () => {
+                    zloginfo(`[ZegoLiveStreamingMemberList][operateHandle][inviteToCoHost][onOk]`)
                     setIsCoHostDialogVisable(false);
                     setIsToastVisable(true);
                     setToastExtendedData({ type: ZegoToastType.success, text: ZegoTranslationText.inviteCoHostSuccessfullyToast });
@@ -144,11 +146,21 @@ export default function ZegoLiveStreamingMemberList(props: any) {
                     showOperationButton(userInfo.userID) ? <Fragment>
                         <View style={{marginRight: 6}}>
                             {/* @ts-ignore */}
-                            <ZegoDisagreeCoHostButton onPressed={onCoHostDisagree.bind(this, userInfo.userID)} inviterID={userInfo.userID} />
+                            <ZegoDisagreeCoHostButton 
+                                onPressed={(extendedData: any) => {
+                                    onCoHostDisagree(extendedData)
+                                }}
+                                inviterID={userInfo.userID} 
+                            />
                         </View>
                         <View>
                             {/* @ts-ignore */}
-                            <ZegoAgreeCoHostButton onPressed={onCoHostAgree.bind(this, userInfo.userID)} inviterID={userInfo.userID} />
+                            <ZegoAgreeCoHostButton
+                                onPressed={(extendedData: any) => {
+                                    onCoHostAgree(extendedData)
+                                }}
+                                inviterID={userInfo.userID}
+                            />
                         </View>
                     </Fragment> : null
                 }

@@ -74,8 +74,8 @@ const ZegoLiveStatus = {
     start: 1,
 };
 const ZegoInvitationType = {
-    requestCoHost: 2,
-    inviteToCoHost: 3,
+    requestCoHost: 2,   // The audience created a cohost request
+    inviteToCoHost: 3,  // The audience is invited to connect the cohost by host
     removeCoHost: 4,
 };
 const ZegoCoHostConnectState = {

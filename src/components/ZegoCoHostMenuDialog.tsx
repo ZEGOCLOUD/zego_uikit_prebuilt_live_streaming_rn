@@ -1,8 +1,9 @@
 import React, { useEffect, useRef }from "react";
-import ZegoUIKit from '@zegocloud/zego-uikit-rn';
-import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
-import { ZegoSendInvitationButton } from '@zegocloud/zego-uikit-rn';
-import { ZegoTranslationText, ZegoInvitationType, ZegoToastType } from "../services/defines";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+
+import ZegoUIKit, {ZegoSendInvitationButton, ZegoUIKitReport } from '@zegocloud/zego-uikit-rn';
+
+import { ZegoInvitationType, ZegoToastType, ZegoTranslationText } from "../services/defines";
 import { zloginfo } from "../utils/logger";
 
 
@@ -114,7 +115,26 @@ export default function ZegoCoHostMenuDialog(props: any) {
             invitees={[inviteeID]}
             type={invitationType}
             onWillPressed={willPressedHandle}
-            onPressed={onOk}
+            onPressed={({invitationID, invitees: succInvitees}) => {
+                zloginfo(`[ZegoCoHostMenuDialog][SendInvitationButton] onPressed type: ${invitationType}, callID: ${invitationID}, invitees: ${JSON.stringify(succInvitees)}`)
+                if (succInvitees.length === 0) {
+                    // not report any event
+                } else if (invitationType === ZegoInvitationType.inviteToCoHost) {
+                    ZegoUIKitReport.reportEvent('livestreaming/cohost/host/invite', {
+                        call_id: invitationID,
+                        audience_id: succInvitees[0]
+                    });
+                } else if (invitationType === ZegoInvitationType.removeCoHost) {
+                    ZegoUIKitReport.reportEvent('livestreaming/cohost/host/stop', {
+                        call_id: invitationID,
+                        cohost_id: succInvitees[0]
+                    });
+                }
+
+                if (typeof onOk === 'function') {
+                    onOk()
+                }
+            }}
         ></ZegoSendInvitationButton>
         <View style={styles.divide}></View>
         {/* remove xxx from the room */}

@@ -1,22 +1,5 @@
-import React, {
-  useEffect,
-  useState,
-  useRef,
-  useImperativeHandle,
-  forwardRef,
-  useCallback,
-} from 'react';
-import { Alert,
-  Image,
-  ImageBackground,
-  KeyboardAvoidingView,
-  Platform,
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import React, { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
+import { Alert, Image, ImageBackground, KeyboardAvoidingView, Platform, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Orientation, { OrientationType } from 'react-native-orientation-locker';
 
 import ZegoUIKit, {
@@ -28,6 +11,7 @@ import ZegoUIKit, {
   ZegoRoomPropertyUpdateType,
   ZegoSwitchCameraButton,
   ZegoUIKitPluginType,
+  ZegoUIKitReport,
   ZegoUIKitVideoConfig,
 } from '@zegocloud/zego-uikit-rn';
 
@@ -45,12 +29,12 @@ import ZegoUIKitPrebuiltLiveStreamingFloatingMinimizedView from "./components/Ze
 import {
   HOST_DEFAULT_CONFIG,
   AUDIENCE_DEFAULT_CONFIG,
+  ZegoCoHostConnectState,
+  ZegoInvitationType,
   ZegoLiveStreamingRole,
   ZegoLiveStatus,
-  ZegoTranslationText,
-  ZegoInvitationType,
-  ZegoCoHostConnectState,
   ZegoToastType,
+  ZegoTranslationText,
 } from "./services/defines";
 import MinimizingHelper from "./services/minimizing_helper";
 import ZegoPrebuiltPlugins from './services/plugins';
@@ -270,11 +254,17 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
   const registerPluginCallback = () => {
     if (ZegoUIKit.getPlugin(ZegoUIKitPluginType.signaling)) {
       ZegoUIKit.getSignalingPlugin().onInvitationReceived(callbackID, ({ callID, type, inviter, data }: any) => {
-        zloginfo('onInvitationReceived implement by ' + TAG);
-
+        zloginfo(`onInvitationReceived implement by ${TAG}, callID: ${callID}, type: ${type}, inviter: ${JSON.stringify(inviter)}, data: ${data}`);
         zloginfo('[Prebuilt]onInvitationReceived', JSON.stringify(realTimeData.current), requestCoHostCount);
+
         if (type === ZegoInvitationType.requestCoHost && userID === realTimeData.current.hostID) {
           // The audience created a cohost request
+          ZegoUIKitReport.reportEvent('livestreaming/cohost/host/received', {
+            call_id: callID,
+            audience_id: inviter.id,
+            extended_data: data
+          });
+
           realTimeData.current.requestCoHostCount += 1;
           stateData.current.requestCoHostCount = realTimeData.current.requestCoHostCount;
           setRequestCoHostCount(realTimeData.current.requestCoHostCount);
@@ -298,6 +288,7 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
             cancelText: ZegoTranslationText.receivedCoHostInvitationDialogInfo.cancelButtonName,
             okText: ZegoTranslationText.receivedCoHostInvitationDialogInfo.confirmButtonName,
             onCancel: () => {
+              zloginfo('[onInvitationReceived][inviteToCoHost][onCancel]')
               // Refuse the cohost request of the host
               ZegoUIKit.getSignalingPlugin().refuseInvitation(inviter.id).then(() => {
                 realTimeData.current.memberConnectStateMap[userID] = ZegoCoHostConnectState.idle;
@@ -310,6 +301,7 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
               });
             },
             onOk: () => {
+              zloginfo('[onInvitationReceived][inviteToCoHost][onOk]')
               // Accept the cohost request of the host
               ZegoUIKit.getSignalingPlugin().acceptInvitation(inviter.id).then(async () => {
                 realTimeData.current.memberConnectStateMap[userID] = ZegoCoHostConnectState.connected;
@@ -358,9 +350,16 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
           setMemberConnectStateMap({ ...realTimeData.current.memberConnectStateMap });
         }
       });
-      ZegoUIKit.getSignalingPlugin().onInvitationTimeout(callbackID, ({ inviter }: any) => {
+      ZegoUIKit.getSignalingPlugin().onInvitationTimeout(callbackID, ({ callID, inviter }: any) => {
+        zloginfo(`onInvitationTimeout implement by ${TAG}, callID: ${callID}, inviter: ${JSON.stringify(inviter)}`);
+
         if (userID === realTimeData.current.hostID) {
           // The host did not process the cohost request, resulting in a timeout
+          ZegoUIKitReport.reportEvent('livestreaming/cohost/host/respond', {
+            call_id: callID,
+            action: 'timeout'
+          });
+
           realTimeData.current.requestCoHostCount -= 1;
           stateData.current.requestCoHostCount = realTimeData.current.requestCoHostCount;
           setRequestCoHostCount(realTimeData.current.requestCoHostCount);
@@ -1028,9 +1027,16 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
       }
     }
   };
-  const coHostDisagreeHandle = (changedUserID: string) => {
+  const coHostDisagreeHandle = ({inviterID, callID}) => {
+    zloginfo(`[coHostDisagreeHandle] inviterID: ${inviterID}, callID: ${callID}`)
+
+    ZegoUIKitReport.reportEvent('livestreaming/cohost/host/respond', {
+      call_id: callID,
+      action: 'refuse'
+    });
+
     // Just take the value in state, because there's no closure
-    memberConnectStateMap[changedUserID] = ZegoCoHostConnectState.idle;
+    memberConnectStateMap[inviterID] = ZegoCoHostConnectState.idle;
 
     // Rerendering causes realTimeData.current to be empty, so a reassignment is required here
     realTimeData.current.requestCoHostCount = requestCoHostCount - 1;
@@ -1041,9 +1047,16 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
     setMemberConnectStateMap({ ...memberConnectStateMap });
     setRequestCoHostCount(requestCoHostCount - 1);
   };
-  const coHostAgreeHandle = (changedUserID: string) => {
+  const coHostAgreeHandle = ({inviterID, callID}) => {
+    zloginfo(`[coHostAgreeHandle] inviterID: ${inviterID}, callID: ${callID}`)
+
+    ZegoUIKitReport.reportEvent('livestreaming/cohost/host/respond', {
+      call_id: callID,
+      action: 'accept'
+    });
+
     // Just take the value in state, because there's no closure
-    memberConnectStateMap[changedUserID] = ZegoCoHostConnectState.connected;
+    memberConnectStateMap[inviterID] = ZegoCoHostConnectState.connected;
 
     realTimeData.current.requestCoHostCount = requestCoHostCount - 1;
     stateData.current.requestCoHostCount = realTimeData.current.requestCoHostCount;

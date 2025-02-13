@@ -2,6 +2,7 @@ import ZegoUIKit, {
   ZegoInvitationConnectionState,
   ZegoUIKitLogger,
   ZegoUIKitPluginType,
+  ZegoUIKitReport,
 } from '@zegocloud/zego-uikit-rn';
 
 import { zloginfo } from '../utils/logger';
@@ -33,6 +34,11 @@ const ZegoPrebuiltPlugins = {
   init: (appID: number, appSign: string, userID: string, userName: string, plugins: any[], pluginsConfig: any) => {
     ZegoUIKitLogger.logSetUserID(userID)
 
+    ZegoUIKitReport.create(appID, appSign, {
+      'livestreaming_version': getPackageVersion(),
+      'user_id': userID
+    });
+
     zloginfo(`[ZegoPrebuiltPlugins][init] appID: ${appID}, userID: ${userID}, userName: ${userName}, config: ${JSON.stringify(pluginsConfig)}`)
 
     const callbackID = 'ZegoPrebuiltPlugins' + String(Math.floor(Math.random() * 10000));
@@ -54,10 +60,24 @@ const ZegoPrebuiltPlugins = {
       _localUser.userName = userName;
       return ZegoUIKit.getSignalingPlugin().login(userID, userName).then(() => {
         zloginfo('[Plugins] login success.');
+        ZegoUIKitReport.reportEvent('livestreaming/init', {
+          'error': 0,
+          'msg': ''
+        });
         return Promise.resolve(true);
+      }).catch(() => {
+        zloginfo('[Plugins] login failed.');
+        ZegoUIKitReport.reportEvent('livestreaming/init', {
+          'error': -1,
+          'msg': 'unknown'
+        });
       });
     } else {
       zloginfo('[Plugins]The signal plugin passed in is empty');
+      ZegoUIKitReport.reportEvent('livestreaming/init', {
+        'error': 0,
+        'msg': ''
+      });
       return Promise.resolve(false);
     }
   },
@@ -128,6 +148,9 @@ const ZegoPrebuiltPlugins = {
       ZegoUIKit.getSignalingPlugin().logout();
       ZegoUIKit.getSignalingPlugin().uninit();
     }
+
+    ZegoUIKitReport.reportEvent('livestreaming/unInit', {
+    });
   },
   getLocalUser: () => {
     return _localUser;
