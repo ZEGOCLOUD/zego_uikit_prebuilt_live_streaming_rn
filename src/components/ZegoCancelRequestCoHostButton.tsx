@@ -1,7 +1,7 @@
 import React from "react";
 
 import { ZegoTranslationText } from "../services/defines";
-import { ZegoCancelInvitationButton } from '@zegocloud/zego-uikit-rn';
+import { ZegoCancelInvitationButton, ZegoUIKitReport } from '@zegocloud/zego-uikit-rn';
 
 export default function ZegoCancelRequestCoHostButton(props: any) {
     const {
@@ -11,7 +11,11 @@ export default function ZegoCancelRequestCoHostButton(props: any) {
         setToastExtendedData,
     } = props;
 
-    const pressedHandle = () => {
+    const pressedHandle = ({callID}) => {
+        ZegoUIKitReport.reportEvent('livestreaming/cohost/audience/respond', {
+            call_id: callID,
+            action: 'cancel'
+        });
         onCancelSuccessfully();
     };
 

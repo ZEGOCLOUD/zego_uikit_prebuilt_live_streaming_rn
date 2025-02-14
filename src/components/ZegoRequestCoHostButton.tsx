@@ -1,6 +1,6 @@
 import React from "react";
 import { ZegoTranslationText, ZegoInvitationType, ZegoLiveStatus, ZegoToastType } from "../services/defines";
-import { ZegoSendInvitationButton } from '@zegocloud/zego-uikit-rn';
+import { ZegoSendInvitationButton, ZegoUIKitReport } from '@zegocloud/zego-uikit-rn';
 
 export default function ZegoRequestCoHostButton(props: any) {
     const { 
@@ -25,7 +25,10 @@ export default function ZegoRequestCoHostButton(props: any) {
         }
         return result;
     }
-    const pressedHandle = () => {
+    const pressedHandle = ({invitationID}) => {
+        ZegoUIKitReport.reportEvent('livestreaming/cohost/audience/invite', {
+            call_id: invitationID,
+        });
         setIsToastVisable(true);
         setToastExtendedData({ type: ZegoToastType.success, text: ZegoTranslationText.sendRequestCoHostToast });
         onRequestSuccessfully();

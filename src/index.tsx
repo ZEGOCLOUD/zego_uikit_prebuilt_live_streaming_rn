@@ -282,14 +282,25 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
           }, 50);
         } else if (type === ZegoInvitationType.inviteToCoHost) {
           // The audience is invited to connect the cohost by host
+          ZegoUIKitReport.reportEvent('livestreaming/cohost/audience/received', {
+            call_id: callID,
+            host_id: inviter.id,
+            extended_data: data
+          });
+
           const temp = {
             title: ZegoTranslationText.receivedCoHostInvitationDialogInfo.title,
             content: ZegoTranslationText.receivedCoHostInvitationDialogInfo.message,
             cancelText: ZegoTranslationText.receivedCoHostInvitationDialogInfo.cancelButtonName,
             okText: ZegoTranslationText.receivedCoHostInvitationDialogInfo.confirmButtonName,
             onCancel: () => {
-              zloginfo('[onInvitationReceived][inviteToCoHost][onCancel]')
               // Refuse the cohost request of the host
+              zloginfo('[onInvitationReceived][inviteToCoHost][onCancel]')
+              ZegoUIKitReport.reportEvent('livestreaming/cohost/audience/respond', {
+                call_id: callID,
+                action: 'refuse'
+              });
+
               ZegoUIKit.getSignalingPlugin().refuseInvitation(inviter.id).then(() => {
                 realTimeData.current.memberConnectStateMap[userID] = ZegoCoHostConnectState.idle;
                 stateData.current.memberConnectStateMap[userID] = ZegoCoHostConnectState.idle;
@@ -301,8 +312,13 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
               });
             },
             onOk: () => {
-              zloginfo('[onInvitationReceived][inviteToCoHost][onOk]')
               // Accept the cohost request of the host
+              zloginfo('[onInvitationReceived][inviteToCoHost][onOk]')
+              ZegoUIKitReport.reportEvent('livestreaming/cohost/audience/respond', {
+                call_id: callID,
+                action: 'accept'
+              });
+
               ZegoUIKit.getSignalingPlugin().acceptInvitation(inviter.id).then(async () => {
                 realTimeData.current.memberConnectStateMap[userID] = ZegoCoHostConnectState.connected;
                 stateData.current.memberConnectStateMap[userID] = ZegoCoHostConnectState.connected;
@@ -326,6 +342,13 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
           stateData.current.dialogExtendedData = temp;
         } else if (type == ZegoInvitationType.removeCoHost) {
           // The audience was forced off the cohost by host
+          ZegoUIKitReport.reportEvent('livestreaming/cohost/cohost/received', {
+            call_id: callID,
+            host_id: inviter.id,
+            action: 'remove',
+            extended_data: data
+          });
+
           ZegoUIKit.turnCameraOn('', false);
           ZegoUIKit.turnMicrophoneOn('', false);
 
@@ -367,6 +390,12 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
           realTimeData.current.memberConnectStateMap[inviter.id] = ZegoCoHostConnectState.idle;
           stateData.current.memberConnectStateMap[inviter.id] = ZegoCoHostConnectState.idle;
           setMemberConnectStateMap({ ...realTimeData.current.memberConnectStateMap });
+        } else {
+          // i'm not host, i don't process host's request, , resulting in a timeout
+          ZegoUIKitReport.reportEvent('livestreaming/cohost/audience/respond', {
+              call_id: callID,
+              action: 'timeout'
+          });
         }
       });
       ZegoUIKit.getSignalingPlugin().onInvitationAccepted(callbackID, ({ invitee }: any) => {

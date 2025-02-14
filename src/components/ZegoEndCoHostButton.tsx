@@ -1,7 +1,8 @@
 import React from "react";
 import { StyleSheet, Image, Text, TouchableOpacity } from "react-native"
-import ZegoUIKit from '@zegocloud/zego-uikit-rn';
+import ZegoUIKit, { ZegoUIKitReport } from '@zegocloud/zego-uikit-rn';
 import { ZegoTranslationText } from "../services/defines";
+import { zloginfo } from "../utils/logger";
 
 export default function ZegoEndCoHostButton(props: any) {
     const {
@@ -18,9 +19,14 @@ export default function ZegoEndCoHostButton(props: any) {
             cancelText: ZegoTranslationText.endConnectionDialogInfo.cancelButtonName,
             okText: ZegoTranslationText.endConnectionDialogInfo.confirmButtonName,
             onCancel: () => {
+                zloginfo('[ZegoEndCoHostButton][pressedHandle][onCancel]')
                 setIsDialogVisable(false);
             },
             onOk: () => {
+                zloginfo('[ZegoEndCoHostButton][pressedHandle][onOk]')
+                ZegoUIKitReport.reportEvent('livestreaming/cohost/audience/stop', {
+                });
+
                 ZegoUIKit.turnCameraOn('', false)
                 ZegoUIKit.turnMicrophoneOn('', false)
                 onEndSuccessfully();

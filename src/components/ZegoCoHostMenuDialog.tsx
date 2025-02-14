@@ -82,7 +82,6 @@ export default function ZegoCoHostMenuDialog(props: any) {
             // The handling here is the same as the cancel
             onCancel();
         });
-        
     }
 
     useEffect(() => {
