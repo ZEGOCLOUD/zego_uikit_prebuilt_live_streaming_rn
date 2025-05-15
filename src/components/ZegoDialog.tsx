@@ -22,9 +22,16 @@ export default function ZegoDialog(props: any) {
 
     useEffect(() => {
         const callbackID = 'ZegoDialog' + String(Math.floor(Math.random() * 10000));
-        PrebuiltHelper.getInstance().onZegoDialogTrigger(callbackID, (visable) => {
-            setVisable(visable);
-        });
+        
+        const handleDialogTrigger = (visible: boolean) => {
+            // 使用 requestAnimationFrame 确保状态更新在下一帧进行
+            requestAnimationFrame(() => {
+                setVisable(visible);
+            });
+        };
+
+        PrebuiltHelper.getInstance().onZegoDialogTrigger(callbackID, handleDialogTrigger);
+        
         return () => {
             PrebuiltHelper.getInstance().onZegoDialogTrigger(callbackID);
         };
