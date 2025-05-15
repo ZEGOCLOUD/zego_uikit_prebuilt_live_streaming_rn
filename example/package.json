@@ -39,6 +39,7 @@
     "react-native-orientation-locker": "^1.7.0",
     "react-native-safe-area-context": "^5.4.0",
     "react-native-screens": "^4.10.0",
+    "react-native-device-info": "^14.0.4",
 
     "zego-express-engine-reactnative": "^3.19.2",
     "zego-zim-react-native": "^2.20.0",
