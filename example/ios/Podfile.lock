@@ -1681,6 +1681,7 @@ PODS:
   - Yoga (0.0.0)
   - zego-uikit-prebuilt-live-streaming-rn (2.5.3):
     - React-Core
+    - zego-uikit-rn
   - zego-uikit-rn (2.17.8):
     - React-Core
     - ZegoUIKitReport (= 0.5.1)
@@ -1986,7 +1987,7 @@ SPEC CHECKSUMS:
   RNScreens: 18e02aaafedc00fc2a44bb9566fc0e82274f830e
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
   Yoga: feb4910aba9742cfedc059e2b2902e22ffe9954a
-  zego-uikit-prebuilt-live-streaming-rn: 164a5fe803c393cc421ee5248dbfc3f2ada5d9d2
+  zego-uikit-prebuilt-live-streaming-rn: fea6547bde540f021b01fe472929edae9a24e2ca
   zego-uikit-rn: f2eff20772fdc85bf858cb55ab19bbb703659119
   ZegoExpressEngine: 0064f6044b5d1d00c40d815455e6ee032f1cb56b
   ZegoUIKitReport: 36f4bc9a02a4fdd5d1eda1bf665b42c54cbbfd89
