@@ -661,13 +661,13 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
       zlogwarning('[Prebuilt]onInRoomCommandReceived', fromUser, command);
     });
     ZegoUIKit.onMicrophoneOn(callbackID, (targetUserID: string, isOn: boolean) => {
-      if (targetUserID === userID) {
+      if (targetUserID === userID && ZegoUIKit.inRoom()) {
         zloginfo('onMicrophoneOn', targetUserID, isOn);
         stateData.current.turnOnMicrophoneWhenJoining = !!isOn;
       }
     });
     ZegoUIKit.onCameraOn(callbackID, (targetUserID: string, isOn: boolean) => {
-      if (targetUserID === userID) {
+      if (targetUserID === userID && ZegoUIKit.inRoom()) {
         zloginfo('onCameraOn', targetUserID, isOn);
         stateData.current.turnOnCameraWhenJoining = !!isOn;
       }
