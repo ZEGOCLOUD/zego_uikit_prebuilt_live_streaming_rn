@@ -27,6 +27,7 @@ import ZegoUIKit, {
   ZegoLayoutMode,
   ZegoSwitchCameraButton,
   ZegoUIKitPluginType,
+  ZegoAudioVideoResourceMode,
 } from '@zegocloud/zego-uikit-rn';
 import ZegoBottomBar from './components/ZegoBottomBar';
 import { useKeyboard } from './utils/keyboard';
@@ -141,6 +142,7 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
     durationConfig = {},
     logoutSignalingPluginOnLeaveLiveStreaming = true,
     showNoHostOnlineTipAfterSeconds = 3,
+    audienceAudioVideoResourceMode = ZegoAudioVideoResourceMode.Default,
   } = config;
   const {
     showSoundWavesInAudioMode = true,
@@ -733,6 +735,8 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
       registerPluginCallback();
       ZegoUIKit.init(appID, appSign, { userID: userID, userName: userName }).then(
         () => {
+          zloginfo('===zego uikit init success');
+          ZegoUIKit.setAudioVideoResourceMode(config.audienceAudioVideoResourceMode);
           ZegoUIKit.turnCameraOn('', turnOnCameraWhenJoining);
           ZegoUIKit.turnMicrophoneOn('', turnOnMicrophoneWhenJoining);
           ZegoUIKit.setAudioOutputToSpeaker(useSpeakerWhenJoining);
