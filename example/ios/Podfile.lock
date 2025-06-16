@@ -1288,7 +1288,7 @@ PODS:
     - Yoga
   - react-native-orientation-locker (1.7.0):
     - React-Core
-  - react-native-safe-area-context (5.4.0):
+  - react-native-safe-area-context (4.14.1):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1301,8 +1301,8 @@ PODS:
     - React-featureflags
     - React-graphics
     - React-ImageManager
-    - react-native-safe-area-context/common (= 5.4.0)
-    - react-native-safe-area-context/fabric (= 5.4.0)
+    - react-native-safe-area-context/common (= 4.14.1)
+    - react-native-safe-area-context/fabric (= 4.14.1)
     - React-NativeModulesApple
     - React-RCTFabric
     - React-rendererdebug
@@ -1311,7 +1311,7 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - react-native-safe-area-context/common (5.4.0):
+  - react-native-safe-area-context/common (4.14.1):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1332,7 +1332,7 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - react-native-safe-area-context/fabric (5.4.0):
+  - react-native-safe-area-context/fabric (4.14.1):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1632,7 +1632,9 @@ PODS:
     - React-logger
     - React-perflogger
     - React-utils (= 0.76.9)
-  - RNScreens (4.10.0):
+  - RNDeviceInfo (14.0.4):
+    - React-Core
+  - RNScreens (3.35.0):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1653,9 +1655,9 @@ PODS:
     - ReactCodegen
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
-    - RNScreens/common (= 4.10.0)
+    - RNScreens/common (= 3.35.0)
     - Yoga
-  - RNScreens/common (4.10.0):
+  - RNScreens/common (3.35.0):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1679,10 +1681,10 @@ PODS:
     - Yoga
   - SocketRocket (0.7.1)
   - Yoga (0.0.0)
-  - zego-uikit-prebuilt-live-streaming-rn (2.5.3):
+  - zego-uikit-prebuilt-live-streaming-rn (2.5.5):
     - React-Core
     - zego-uikit-rn
-  - zego-uikit-rn (2.17.8):
+  - zego-uikit-rn (2.17.9):
     - React-Core
     - ZegoUIKitReport (= 0.5.1)
   - ZegoExpressEngine (3.20.2)
@@ -1759,6 +1761,7 @@ DEPENDENCIES:
   - React-utils (from `../node_modules/react-native/ReactCommon/react/utils`)
   - ReactCodegen (from `build/generated/ios`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
+  - RNDeviceInfo (from `../node_modules/react-native-device-info`)
   - RNScreens (from `../node_modules/react-native-screens`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
   - "zego-uikit-prebuilt-live-streaming-rn (from `../node_modules/@zegocloud/zego-uikit-prebuilt-live-streaming-rn`)"
@@ -1907,6 +1910,8 @@ EXTERNAL SOURCES:
     :path: build/generated/ios
   ReactCommon:
     :path: "../node_modules/react-native/ReactCommon"
+  RNDeviceInfo:
+    :path: "../node_modules/react-native-device-info"
   RNScreens:
     :path: "../node_modules/react-native-screens"
   Yoga:
@@ -1954,7 +1959,7 @@ SPEC CHECKSUMS:
   React-Mapbuffer: 33546a3ebefbccb8770c33a1f8a5554fa96a54de
   React-microtasksnativemodule: d80ff86c8902872d397d9622f1a97aadcc12cead
   react-native-orientation-locker: cc6f357b289a2e0dd2210fea0c52cb8e0727fdaa
-  react-native-safe-area-context: c68127652d8b9a26a28ac9597167a3ad90bcd713
+  react-native-safe-area-context: 7952193294b10a6a99a9546de0db0c8496210ffa
   react-native-zego-express-engine: d2c82ecd02b21b54df40589aa810c31669af9445
   react-native-zego-zim: f8fb39c117ceeb9de845af45272f3db60b171557
   React-nativeconfig: 8efdb1ef1e9158c77098a93085438f7e7b463678
@@ -1984,11 +1989,12 @@ SPEC CHECKSUMS:
   React-utils: ed818f19ab445000d6b5c4efa9d462449326cc9f
   ReactCodegen: f853a20cc9125c5521c8766b4b49375fec20648b
   ReactCommon: 300d8d9c5cb1a6cd79a67cf5d8f91e4d477195f9
-  RNScreens: 18e02aaafedc00fc2a44bb9566fc0e82274f830e
+  RNDeviceInfo: d863506092aef7e7af3a1c350c913d867d795047
+  RNScreens: b31a78e0ad400e1ebca64016a0d3f45cbde507eb
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
   Yoga: feb4910aba9742cfedc059e2b2902e22ffe9954a
-  zego-uikit-prebuilt-live-streaming-rn: fea6547bde540f021b01fe472929edae9a24e2ca
-  zego-uikit-rn: f2eff20772fdc85bf858cb55ab19bbb703659119
+  zego-uikit-prebuilt-live-streaming-rn: c882570e71da1078aa67e3e257d8e88a4948614e
+  zego-uikit-rn: 22861dd7fb83d97921af192a68c2b6fed60a537e
   ZegoExpressEngine: 0064f6044b5d1d00c40d815455e6ee032f1cb56b
   ZegoUIKitReport: 36f4bc9a02a4fdd5d1eda1bf665b42c54cbbfd89
   ZIM: 1376cbc14e92c31425d91a5bd0874c0b501e4e76
