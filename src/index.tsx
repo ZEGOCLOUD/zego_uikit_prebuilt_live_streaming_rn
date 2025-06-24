@@ -397,7 +397,7 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
         }
       });
       ZegoUIKit.getSignalingPlugin().onInRoomTextMessageReceived(callbackID, (message: any) => {
-        zlogwarning('[Prebuilt]onInRoomTextMessageReceived', message);
+        zloginfo('[Prebuilt]onInRoomTextMessageReceived', message);
       });
     }
   };
@@ -660,7 +660,7 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
       typeof onLeaveLiveStreaming == 'function' && onLeaveLiveStreaming(liveStreamingTiming.current);
     });
     ZegoUIKit.onInRoomCommandReceived(callbackID, (fromUser: any, command: any) => {
-      zlogwarning('[Prebuilt]onInRoomCommandReceived', fromUser, command);
+      zloginfo('[Prebuilt]onInRoomCommandReceived', fromUser, command);
     });
     ZegoUIKit.onMicrophoneOn(callbackID, (targetUserID: string, isOn: boolean) => {
       if (targetUserID === userID && ZegoUIKit.inRoom()) {
@@ -733,6 +733,16 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
       MinimizingHelper.getInstance().notifyPrebuiltInit();
       // Register plugin callback
       registerPluginCallback();
+
+      ZegoPrebuiltPlugins.leaveAllRoom().then((result: boolean) => {
+        zloginfo('[ZegoUIKitPrebuiltLiveStreaming] Plugin leave all room success.');
+        ZegoPrebuiltPlugins.joinRoom(liveID).then((result: boolean) => {
+          if (result) {
+            zloginfo('[ZegoUIKitPrebuiltLiveStreaming] Plugin join room success.');
+          }
+        });
+      })
+
       ZegoUIKit.init(appID, appSign, { userID: userID, userName: userName }).then(
         () => {
           zloginfo('===zego uikit init success');
