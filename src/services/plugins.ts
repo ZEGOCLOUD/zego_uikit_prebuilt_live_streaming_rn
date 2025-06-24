@@ -61,6 +61,66 @@ const ZegoPrebuiltPlugins = {
       return Promise.resolve(false);
     }
   },
+
+  joinRoom(roomID: string) {
+    if (ZegoUIKit.getPlugin(ZegoUIKitPluginType.signaling)) {
+      return ZegoUIKit.getSignalingPlugin().joinRoom(roomID).then(() => {
+        zloginfo('[Plugins] join room success.');
+        return true;
+      });
+    } else {
+      zloginfo('[Plugins]The signal plugin passed in is empty');
+      return Promise.resolve(false);
+    }
+  },
+
+  reconnectIfDisconnected: () => {
+    if (ZegoUIKit.getPlugin(ZegoUIKitPluginType.signaling)) {
+      zloginfo(
+        '[Plugins] reconnectIfDisconnected',
+        _pluginConnectionState,
+        ZegoInvitationConnectionState.disconnected
+      );
+      if (_pluginConnectionState === ZegoInvitationConnectionState.disconnected) {
+        ZegoUIKit.getSignalingPlugin().logout().then(() => {
+          zloginfo('[Plugins] auto logout success.');
+          ZegoUIKit.getSignalingPlugin().login(
+            _localUser.userID,
+            _localUser.userName
+          ).then(() => {
+            zloginfo('[Plugins] auto reconnect success.');
+          });
+        });
+      }
+    } else {
+      zloginfo('[Plugins]The signal plugin passed in is empty');
+    }
+  },
+
+  leaveRoom: () => {
+    if (ZegoUIKit.getPlugin(ZegoUIKitPluginType.signaling)) {
+      return ZegoUIKit.getSignalingPlugin().leaveRoom().then(() => {
+        zloginfo('[Plugins] leave room success.');
+        return true;
+      });
+    } else {
+      zloginfo('[Plugins]The signal plugin passed in is empty');
+      return Promise.resolve(false);
+    }
+  },
+
+  leaveAllRoom: () => {
+    if (ZegoUIKit.getPlugin(ZegoUIKitPluginType.signaling)) {
+      return ZegoUIKit.getSignalingPlugin().leaveAllRoom().then(() => {
+        zloginfo('[Plugins] Leave all room success.');
+        return true;
+      });
+    } else {
+      zloginfo('[Plugins] The signal plugin passed in is empty');
+      return Promise.resolve(false);
+    }
+  },
+  
   uninit: () => {
     zloginfo(`config logoutSignalingPluginOnLeaveLiveStreaming = ${logoutSignalingPluginOnLeaveLiveStreaming}`)
 

@@ -733,6 +733,16 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
       MinimizingHelper.getInstance().notifyPrebuiltInit();
       // Register plugin callback
       registerPluginCallback();
+
+      ZegoPrebuiltPlugins.leaveAllRoom().then((result: boolean) => {
+        zloginfo('[ZegoUIKitPrebuiltLiveStreaming] Plugin leave all room success.');
+        ZegoPrebuiltPlugins.joinRoom(liveID).then((result: boolean) => {
+          if (result) {
+            zloginfo('[ZegoUIKitPrebuiltLiveStreaming] Plugin join room success.');
+          }
+        });
+      })
+
       ZegoUIKit.init(appID, appSign, { userID: userID, userName: userName }).then(
         () => {
           zloginfo('===zego uikit init success');
