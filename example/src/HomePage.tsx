@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, View, StyleSheet, Text, TextInput } from 'react-native'
+import { Button, View, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native'
 import { useNavigation } from '@react-navigation/native';
 
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -13,10 +13,12 @@ export default function HomePage() {
             userID: userID,
             userName: `user_${userID}`,
             liveID: liveID,
+            type: type,
         })
     }
     const [userID, setUserID] = useState('');
     const [liveID, setLiveID] = useState('');
+    const [type, setType] = useState<'180P' | '360P' | '1080P'>('360P');
 
     useEffect(() => {
         getFirstInstallTime().then(firstInstallTime => {
@@ -44,6 +46,29 @@ export default function HomePage() {
                 value={liveID}
             >
             </TextInput>
+
+            {/* 类型单选框 */}
+            <Text style={styles.leftPadding}>video:</Text>
+            <View style={[styles.buttonLine, styles.leftPadding]}>
+                <TouchableOpacity onPress={() => setType('180P')}>
+                    <Text style={{ color: type === '180P' ? 'blue' : 'black', fontSize: 16 }}>
+                        {type === '180P' ? '●' : '○'} 180P
+                    </Text>
+                </TouchableOpacity>
+                <View style={styles.buttonSpacing} />
+                <TouchableOpacity onPress={() => setType('360P')}>
+                    <Text style={{ color: type === '360P' ? 'blue' : 'black', fontSize: 16 }}>
+                        {type === '360P' ? '●' : '○'} 360P
+                    </Text>
+                </TouchableOpacity>
+                <View style={styles.buttonSpacing} />
+                <TouchableOpacity onPress={() => setType('1080P')}>
+                    <Text style={{ color: type === '1080P' ? 'blue' : 'black', fontSize: 16 }}>
+                        {type === '1080P' ? '●' : '○'} 1080P
+                    </Text>
+                </TouchableOpacity>
+            </View>
+
             <View style={[styles.buttonLine, styles.leftPadding]}>
                 {/* @ts-ignore */}
                 <Button disabled={liveID.length == 0} style={styles.button} title="Start a live" onPress={() => { onJoinPress(true) }} />

@@ -20,27 +20,28 @@ import { Alert,
 import Orientation, { OrientationType } from 'react-native-orientation-locker';
 
 import ZegoUIKit, {
-  ZegoRoomPropertyUpdateType,
+  ZegoAudioVideoContainer,
+  ZegoAudioVideoResourceMode,
   ZegoInRoomMessageInput,
   ZegoInRoomMessageView,
-  ZegoAudioVideoContainer,
   ZegoLayoutMode,
+  ZegoRoomPropertyUpdateType,
   ZegoSwitchCameraButton,
   ZegoUIKitPluginType,
-  ZegoAudioVideoResourceMode,
+  ZegoUIKitVideoConfig,
 } from '@zegocloud/zego-uikit-rn';
+
+import ZegoAudioVideoForegroundView from './components/ZegoAudioVideoForegroundView';
 import ZegoBottomBar from './components/ZegoBottomBar';
-import { useKeyboard } from './utils/keyboard';
-import { zloginfo, zlogwarning } from './utils/logger';
+import ZegoCoHostMenuDialog from "./components/ZegoCoHostMenuDialog";
+import ZegoDialog from "./components/ZegoDialog";
+import ZegoLiveStreamingClock from './components/ZegoLiveStreamingClock'
+import ZegoLiveStreamingMemberList from './components/ZegoLiveStreamingMemberList';
 import ZegoMenuBarButtonName from './components/ZegoMenuBarButtonName';
 import ZegoStartLiveButton from './components/ZegoStartLiveButton';
-import ZegoLiveStreamingMemberList from './components/ZegoLiveStreamingMemberList';
-import ZegoCoHostMenuDialog from "./components/ZegoCoHostMenuDialog";
 import ZegoToast from "./components/ZegoToast";
-import ZegoDialog from "./components/ZegoDialog";
-import ZegoPrebuiltPlugins from './services/plugins';
-import { getShortName, grantPermissions } from './utils';
-import ZegoAudioVideoForegroundView from './components/ZegoAudioVideoForegroundView';
+import ZegoTopBar from "./components/ZegoTopBar";
+import ZegoUIKitPrebuiltLiveStreamingFloatingMinimizedView from "./components/ZegoUIKitPrebuiltLiveStreamingFloatingMinimizedView";
 import {
   HOST_DEFAULT_CONFIG,
   AUDIENCE_DEFAULT_CONFIG,
@@ -51,11 +52,12 @@ import {
   ZegoCoHostConnectState,
   ZegoToastType,
 } from "./services/defines";
-import ZegoTopBar from "./components/ZegoTopBar";
 import MinimizingHelper from "./services/minimizing_helper";
+import ZegoPrebuiltPlugins from './services/plugins';
 import PrebuiltHelper from "./services/prebuilt_helper";
-import ZegoUIKitPrebuiltLiveStreamingFloatingMinimizedView from "./components/ZegoUIKitPrebuiltLiveStreamingFloatingMinimizedView";
-import ZegoLiveStreamingClock from './components/ZegoLiveStreamingClock'
+import { getShortName, grantPermissions } from './utils';
+import { useKeyboard } from './utils/keyboard';
+import { zloginfo, zlogwarning } from './utils/logger';
 
 export {
   ZegoLiveStreamingRole,
@@ -143,6 +145,7 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
     logoutSignalingPluginOnLeaveLiveStreaming = true,
     showNoHostOnlineTipAfterSeconds = 3,
     audienceAudioVideoResourceMode = ZegoAudioVideoResourceMode.Default,
+    video = ZegoUIKitVideoConfig.preset540P,
   } = config;
   const {
     showSoundWavesInAudioMode = true,
@@ -233,10 +236,6 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
 
   const [isShowNoHostOnlineTip, setShowNoHostOnlineTip] = useState(false);
   const showNoHostOnlineTipTimeoutRef = useRef(null);
-
-  Orientation.getOrientation( (orientation: OrientationType) => {
-    setOrientationState(orientation);
-  } );
 
   if (stateData.current.callbackID) {
     stateData.current.callbackID  = 'ZegoUIKitPrebuiltLiveStreaming' +
@@ -681,6 +680,11 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
 
     zloginfo(`${TAG} add orientationChangedListener`);
     Orientation.addOrientationListener(orientationChangedListener);
+    Orientation.getOrientation((orientation: OrientationType) => {
+      zloginfo(`${TAG} getOrientation: ${orientation}`);
+      setOrientationState(orientation);
+      orientationChangedListener(orientation)
+    })
 
     MinimizingHelper.getInstance().onWindowMinimized(callbackID, () => {
       // Hidden input box
@@ -743,10 +747,13 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
         });
       })
 
+      // should called before ZegoUIKit.init
+      ZegoUIKit.setVideoConfig(config.video)
+      ZegoUIKit.setAudioVideoResourceMode(config.audienceAudioVideoResourceMode);
+
       ZegoUIKit.init(appID, appSign, { userID: userID, userName: userName }).then(
         () => {
           zloginfo('===zego uikit init success');
-          ZegoUIKit.setAudioVideoResourceMode(config.audienceAudioVideoResourceMode);
           ZegoUIKit.turnCameraOn('', turnOnCameraWhenJoining);
           ZegoUIKit.turnMicrophoneOn('', turnOnMicrophoneWhenJoining);
           ZegoUIKit.setAudioOutputToSpeaker(useSpeakerWhenJoining);

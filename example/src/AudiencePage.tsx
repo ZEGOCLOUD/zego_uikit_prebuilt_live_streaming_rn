@@ -5,6 +5,7 @@ import {StyleSheet, View} from 'react-native';
 import * as ZIM from 'zego-zim-react-native';
 import {
   ZegoAudioVideoResourceMode,
+  ZegoUIKitVideoConfig,
 } from '@zegocloud/zego-uikit-rn';
 import ZegoUIKitPrebuiltLiveStreaming, {
   AUDIENCE_DEFAULT_CONFIG,
@@ -17,7 +18,16 @@ import { CustomBuilder } from './CustomBuilder';
 export default function AudiencePage(props: any) {
   const {route} = props;
   const {params} = route;
-  const {userID, userName, liveID} = params;
+  const {userID, userName, liveID, type} = params;
+
+  let videoConfig;
+  if (type === '180P') {
+      videoConfig = ZegoUIKitVideoConfig.preset180P();
+  } else if (type === '1080P') {
+      videoConfig = ZegoUIKitVideoConfig.preset1080P();
+  } else {
+      videoConfig = ZegoUIKitVideoConfig.preset360P(); // 默认
+  }
 
   return (
     <View style={styles.container}>
@@ -68,7 +78,8 @@ export default function AudiencePage(props: any) {
               });
           },
           showNoHostOnlineTipAfterSeconds: 3,
-          audienceAudioVideoResourceMode: ZegoAudioVideoResourceMode.Default
+          audienceAudioVideoResourceMode: ZegoAudioVideoResourceMode.Default,
+          video: videoConfig,
         }}
         plugins={[ZIM]}
       />

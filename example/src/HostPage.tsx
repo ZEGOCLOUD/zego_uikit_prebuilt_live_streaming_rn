@@ -1,18 +1,34 @@
 import React, { useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
+
+import * as ZIM from 'zego-zim-react-native';
+
+import {
+    ZegoUIKitVideoConfig,
+} from '@zegocloud/zego-uikit-rn';  
 import ZegoUIKitPrebuiltLiveStreaming, {
     HOST_DEFAULT_CONFIG,
     ZegoMenuBarButtonName,
 } from '@zegocloud/zego-uikit-prebuilt-live-streaming-rn';
-import KeyCenter from './KeyCenter';
-import * as ZIM from 'zego-zim-react-native';
+
 import { CustomBuilder } from './CustomBuilder';
+import KeyCenter from './KeyCenter';
 
 export default function HostPage(props: any) {
-    const prebuiltRef = useRef();
+    const prebuiltRef = useRef(null);
     const { route } = props;
     const { params } = route;
-    const { userID, userName, liveID } = params;
+    const { userID, userName, liveID, type } = params;
+
+    let videoConfig;
+    if (type === '180P') {
+        videoConfig = ZegoUIKitVideoConfig.preset180P();
+    } else if (type === '1080P') {
+        videoConfig = ZegoUIKitVideoConfig.preset1080P();
+    } else {
+        videoConfig = ZegoUIKitVideoConfig.preset360P(); // 默认
+    }
+    
     return (
         <View style={styles.container}>
             <ZegoUIKitPrebuiltLiveStreaming
@@ -80,6 +96,7 @@ export default function HostPage(props: any) {
                           liveID: liveID,
                         });
                     },
+                    video: videoConfig,
                     // logoutSignalingPluginOnLeaveLiveStreaming: false,
                 }}
                 plugins={[ZIM]}
