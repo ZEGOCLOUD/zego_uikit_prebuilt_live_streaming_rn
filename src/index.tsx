@@ -475,6 +475,16 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
     setOrientationState(orientation);
   }
 
+  const executeLeaveCallback = () => {
+    if (typeof onLeaveLiveStreaming == 'function') {
+      zloginfo(`[ZegoUIKitPrebuiltLiveStreaming][onLeaveLiveStreaming] notify will`)
+      onLeaveLiveStreaming(liveStreamingTiming.current)
+      zloginfo(`[ZegoUIKitPrebuiltLiveStreaming][onLeaveLiveStreaming] notify succeed`)
+    } else {
+      zloginfo(`[ZegoUIKitPrebuiltLiveStreaming][onLeaveLiveStreaming] is not configured`)
+    }
+  }
+
   useImperativeHandle(ref, () => ({
     leave: async (showConfirmation = false) => {
       if (debounce.current) return;
@@ -482,13 +492,13 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
         (debounce.current as any) = true;
         await tempHandle();
         ZegoUIKit.leaveRoom();
-        typeof onLeaveLiveStreaming == 'function' && onLeaveLiveStreaming(liveStreamingTiming.current);
+        executeLeaveCallback();
         (debounce.current as any) = false;
       } else {
         (debounce.current as any) = true;
         onLeaveLiveStreamingConfirmingWrap(onLeaveLiveStreamingConfirming).then(() => {
           ZegoUIKit.leaveRoom();
-          typeof onLeaveLiveStreaming == 'function' && onLeaveLiveStreaming(liveStreamingTiming.current);
+          executeLeaveCallback();
           (debounce.current as any) = false;
         });
       }
@@ -656,7 +666,7 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
       });
     });
     ZegoUIKit.onMeRemovedFromRoom(callbackID, () => {
-      typeof onLeaveLiveStreaming == 'function' && onLeaveLiveStreaming(liveStreamingTiming.current);
+      executeLeaveCallback();
     });
     ZegoUIKit.onInRoomCommandReceived(callbackID, (fromUser: any, command: any) => {
       zloginfo('[Prebuilt]onInRoomCommandReceived', fromUser, command);
@@ -729,6 +739,8 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
   }, []);
 
   useEffect(() => {
+    zloginfo(`[ZegoUIKitPrebuiltLiveStreaming] useEffect, userID:${userID}, role:${config.role}, liveID:${liveID}, video:${config.video ? config.video.width : 'undefined'}`);
+
     let pluginsConfig = {
       logoutSignalingPluginOnLeaveLiveStreaming: (config.logoutSignalingPluginOnLeaveLiveStreaming === false) ? false : true,
     };
@@ -778,6 +790,9 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
     }, config.showNoHostOnlineTipAfterSeconds * 1000);
 
     return () => {
+      zloginfo(`[ZegoUIKitPrebuiltLiveStreaming] useEffect return`);
+
+      // @ts-ignore
       clearTimeout(showNoHostOnlineTipTimeoutRef.current);
       zloginfo('clear showNoHostOnlineTip timeout')
 
@@ -891,7 +906,7 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
     const leaveHandle = async () => {
       // Leave the room
       ZegoUIKit.leaveRoom();
-      typeof onLeaveLiveStreaming == 'function' && onLeaveLiveStreaming(liveStreamingTiming.current);
+      executeLeaveCallback();
     }
     const temp = onLeaveLiveStreamingConfirmingWrap(onLeaveLiveStreamingConfirming);
     if (temp) {
@@ -1111,8 +1126,9 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
               menuBarButtons={buttons}
               buttonBuilders={topButtonBuilders}
               onLeave={() => {
-                onLeaveLiveStreaming(liveStreamingTiming.current);
+                executeLeaveCallback();
               }}
+              // @ts-ignore
               onLeaveConfirmation={onLeaveLiveStreamingConfirmingWrap.bind(this, onLeaveLiveStreamingConfirming)}
             /> : null
           }
@@ -1244,7 +1260,7 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
                 useSpeakerWhenJoining={useSpeakerWhenJoining}
                 showInRoomMessageButton={showInRoomMessageButton}
                 onLeaveLiveStreaming={() => {
-                  onLeaveLiveStreaming(liveStreamingTiming.current);
+                  executeLeaveCallback();
                 }}
                 // @ts-ignore
                 onLeaveLiveStreamingConfirming={onLeaveLiveStreamingConfirmingWrap.bind(this, onLeaveLiveStreamingConfirming)}
