@@ -412,11 +412,13 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
   };
 
   const initDialogTimer = () => {
+    // @ts-ignore
     clearInterval(hideCountdownOn_DialogTimer.current);
     (hideCountdownOn_DialogTimer.current as any) = null;
     (hideCountdownOn_Dialog.current as any) = hideCountdownOnDialogLimit;
   }
   const startDialogTimer = () => {
+    // @ts-ignore
     clearInterval(hideCountdownOn_DialogTimer.current);
     (hideCountdownOn_DialogTimer.current as any) = setInterval(() => {
       if (hideCountdownOn_Dialog.current === 0) {
@@ -783,6 +785,7 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
     // Initialize after use
     MinimizingHelper.getInstance().setIsMinimizeSwitch(false);
 
+    // @ts-ignore
     showNoHostOnlineTipTimeoutRef.current = setTimeout(() => {
       // After the configured time, if the timer has not been cleared, display the tip.
       setShowNoHostOnlineTip(true);

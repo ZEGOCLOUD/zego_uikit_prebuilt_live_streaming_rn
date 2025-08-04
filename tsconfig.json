@@ -24,7 +24,7 @@
       "jsx": "react-native",
     //   "noEmit": true,
       "isolatedModules": true,
-      "strict": false,
+      "strict": true,
       "moduleResolution": "bundler",
       "customConditions": ["react-native"],
     //   "allowImportingTsExtensions": true,

@@ -9,8 +9,7 @@ const Stack = createNativeStackNavigator();
 export default function AppNavigation() {
     return (
         <Stack.Navigator initialRouteName="HomePage">
-            {/* @ts-ignore */}
-            <Stack.Screen options={{headerShown: false}} headerMode="none" name="HomePage" component={HomePage} />
+            <Stack.Screen options={{headerShown: false}} name="HomePage" component={HomePage} />
             <Stack.Screen options={{headerShown: false}} name="HostPage" component={HostPage} />
             <Stack.Screen options={{headerShown: false}} name="AudiencePage" component={AudiencePage} />
         </Stack.Navigator>

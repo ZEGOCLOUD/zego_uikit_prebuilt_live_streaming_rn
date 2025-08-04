@@ -1739,7 +1739,7 @@ PODS:
     - React-utils (= 0.79.5)
   - RNDeviceInfo (14.0.4):
     - React-Core
-  - RNScreens (3.37.0):
+  - RNScreens (4.13.1):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1763,9 +1763,9 @@ PODS:
     - ReactCodegen
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
-    - RNScreens/common (= 3.37.0)
+    - RNScreens/common (= 4.13.1)
     - Yoga
-  - RNScreens/common (3.37.0):
+  - RNScreens/common (4.13.1):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -2125,7 +2125,7 @@ SPEC CHECKSUMS:
   ReactCodegen: 6cb6e0d0b52471abc883541c76589d1c367c64c7
   ReactCommon: 1ab5451fc5da87c4cc4c3046e19a8054624ca763
   RNDeviceInfo: d863506092aef7e7af3a1c350c913d867d795047
-  RNScreens: fcd4717f7c66e65b168d9f58df276ecfbb0c5e6d
+  RNScreens: 7e56b051227a1a11c3068849d1a9a5dd457537df
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
   Yoga: adb397651e1c00672c12e9495babca70777e411e
   zego-uikit-prebuilt-live-streaming-rn: 970a54040533c160ce458ca9160dd78bb419fd76

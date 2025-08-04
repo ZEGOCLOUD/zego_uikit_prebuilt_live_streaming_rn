@@ -72,6 +72,7 @@ export default class MinimizingHelper {
         this.initUpdateTimer();
     }
     initUpdateTimer() {
+        // @ts-ignore
         clearInterval(this._updateTimer);
         this._updateTimer = null;
     }
