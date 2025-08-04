@@ -40,8 +40,13 @@ export default function AudiencePage(props: any) {
         config={{
           ...AUDIENCE_DEFAULT_CONFIG,
           onLiveStreamingEnded: () => { console.log('########AudiencePage onLiveStreamingEnded'); },
-          onLeaveLiveStreaming: () => {
-            props.navigation.navigate('HomePage');
+          onLeaveLiveStreaming: (duration: number) => {
+            console.log('########AudiencePage onLeaveLiveStreaming', duration);
+            if (typeof props.navigation.popTo === 'function') {
+              props.navigation.popTo('HomePage');
+            } else {
+              props.navigation.navigate('HomePage');
+            }
           },
           topMenuBarConfig: {
             buttons: [ZegoMenuBarButtonName.minimizingButton, ZegoMenuBarButtonName.leaveButton],

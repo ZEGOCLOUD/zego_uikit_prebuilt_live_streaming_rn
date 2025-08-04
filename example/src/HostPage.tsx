@@ -48,7 +48,11 @@ export default function HostPage(props: any) {
                     },
                     onLeaveLiveStreaming: (duration: number) => {
                         console.log('########HostPage onLeaveLiveStreaming', duration);
-                        props.navigation.navigate('HomePage')
+                        if (typeof props.navigation.popTo === 'function') {
+                            props.navigation.popTo('HomePage');
+                        } else {
+                            props.navigation.navigate('HomePage');
+                        }
                     },
                     durationConfig: {
                         isVisible: true,
