@@ -58,7 +58,10 @@ export default function HostPage(props) {
 
                 config={{
                     ...HOST_DEFAULT_CONFIG,
-                    onLeaveLiveStreaming: () => { props.navigation.navigate('HomePage') }
+                    onLeaveLiveStreaming: () => {
+                        // If you're using React Navigation 6, use the navigate method instead of popTo.
+                        props.navigation.popTo('HomePage')
+                    }
                 }}
             />
         </View>
