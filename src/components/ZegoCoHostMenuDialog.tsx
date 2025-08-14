@@ -114,7 +114,7 @@ export default function ZegoCoHostMenuDialog(props: any) {
             invitees={[inviteeID]}
             type={invitationType}
             onWillPressed={willPressedHandle}
-            onPressed={({invitationID, invitees: succInvitees}) => {
+            onPressed={({invitationID, invitees: succInvitees}: {invitationID: string, invitees: string[]}) => {
                 zloginfo(`[ZegoCoHostMenuDialog][SendInvitationButton] onPressed type: ${invitationType}, callID: ${invitationID}, invitees: ${JSON.stringify(succInvitees)}`)
                 if (succInvitees.length === 0) {
                     // not report any event

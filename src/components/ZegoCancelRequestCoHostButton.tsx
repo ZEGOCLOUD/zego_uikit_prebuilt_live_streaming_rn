@@ -11,7 +11,7 @@ export default function ZegoCancelRequestCoHostButton(props: any) {
         setToastExtendedData,
     } = props;
 
-    const pressedHandle = ({callID}) => {
+    const pressedHandle = ({callID}: { callID: string }) => {
         ZegoUIKitReport.reportEvent('livestreaming/cohost/audience/respond', {
             call_id: callID,
             action: 'cancel'

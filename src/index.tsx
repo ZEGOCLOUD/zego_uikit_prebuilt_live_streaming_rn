@@ -774,7 +774,7 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
     let pluginsConfig = {
       logoutSignalingPluginOnLeaveLiveStreaming: (config.logoutSignalingPluginOnLeaveLiveStreaming === false) ? false : true,
     };
-    ZegoPrebuiltPlugins.init(appID, appSign, userID, userName, plugins, pluginsConfig).then((result: boolean) => {
+    ZegoPrebuiltPlugins.init(appID, appSign, userID, userName, plugins, pluginsConfig).then((result) => {
       setIsPluginsInit(result);
       MinimizingHelper.getInstance().notifyPrebuiltInit();
       // Register plugin callback
@@ -1056,7 +1056,7 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
       }
     }
   };
-  const coHostDisagreeHandle = ({inviterID, callID}) => {
+  const coHostDisagreeHandle = ({inviterID, callID}: {inviterID: string, callID: string}) => {
     zloginfo(`[coHostDisagreeHandle] inviterID: ${inviterID}, callID: ${callID}`)
 
     ZegoUIKitReport.reportEvent('livestreaming/cohost/host/respond', {
@@ -1076,7 +1076,7 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
     setMemberConnectStateMap({ ...memberConnectStateMap });
     setRequestCoHostCount(requestCoHostCount - 1);
   };
-  const coHostAgreeHandle = ({inviterID, callID}) => {
+  const coHostAgreeHandle = ({inviterID, callID}: {inviterID: string, callID: string}) => {
     zloginfo(`[coHostAgreeHandle] inviterID: ${inviterID}, callID: ${callID}`)
 
     ZegoUIKitReport.reportEvent('livestreaming/cohost/host/respond', {

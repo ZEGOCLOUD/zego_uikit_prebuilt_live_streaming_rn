@@ -25,7 +25,7 @@ export default function ZegoRequestCoHostButton(props: any) {
         }
         return result;
     }
-    const pressedHandle = ({invitationID}) => {
+    const pressedHandle = ({invitationID}: {invitationID: string}) => {
         ZegoUIKitReport.reportEvent('livestreaming/cohost/audience/invite', {
             call_id: invitationID,
         });

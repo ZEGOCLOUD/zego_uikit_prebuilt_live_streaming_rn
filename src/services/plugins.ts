@@ -31,7 +31,9 @@ const _install = (plugins: any[]) => {
 let logoutSignalingPluginOnLeaveLiveStreaming = true; // default value is true
 
 const ZegoPrebuiltPlugins = {
-  init: (appID: number, appSign: string, userID: string, userName: string, plugins: any[], pluginsConfig: any) => {
+  init: async (appID: number, appSign: string, 
+              userID: string, userName: string, 
+              plugins: any[], pluginsConfig: any) => {
     ZegoUIKitLogger.logSetUserID(userID)
 
     ZegoUIKitReport.create(appID, appSign, {
@@ -58,20 +60,25 @@ const ZegoPrebuiltPlugins = {
       _appInfo.appSign = appSign;
       _localUser.userID = userID;
       _localUser.userName = userName;
-      return ZegoUIKit.getSignalingPlugin().login(userID, userName).then(() => {
+
+      var signalingPluginLoginResult = false
+      await ZegoUIKit.getSignalingPlugin().login(userID, userName).then(() => {
         zloginfo('[Plugins] login success.');
         ZegoUIKitReport.reportEvent('livestreaming/init', {
           'error': 0,
           'msg': ''
         });
-        return Promise.resolve(true);
+        signalingPluginLoginResult = true
       }).catch(() => {
         zloginfo('[Plugins] login failed.');
         ZegoUIKitReport.reportEvent('livestreaming/init', {
           'error': -1,
           'msg': 'unknown'
         });
+        signalingPluginLoginResult = false
       });
+
+      return Promise.resolve(signalingPluginLoginResult);
     } else {
       zloginfo('[Plugins]The signal plugin passed in is empty');
       ZegoUIKitReport.reportEvent('livestreaming/init', {
