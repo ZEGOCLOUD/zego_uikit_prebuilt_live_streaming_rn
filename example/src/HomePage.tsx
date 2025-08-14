@@ -70,11 +70,21 @@ export default function HomePage() {
             </View>
 
             <View style={[styles.buttonLine, styles.leftPadding]}>
-                {/* @ts-ignore */}
-                <Button disabled={liveID.length == 0} style={styles.button} title="Start a live" onPress={() => { onJoinPress(true) }} />
+                <TouchableOpacity 
+                    disabled={liveID.length == 0} 
+                    style={[styles.buttonBlue, liveID.length == 0 && styles.buttonDisabled]} 
+                    onPress={() => { onJoinPress(true) }}
+                >
+                    <Text style={styles.buttonTextWhite}>Start a live</Text>
+                </TouchableOpacity>
                 <View style={styles.buttonSpacing} />
-                {/* @ts-ignore */}
-                <Button  disabled={liveID.length == 0} style={styles.button} title="Watch a live" onPress={() => { onJoinPress(false) }} />
+                <TouchableOpacity 
+                    disabled={liveID.length == 0} 
+                    style={[styles.buttonBlue, liveID.length == 0 && styles.buttonDisabled]} 
+                    onPress={() => { onJoinPress(false) }}
+                >
+                    <Text style={styles.buttonTextWhite}>Watch a live</Text>
+                </TouchableOpacity>
             </View>
             {/* <View style={styles.buttonLine}>
                 <Button title="Disconnect SDK" onPress={() => { ZegoUIKit.disconnectSDK() }} />
@@ -131,10 +141,22 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginBottom: 27,
     },
-    button: {
+    buttonBlue: {
         height: 42,
         borderRadius: 9,
-        backgroundColor: '#F4F7FB',
+        backgroundColor: '#007AFF',
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingHorizontal: 16,
+    },
+    buttonDisabled: {
+        backgroundColor: '#E0E0E0',
+        opacity: 0.6,
+    },
+    buttonTextWhite: {
+        color: '#FFFFFF',
+        fontSize: 16,
+        fontWeight: '500',
     },
     leftPadding: {
         paddingLeft: 35,
