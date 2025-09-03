@@ -1,5 +1,6 @@
 import React, { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
-import { Alert, Image, ImageBackground, KeyboardAvoidingView, Platform, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, Image, ImageBackground, KeyboardAvoidingView, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Orientation, { OrientationType } from 'react-native-orientation-locker';
 
 import ZegoUIKit, {
@@ -54,6 +55,8 @@ export {
 // https://github.com/react-native-community/hooks#usekeyboard
 function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
   const TAG = 'ZegoUIKitPrebuiltLiveStreaming';
+
+  const insets = useSafeAreaInsets();
 
   let { appID, appSign, userID, userName, liveID, config, plugins = [] } = props;
   const isMinimizeSwitch = MinimizingHelper.getInstance().getIsMinimizeSwitch();
@@ -1133,7 +1136,7 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
         </View>
       </View>
       {/* Top bar */}
-      <SafeAreaView style={styles.topBarContainer}>
+      <View style={[styles.topBarContainer, {top: insets.top + 15}]}>
         <View style={styles.left}>
           {topButtonBuilders.hostAvatarBuilder && showHostAvatar()
           ? topButtonBuilders.hostAvatarBuilder(getHostUser())
@@ -1189,7 +1192,7 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
             </View> : null
           }
         </View>
-      </SafeAreaView>
+      </View>
       {/* Start live button */}
       {
         showStartLiveButton() ? <View style={styles.startLiveButtonCon}>
@@ -1268,6 +1271,7 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
         style={[
           styles.dismissArea,
           {
+            top: insets.top + 15 + 40 + 6,
             bottom:
               (Platform.OS == 'ios'
                 ? keyboardHeight + textInputHeight
@@ -1392,13 +1396,11 @@ const styles = StyleSheet.create({
   },
   topBarContainer: {
     position: 'absolute',
-    top: 24,
     zIndex: 10,
     flexDirection: 'row',
     alignItems: 'center',
     width: '100%',
     justifyContent: 'space-between',
-    paddingTop: 3,
     paddingBottom: 3,
   },
   left: {
@@ -1491,7 +1493,6 @@ const styles = StyleSheet.create({
   dismissArea: {
     zIndex: 11,
     width: '100%',
-    top: 80,
     position: 'absolute',
   },
   noHostBg: {

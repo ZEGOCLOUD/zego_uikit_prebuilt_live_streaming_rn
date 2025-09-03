@@ -1,5 +1,7 @@
-import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
-import { SafeAreaView, Text, StyleSheet } from "react-native";
+import React, { forwardRef, useImperativeHandle, useRef, useState } from "react";
+import { StyleSheet, Text, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+
 import { durationFormat } from "../utils";
 import PrebuiltHelper from "../services/prebuilt_helper";
 
@@ -9,6 +11,8 @@ interface Props {
 }
 
 const ZegoLiveStreamingClock = (props: Props, ref: React.Ref<unknown>) => {
+  const insets = useSafeAreaInsets();
+  
   const stateData = useRef(PrebuiltHelper.getInstance().getStateData());
   const durationTimer = useRef(stateData.current.liveStreamingTimingTimer)
   const [duration, setDuration] = useState(stateData.current.duration || 0)
@@ -41,16 +45,15 @@ const ZegoLiveStreamingClock = (props: Props, ref: React.Ref<unknown>) => {
   }), [duration])
 
   return (
-    <SafeAreaView style={styles.timingContainer}>
+    <View style={[styles.timingContainer, {top: insets.top}]}>
       <Text style={styles.timing}>{durationFormat(duration)}</Text>
-    </SafeAreaView>
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
   timingContainer: {
     position: 'absolute',
-    top: 6,
     zIndex: 11,
   },
   timing: {
