@@ -1209,7 +1209,7 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
       }
       {/* Message list */}
       {
-        showMessageListView() ? <View style={styles.messageListView}>
+        showMessageListView() && !textInputVisable ? <View style={styles.messageListView}>
           <ZegoInRoomMessageView itemBuilder={messageItemBuilder} style={styles.fillParent} />
         </View> : null
       }
@@ -1280,12 +1280,7 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
         ]}
       />
       {/* Bottom bar */}
-      {
-        showBottomBar() ? <KeyboardAvoidingView
-            style={[styles.fillParent, { zIndex: 9 }]}
-            behavior={'padding'}
-          >
-            {Platform.OS != 'ios' && keyboardHeight > 0 ? null : (
+      {showBottomBar() ? (
               <ZegoBottomBar
                 menuBarButtonsMaxCount={maxCount}
                 menuBarButtons={
@@ -1329,8 +1324,12 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
                 buttonBuilders={buttonBuilders}
                 memberConnectState={memberConnectStateMap[userID]}
               />
-            )}
-            {textInputVisable ? (
+        ) : null}
+      {textInputVisable ? <KeyboardAvoidingView
+            style={[styles.fillParent]}
+            behavior={Platform.OS == "ios" ? "padding" : "height"}
+            keyboardVerticalOffset={(Platform.OS === 'android' && Platform.Version < 35) ? 35 : 0}
+          >
               <View
                 style={[
                   styles.messageInputPannel,
@@ -1354,9 +1353,7 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
                   }}
                 />
               </View>
-            ) : null}
-        </KeyboardAvoidingView> : null
-      }
+      </KeyboardAvoidingView> : null}
     </View>
   );
 }
@@ -1378,7 +1375,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 12,
     backgroundColor: 'rgba(0, 0, 0, 0.7500)',
     width: '100%',
-    zIndex: 11,
+    zIndex: 12,
   },
   container: {
     flex: 1,
