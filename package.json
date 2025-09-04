@@ -94,9 +94,10 @@
     "react-native": "*",
     "@react-navigation/native": ">=6.0.0",
     "@react-navigation/native-stack": ">=6.0.0",
+    "react-native-safe-area-context": "*",
+    "react-native-screens": "*",
     "react-native-orientation-locker": "^1.7.0",
-    "react-native-safe-area-context": "^5.5.2",
-    "@zegocloud/zego-uikit-rn": ">=2.18.6"
+    "@zegocloud/zego-uikit-rn": ">=2.18.8"
   },
   "commitlint": {
     "extends": [
