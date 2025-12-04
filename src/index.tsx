@@ -230,7 +230,7 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
   }
   const callbackID = stateData.current.callbackID;
 
-  const hideCountdownOnToastLimit = 5;
+  const hideCountdownOnToastLimit = 3;
   const hideCountdownOnDialogLimit = 60;
 
   let hideCountdownOnToast = hideCountdownOnToastLimit;
