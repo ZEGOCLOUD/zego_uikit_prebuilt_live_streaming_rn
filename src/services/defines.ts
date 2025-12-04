@@ -119,8 +119,8 @@ const HOST_DEFAULT_CONFIG = {
 };
 const AUDIENCE_DEFAULT_CONFIG = {
     role: ZegoLiveStreamingRole.audience,
-    turnOnCameraWhenJoining: false,
-    turnOnMicrophoneWhenJoining: false,
+    turnOnCameraWhenJoining: true,
+    turnOnMicrophoneWhenJoining: true,
     useSpeakerWhenJoining: true,
     audioVideoViewConfig: {
         showSoundWavesInAudioMode: true,

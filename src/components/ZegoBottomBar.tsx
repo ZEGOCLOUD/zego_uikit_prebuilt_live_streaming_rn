@@ -98,6 +98,9 @@ export default function ZegoBottomBar(props: any) {
                     setToastExtendedData={setToastExtendedData}
                     setIsDialogVisable={setIsDialogVisable}
                     setDialogExtendedData={setDialogExtendedData}
+                    turnOnCameraWhenJoining={turnOnCameraWhenJoining}
+                    turnOnMicrophoneWhenJoining={turnOnMicrophoneWhenJoining}
+                    useSpeakerWhenJoining={useSpeakerWhenJoining}
                 />
             case ZegoMenuBarButtonName.enableChatButton: 
                 return <ZegoEnableChatButton 

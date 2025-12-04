@@ -19,6 +19,9 @@ export default function ZegoCoHostControlButton(props: any) {
         setToastExtendedData,
         setIsDialogVisable,
         setDialogExtendedData,
+        turnOnCameraWhenJoining,
+        turnOnMicrophoneWhenJoining,
+        useSpeakerWhenJoining,
     } = props;
     const ZegoCoHostControlButtonType = {
         request: 0,
@@ -55,8 +58,8 @@ export default function ZegoCoHostControlButton(props: any) {
                     await grantPermissions();
                 } catch (error) {
                 }
-                ZegoUIKit.turnCameraOn('', true);
-                ZegoUIKit.turnMicrophoneOn('', true);
+                ZegoUIKit.turnCameraOn('', turnOnCameraWhenJoining);
+                ZegoUIKit.turnMicrophoneOn('', turnOnMicrophoneWhenJoining);
                 onConnectStateChanged('', ZegoCoHostConnectState.connected, true);
             });
             ZegoUIKit.getSignalingPlugin().onInvitationRefused(callbackID, () => {

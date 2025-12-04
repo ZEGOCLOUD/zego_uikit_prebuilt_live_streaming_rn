@@ -799,16 +799,16 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
       ZegoUIKit.init(appID, appSign, { userID: userID, userName: userName }).then(
         () => {
           zloginfo('===zego uikit init success');
-          ZegoUIKit.turnCameraOn('', turnOnCameraWhenJoining);
-          ZegoUIKit.turnMicrophoneOn('', turnOnMicrophoneWhenJoining);
           ZegoUIKit.setAudioOutputToSpeaker(useSpeakerWhenJoining);
 
-          if (config.role === ZegoLiveStreamingRole.host) {
+          if (config.role === ZegoLiveStreamingRole.host || config.role === ZegoLiveStreamingRole.coHost) {
             grantPermissions(() => {
+              ZegoUIKit.turnCameraOn('', turnOnCameraWhenJoining);
+              ZegoUIKit.turnMicrophoneOn('', turnOnMicrophoneWhenJoining);
               ZegoUIKit.joinRoom(liveID, '', !!markAsLargeRoom);
             });
           } else {
-            ZegoUIKit.joinRoom(liveID, '', !!markAsLargeRoom);
+              ZegoUIKit.joinRoom(liveID, '', !!markAsLargeRoom);
           }
         }
       );
