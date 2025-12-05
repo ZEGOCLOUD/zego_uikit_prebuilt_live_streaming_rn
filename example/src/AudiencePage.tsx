@@ -89,6 +89,14 @@ export default function AudiencePage(props: any) {
           showNoHostOnlineTipAfterSeconds: 3,
           audienceAudioVideoResourceMode: ZegoAudioVideoResourceMode.Default,
           video: videoConfig,
+          roomConfig: {
+            onUsersEnter: (userInfoList: any[]) => {
+                console.log('########AudiencePage onUsersEnter', userInfoList);
+            },
+            onUsersLeave: (userInfoList: any[]) => {
+                console.log('########AudiencePage onUsersLeave', userInfoList);
+            },
+          },
         }}
         plugins={[ZIM]}
       />

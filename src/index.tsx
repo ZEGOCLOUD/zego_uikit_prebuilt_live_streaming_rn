@@ -27,6 +27,7 @@ import ZegoStartLiveButton from './components/ZegoStartLiveButton';
 import ZegoToast from "./components/ZegoToast";
 import ZegoTopBar from "./components/ZegoTopBar";
 import ZegoUIKitPrebuiltLiveStreamingFloatingMinimizedView from "./components/ZegoUIKitPrebuiltLiveStreamingFloatingMinimizedView";
+import { onRoomUserUpdateEvents, offRoomUserUpdateEvents } from './event/roomUserUpdateEvent';
 import {
   HOST_DEFAULT_CONFIG,
   AUDIENCE_DEFAULT_CONFIG,
@@ -133,6 +134,7 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
     showNoHostOnlineTipAfterSeconds = 3,
     audienceAudioVideoResourceMode = ZegoAudioVideoResourceMode.Default,
     video = ZegoUIKitVideoConfig.preset540P,
+    roomConfig = {},
   } = config;
   const {
     showSoundWavesInAudioMode = true,
@@ -178,6 +180,10 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
     isVisible = true,
     onDurationUpdate
   } = durationConfig;
+  const {
+    onUsersEnter,
+    onUsersLeave,
+  } = roomConfig;
 
   const stateData = useRef(PrebuiltHelper.getInstance().getStateData());
 
@@ -561,15 +567,14 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
         }
       }
     });
-    ZegoUIKit.onUserJoin(callbackID, () => {
-      const count = ZegoUIKit.getAllUsers().length;
-      stateData.current.memberCount = count;
-      setMemberCount(count);
-    });
-    ZegoUIKit.onUserLeave(callbackID, () => {
-      const count = ZegoUIKit.getAllUsers().length;
-      stateData.current.memberCount = count;
-      setMemberCount(count);
+    onRoomUserUpdateEvents({
+      callbackID,
+      onMemberCountChange: setMemberCount,
+      updateStateData: (key, value) => {
+        (stateData.current as any)[key] = value;
+      },
+      onUsersEnter,
+      onUsersLeave,
     });
     ZegoUIKit.onRoomPropertiesFullUpdated(callbackID, (keys: string[], oldRoomProperties: any, roomProperties: any, type: any) => {
       zloginfo('########onRoomPropertiesFullUpdated', keys, oldRoomProperties, roomProperties, type);
@@ -752,7 +757,7 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
         Orientation.removeOrientationListener(orientationChangedListener);
 
         ZegoUIKit.onRoomStateChanged(callbackID);
-        ZegoUIKit.onUserJoin(callbackID);
+        offRoomUserUpdateEvents(callbackID);
         ZegoUIKit.onUserLeave(callbackID);
         ZegoUIKit.onRoomPropertiesFullUpdated(callbackID);
         ZegoUIKit.onRoomPropertyUpdated(callbackID);

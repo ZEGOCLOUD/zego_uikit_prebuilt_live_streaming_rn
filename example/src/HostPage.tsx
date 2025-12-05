@@ -106,6 +106,14 @@ export default function HostPage(props: any) {
                     },
                     video: videoConfig,
                     // logoutSignalingPluginOnLeaveLiveStreaming: false,
+                    roomConfig: {
+                        onUsersEnter: (userInfoList: any[]) => {
+                            console.log('########HostPage onUsersEnter', userInfoList);
+                        },
+                        onUsersLeave: (userInfoList: any[]) => {
+                            console.log('########HostPage onUsersLeave', userInfoList);
+                        },
+                    },
                 }}
                 plugins={[ZIM]}
             />
