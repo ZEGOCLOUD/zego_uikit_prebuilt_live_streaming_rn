@@ -552,6 +552,7 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
         message,
         sendTime: Date.now(),
       };
+      zloginfo('sendSystemMessage', systemMessage)
       setSystemMessageList((arr) => [...arr, systemMessage]);
     }
   }));

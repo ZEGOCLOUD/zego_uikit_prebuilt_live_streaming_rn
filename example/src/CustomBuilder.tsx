@@ -124,15 +124,16 @@ export class CustomBuilder {
   }
 
   static inRoomMessageItemBuilder = ({ message }: any) => {
+    let type = message.type || 'user';
     return (
       <View style={styles.messageContainer}>
-        {message.type === 'system' ? (
+        {type === 'system' ? (
             <Text style={[styles.systemMessageLabel]}>
               {message.message}
             </Text>
           ) : (
             <Text style={styles.senderNameLabel}>
-              {message.sender.userName}
+              {message.sender?.userName || 'Unknown User'}
               <Text style={styles.messageLabel}> {message.message}</Text>
             </Text>
         )}
