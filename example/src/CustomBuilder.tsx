@@ -122,6 +122,23 @@ export class CustomBuilder {
       </View>
     );
   }
+
+  static inRoomMessageItemBuilder = ({ message }: any) => {
+    return (
+      <View style={styles.messageContainer}>
+        {message.type === 'system' ? (
+            <Text style={[styles.systemMessageLabel]}>
+              {message.message}
+            </Text>
+          ) : (
+            <Text style={styles.senderNameLabel}>
+              {message.sender.userName}
+              <Text style={styles.messageLabel}> {message.message}</Text>
+            </Text>
+        )}
+      </View>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
@@ -137,10 +154,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginLeft: 16,
     display: 'flex',
-  },
-  nameLabel: {
-    fontSize: 18,
-    color: '#2A2A2A',
   },
   hostName: {
     color: '#FFFFFF',
@@ -164,5 +177,32 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  messageContainer: {
+    alignSelf: 'flex-start',
+    backgroundColor: 'rgba(1, 7, 18, 0.3000)',
+    borderRadius: 13,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    marginTop: 4,
+    paddingTop: 5,
+    paddingBottom: 5,
+    paddingRight: 10,
+    paddingLeft: 10,
+  },
+  senderNameLabel: {
+    color: '#8BE7FF',
+    fontSize: 13,
+  },
+  messageLabel: {
+    color: 'white',
+    fontSize: 13,
+    marginLeft: 5,
+  },
+  systemMessageLabel: {
+    color: '#FFD700',
+    textAlign: 'center',
+    fontStyle: 'italic',
   },
 })

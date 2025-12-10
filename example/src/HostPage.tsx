@@ -109,10 +109,16 @@ export default function HostPage(props: any) {
                     roomConfig: {
                         onUsersEnter: (userInfoList: any[]) => {
                             console.log('########HostPage onUsersEnter', userInfoList);
+                            userInfoList.map((userInfo) => {
+                                (prebuiltRef.current as any)?.sendSystemMessage?.(userInfo.userName + ' entered the room');
+                            })
                         },
                         onUsersLeave: (userInfoList: any[]) => {
                             console.log('########HostPage onUsersLeave', userInfoList);
                         },
+                    },
+                    inRoomMessageViewConfig: {
+                        itemBuilder: CustomBuilder.inRoomMessageItemBuilder,
                     },
                 }}
                 plugins={[ZIM]}

@@ -97,6 +97,9 @@ export default function AudiencePage(props: any) {
                 console.log('########AudiencePage onUsersLeave', userInfoList);
             },
           },
+          inRoomMessageViewConfig: {
+              itemBuilder: CustomBuilder.inRoomMessageItemBuilder,
+          },
         }}
         plugins={[ZIM]}
       />

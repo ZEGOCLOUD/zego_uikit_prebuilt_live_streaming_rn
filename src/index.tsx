@@ -229,6 +229,7 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
 
   const [isShowNoHostOnlineTip, setShowNoHostOnlineTip] = useState(false);
   const showNoHostOnlineTipTimeoutRef = useRef(null);
+  const [systemMessageList, setSystemMessageList] = useState([] as any[]);
 
   if (stateData.current.callbackID) {
     stateData.current.callbackID  = 'ZegoUIKitPrebuiltLiveStreaming' +
@@ -545,6 +546,14 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
     minimizeWindow: () => {
       MinimizingHelper.getInstance().minimizeWindow();
     },
+    sendSystemMessage: (message: string) => {
+      const systemMessage = {
+        type: 'system',
+        message,
+        sendTime: Date.now(),
+      };
+      setSystemMessageList((arr) => [...arr, systemMessage]);
+    }
   }));
 
   useEffect(() => {
@@ -1215,7 +1224,11 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
       {/* Message list */}
       {
         showMessageListView() && !textInputVisable ? <View style={styles.messageListView}>
-          <ZegoInRoomMessageView itemBuilder={messageItemBuilder} style={styles.fillParent} />
+          <ZegoInRoomMessageView 
+            itemBuilder={messageItemBuilder} 
+            style={styles.fillParent}
+            systemMessageList={systemMessageList}
+          />
         </View> : null
       }
       {/* Member list */}

@@ -97,7 +97,7 @@
     "react-native-safe-area-context": "*",
     "react-native-screens": "*",
     "react-native-orientation-locker": "^1.7.0",
-    "@zegocloud/zego-uikit-rn": ">=2.18.8"
+    "@zegocloud/zego-uikit-rn": ">=2.19.0"
   },
   "commitlint": {
     "extends": [
