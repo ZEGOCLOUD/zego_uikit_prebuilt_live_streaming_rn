@@ -5,7 +5,7 @@ import * as ZIM from 'zego-zim-react-native';
 
 import {
     ZegoUIKitVideoConfig,
-} from '@zegocloud/zego-uikit-rn';  
+} from '@zegocloud/zego-uikit-rn';
 import ZegoUIKitPrebuiltLiveStreaming, {
     HOST_DEFAULT_CONFIG,
     ZegoMenuBarButtonName,
