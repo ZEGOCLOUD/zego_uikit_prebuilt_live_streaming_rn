@@ -787,10 +787,10 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
   }, []);
 
   useEffect(() => {
-    zloginfo(`[ZegoUIKitPrebuiltLiveStreaming] useEffect, userID:${userID}, role:${config.role}, liveID:${liveID}, video:${config.video ? config.video.width : 'undefined'}`);
+    zloginfo(`[ZegoUIKitPrebuiltLiveStreaming] useEffect, userID:${userID}, role:${config.role}, liveID:${liveID}, video:${video ? video.width : 'undefined'}`);
 
     let pluginsConfig = {
-      logoutSignalingPluginOnLeaveLiveStreaming: (config.logoutSignalingPluginOnLeaveLiveStreaming === false) ? false : true,
+      logoutSignalingPluginOnLeaveLiveStreaming: (logoutSignalingPluginOnLeaveLiveStreaming === false) ? false : true,
     };
     ZegoPrebuiltPlugins.init(appID, appSign, userID, userName, plugins, pluginsConfig).then((result) => {
       setIsPluginsInit(result);
@@ -808,8 +808,8 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
       })
 
       // should called before ZegoUIKit.init
-      ZegoUIKit.setVideoConfig(config.video)
-      ZegoUIKit.setAudioVideoResourceMode(config.audienceAudioVideoResourceMode);
+      ZegoUIKit.setVideoConfig(video)
+      ZegoUIKit.setAudioVideoResourceMode(audienceAudioVideoResourceMode);
 
       ZegoUIKit.init(appID, appSign, { userID: userID, userName: userName }).then(
         () => {
@@ -836,7 +836,7 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
       // After the configured time, if the timer has not been cleared, display the tip.
       setShowNoHostOnlineTip(true);
       zloginfo('showNoHostOnlineTip true when timeout')
-    }, config.showNoHostOnlineTipAfterSeconds * 1000);
+    }, showNoHostOnlineTipAfterSeconds * 1000);
 
     return () => {
       zloginfo(`[ZegoUIKitPrebuiltLiveStreaming] useEffect return`);
