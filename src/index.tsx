@@ -1363,8 +1363,8 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
                     setTextInput(input);
                   }}
                   // @ts-ignore
-                  onContentSizeChange={(height: number) => {
-                    // setTextInputHeight(height);
+                  onContentSizeChange={(width: number, height: number) => {
+                    setTextInputHeight(height);
                   }}
                   placeholder={'Say something...'}
                   onSumit={() => {
