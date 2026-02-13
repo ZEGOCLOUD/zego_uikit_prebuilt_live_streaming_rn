@@ -110,7 +110,7 @@ export default function HostPage(props: any) {
                         onUsersEnter: (userInfoList: any[]) => {
                             console.log('########HostPage onUsersEnter', userInfoList);
                             userInfoList.map((userInfo) => {
-                                (prebuiltRef.current as any)?.sendSystemMessage?.(userInfo.userName + ' entered the room');
+                                (prebuiltRef.current as any)?.addSystemMessage?.(userInfo.userName + ' entered the room');
                             })
                         },
                         onUsersLeave: (userInfoList: any[]) => {

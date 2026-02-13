@@ -546,13 +546,13 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
     minimizeWindow: () => {
       MinimizingHelper.getInstance().minimizeWindow();
     },
-    sendSystemMessage: (message: string) => {
+    addSystemMessage: (message: string) => {
       const systemMessage = {
         type: 'system',
         message,
         sendTime: Date.now(),
       };
-      zloginfo('sendSystemMessage', systemMessage)
+      zloginfo('addSystemMessage', systemMessage)
       setSystemMessageList((arr) => [...arr, systemMessage]);
     }
   }));
