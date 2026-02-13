@@ -123,18 +123,18 @@ export class CustomBuilder {
     );
   }
 
-  static inRoomMessageItemBuilder = ({ message }: any) => {
-    let type = message.type || 'user';
+  static inRoomMessageItemBuilder = ({ message: messageItem }: any) => {
+    let type = messageItem.type || 'user';
     return (
       <View style={styles.messageContainer}>
         {type === 'system' ? (
             <Text style={[styles.systemMessageLabel]}>
-              {message.message}
+              {messageItem.message}
             </Text>
           ) : (
             <Text style={styles.senderNameLabel}>
-              {message.sender?.userName || 'Unknown User'}
-              <Text style={styles.messageLabel}> {message.message}</Text>
+              {messageItem.sender?.userName || 'Unknown User'}
+              <Text style={styles.messageLabel}> {messageItem.message}</Text>
             </Text>
         )}
       </View>
@@ -202,8 +202,8 @@ const styles = StyleSheet.create({
     marginLeft: 5,
   },
   systemMessageLabel: {
-    color: '#FFD700',
-    textAlign: 'center',
+    color: 'yellow',
+    fontWeight: 'bold',
     fontStyle: 'italic',
   },
 })

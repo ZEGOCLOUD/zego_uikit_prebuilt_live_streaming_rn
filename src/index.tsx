@@ -181,6 +181,7 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
     onDurationUpdate
   } = durationConfig;
   const {
+    onJoinRoom,
     onUsersEnter,
     onUsersLeave,
   } = roomConfig;
@@ -558,6 +559,12 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
   }));
 
   useEffect(() => {
+    ZegoUIKit.onJoinRoom(callbackID, () => {
+      zloginfo('########onJoinRoom');
+      if (onJoinRoom) {
+        onJoinRoom()
+      }
+    });
     ZegoUIKit.onRoomStateChanged(callbackID, () => {
       if (ZegoUIKit.isRoomConnected()) {
         // Anchor set host
@@ -766,6 +773,7 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
         zloginfo(`${TAG} remove orientationChangedListener`);
         Orientation.removeOrientationListener(orientationChangedListener);
 
+        ZegoUIKit.onJoinRoom(callbackID);
         ZegoUIKit.onRoomStateChanged(callbackID);
         offRoomUserUpdateEvents(callbackID);
         ZegoUIKit.onUserLeave(callbackID);
