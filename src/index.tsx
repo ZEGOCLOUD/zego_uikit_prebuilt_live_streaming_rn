@@ -597,7 +597,7 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
       zloginfo('########onRoomPropertiesFullUpdated', keys, oldRoomProperties, roomProperties, type);
     });
     ZegoUIKit.onRoomPropertyUpdated(callbackID, (key: string, oldValue: any, value: any, type: any) => {
-      zloginfo('########onRoomPropertyUpdated', key, oldValue, value, type);
+      zloginfo(`########onRoomPropertyUpdated, key: ${key}, type: ${type}, value: ${oldValue} -> ${value}`);
       // Resolved callback delay in receiving room attached message
       if (realTimeData.current.role === ZegoLiveStreamingRole.host && type === ZegoRoomPropertyUpdateType.remote) {
         // Set again, update uikit data
@@ -630,7 +630,7 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
               initLiveStreamingTimingTimer();
 
               // Cancel the invitation to cohost
-              if (ZegoUIKit.getSignalingPlugin()) {
+              if (ZegoUIKit.getSignalingPlugin() && realTimeData.current.hostID) {
                 ZegoUIKit.getSignalingPlugin().cancelInvitation([realTimeData.current.hostID]);
               }
               ZegoUIKit.turnCameraOn('', false);
