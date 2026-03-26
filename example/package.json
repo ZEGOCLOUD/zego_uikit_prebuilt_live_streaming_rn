@@ -40,6 +40,7 @@
     
     "react-delegate-component": "^1.0.0",
     "react-native-orientation-locker": "^1.7.0",
+    "@sayem314/react-native-keep-awake": "^1.4.0",
     "react-native-device-info": "^14.0.4",
 
     "zego-express-engine-reactnative": "^3.22.0",

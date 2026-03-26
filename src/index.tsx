@@ -2,6 +2,7 @@ import React, { forwardRef, useCallback, useEffect, useImperativeHandle, useRef,
 import { Alert, Image, ImageBackground, KeyboardAvoidingView, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Orientation, { OrientationType } from 'react-native-orientation-locker';
+import { activateKeepAwake, deactivateKeepAwake} from "@sayem314/react-native-keep-awake";
 
 import ZegoUIKit, {
   ZegoAudioVideoContainer,
@@ -797,6 +798,9 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
   useEffect(() => {
     zloginfo(`[ZegoUIKitPrebuiltLiveStreaming] useEffect, userID:${userID}, role:${config.role}, liveID:${liveID}, video:${video ? video.width : 'undefined'}`);
 
+    zloginfo(`[ZegoUIKitPrebuiltLiveStreaming] KeepAwake activate`);
+    activateKeepAwake();
+
     let pluginsConfig = {
       logoutSignalingPluginOnLeaveLiveStreaming: (logoutSignalingPluginOnLeaveLiveStreaming === false) ? false : true,
     };
@@ -855,6 +859,9 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
 
       const isMinimizeSwitch = MinimizingHelper.getInstance().getIsMinimizeSwitch();
       if (!isMinimizeSwitch) {
+        zloginfo(`[ZegoUIKitPrebuiltLiveStreaming] KeepAwake deactivate`);
+        deactivateKeepAwake();
+
         setIsDialogVisableHandle(false);
         initLiveStreamingTimingTimer();
         ZegoUIKit.leaveRoom();
