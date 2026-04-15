@@ -13,6 +13,7 @@ export default function ZegoCoHostMenuDialog(props: any) {
     const {
         visable,
         inviteeID,
+        inviteeName,
         invitationType = ZegoInvitationType.inviteToCoHost,
         onCancel,
         onOk,
@@ -108,7 +109,7 @@ export default function ZegoCoHostMenuDialog(props: any) {
             color='#fff'
             text={
                 invitationType === ZegoInvitationType.inviteToCoHost ?
-                    ZegoTranslationText.inviteCoHostButton.replace('%0', inviteeID) :
+                    ZegoTranslationText.inviteCoHostButton.replace('%0', inviteeName) :
                     ZegoTranslationText.removeCoHostButton
             }
             invitees={[inviteeID]}
@@ -138,7 +139,7 @@ export default function ZegoCoHostMenuDialog(props: any) {
         <View style={styles.divide}></View>
         {/* remove xxx from the room */}
         <TouchableOpacity style={styles.removeButton} onPress={removeHandle}>
-            <Text style={styles.removeText}>{ZegoTranslationText.removeUserMenuDialogButton.replace('%0', inviteeID)}</Text>
+            <Text style={styles.removeText}>{ZegoTranslationText.removeUserMenuDialogButton.replace('%0', inviteeName)}</Text>
         </TouchableOpacity>
         <View style={styles.divide}></View>
         <TouchableOpacity style={styles.cancelButton} onPress={onCancel}>

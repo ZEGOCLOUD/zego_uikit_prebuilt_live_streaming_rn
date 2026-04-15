@@ -282,7 +282,7 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
           setRequestCoHostCount(realTimeData.current.requestCoHostCount);
 
           setIsToastVisable(true);
-          setToastExtendedData({ type: ZegoToastType.success, text: ZegoTranslationText.receivedRequestCoHostToast.replace('%0', inviter.id) });
+          setToastExtendedData({ type: ZegoToastType.success, text: ZegoTranslationText.receivedRequestCoHostToast.replace('%0', inviter.name) });
 
           realTimeData.current.memberConnectStateMap[inviter.id] = ZegoCoHostConnectState.connecting;
           stateData.current.memberConnectStateMap[inviter.id] = ZegoCoHostConnectState.connecting;
@@ -1277,6 +1277,7 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
       <ZegoCoHostMenuDialog
         visable={isCoHostDialogVisable}
         inviteeID={coHostDialogExtendedData.inviteeID}
+        inviteeName={coHostDialogExtendedData.inviteeName}
         invitationType={coHostDialogExtendedData.invitationType}
         onCancel={coHostDialogExtendedData.onCancel}
         onOk={coHostDialogExtendedData.onOk}

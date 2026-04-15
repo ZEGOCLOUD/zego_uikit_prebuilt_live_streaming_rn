@@ -43,13 +43,14 @@ export default function ZegoLiveStreamingMemberList(props: any) {
     const showOperationIcon = (userID: string) => {
         return isPluginsInit && (localUserID === hostID && userID !== localUserID && memberConnectStateMap[userID] !== ZegoCoHostConnectState.connecting);
     };
-    const operateHandle = (userID: string) => {
+    const operateHandle = (userID: string, userName: string) => {
         onCloseMemberList();
         setIsCoHostDialogVisable(true);
         if (memberConnectStateMap[userID] === ZegoCoHostConnectState.connected) {
             // You can force prohibit to connect
             setCoHostDialogExtendedData({
                 inviteeID: userID,
+                inviteeName: userName,
                 invitationType: ZegoInvitationType.removeCoHost,
                 onOk: () => {
                     zloginfo(`[ZegoLiveStreamingMemberList][operateHandle][removeCoHost][onOk]`)
@@ -64,6 +65,7 @@ export default function ZegoLiveStreamingMemberList(props: any) {
             // You can invite to cohost
             setCoHostDialogExtendedData({
                 inviteeID: userID,
+                inviteeName: userName,
                 invitationType: ZegoInvitationType.inviteToCoHost,
                 onOk: () => {
                     zloginfo(`[ZegoLiveStreamingMemberList][operateHandle][inviteToCoHost][onOk]`)
@@ -166,7 +168,7 @@ export default function ZegoLiveStreamingMemberList(props: any) {
                 }
                 {
                     // @ts-ignore
-                    showOperationIcon(userInfo.userID) ? <TouchableOpacity onPress={operateHandle.bind(this, userInfo.userID)}>
+                    showOperationIcon(userInfo.userID) ? <TouchableOpacity onPress={operateHandle.bind(this, userInfo.userID, userInfo.userName)}>
                         <Image source={require('../resources/icon_more_vertical.png')} />
                     </TouchableOpacity> : null
                 }
