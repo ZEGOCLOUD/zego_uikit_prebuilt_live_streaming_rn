@@ -136,6 +136,7 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
     audienceAudioVideoResourceMode = ZegoAudioVideoResourceMode.Default,
     video = ZegoUIKitVideoConfig.preset540P(),
     roomConfig = {},
+    useWithOtherPrebuilts = false,
   } = config;
   const {
     showSoundWavesInAudioMode = true,
@@ -263,6 +264,10 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
     zloginfo('######isPageInBackground', isMinimize);
     return isMinimize;
   }
+  const getUsageTag = () => {
+    return useWithOtherPrebuilts ? 'livestreaming' : undefined;
+  }
+  
   const registerPluginCallback = () => {
     if (ZegoUIKit.getPlugin(ZegoUIKitPluginType.signaling)) {
       ZegoUIKit.getSignalingPlugin().onInvitationReceived(callbackID, ({ callID, type, inviter, data }: any) => {
@@ -533,7 +538,7 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
       if (!showConfirmation) {
         (debounce.current as any) = true;
         await tempHandle();
-        ZegoUIKit.leaveRoom();
+        await ZegoUIKit.leaveRoom();
         executeLeaveCallback();
         (debounce.current as any) = false;
       } else {
@@ -567,7 +572,7 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
       }
     });
     ZegoUIKit.onRoomStateChanged(callbackID, () => {
-      if (ZegoUIKit.isRoomConnected()) {
+      if (ZegoUIKit.isRoomConnected(getUsageTag())) {
         // Anchor set host
         zloginfo('########onRoomStateChanged anchor set host', realTimeData.current);
         if (realTimeData.current.role === ZegoLiveStreamingRole.host && !realTimeData.current.hostID) {
@@ -832,10 +837,10 @@ function ZegoUIKitPrebuiltLiveStreaming(props: any, ref: React.Ref<unknown>) {
             grantPermissions(() => {
               ZegoUIKit.turnCameraOn('', turnOnCameraWhenJoining);
               ZegoUIKit.turnMicrophoneOn('', turnOnMicrophoneWhenJoining);
-              ZegoUIKit.joinRoom(liveID, '', !!markAsLargeRoom);
+              ZegoUIKit.joinRoom(liveID, '', !!markAsLargeRoom, getUsageTag());
             });
           } else {
-              ZegoUIKit.joinRoom(liveID, '', !!markAsLargeRoom);
+              ZegoUIKit.joinRoom(liveID, '', !!markAsLargeRoom, getUsageTag());
           }
         }
       );

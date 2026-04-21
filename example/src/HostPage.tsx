@@ -105,7 +105,6 @@ export default function HostPage(props: any) {
                         });
                     },
                     video: videoConfig,
-                    // logoutSignalingPluginOnLeaveLiveStreaming: false,
                     roomConfig: {
                         onUsersEnter: (userInfoList: any[]) => {
                             console.log('########HostPage onUsersEnter', userInfoList);
@@ -120,6 +119,8 @@ export default function HostPage(props: any) {
                     inRoomMessageViewConfig: {
                         itemBuilder: CustomBuilder.inRoomMessageItemBuilder,
                     },
+                    // logoutSignalingPluginOnLeaveLiveStreaming: false,
+                    // useWithOtherPrebuilts: false,
                 }}
                 plugins={[ZIM]}
             />

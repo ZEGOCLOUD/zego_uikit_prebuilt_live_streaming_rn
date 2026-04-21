@@ -105,6 +105,7 @@ export default function AudiencePage(props: any) {
           inRoomMessageViewConfig: {
               itemBuilder: CustomBuilder.inRoomMessageItemBuilder,
           },
+          // useWithOtherPrebuilts: false,
         }}
         plugins={[ZIM]}
       />
